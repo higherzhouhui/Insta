@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  app:
+    image: pd1-web-production
+    build:
+      context: ./
+      dockerfile: Dockerfile.production
+    restart: on-failure
+    ports:
+      - 10002:10002

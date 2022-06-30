@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  app:
+    image: pd1-web-development
+    build: .
+    ports:
+      - 10002:10002
+    restart: on-failure
+    volumes:
+      # - ./pages:/app/pages
+      # - ./componets:/app/componets
+      # - ./config:/app/config
+      # - ./context:/app/context
+      # - ./ethers-react:/app/ethers-react
+      # - ./hooks:/app/hooks
+      # - ./public:/app/public
+      # - ./services:/app/services
+      # - ./store:/app/store
+      # - ./styles:/app/styles
+      # - ./types:/app/types
+      # - ./uikit:/app/uikit
+      # - ./utils:/app/utils
+      - .:/app

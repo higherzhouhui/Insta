@@ -54,43 +54,22 @@ export const Header: FC = memo(() => {
       <HeaderLogoContainer>
         <Link passHref href='/'>
           <a>
-            <SvgIcon height={40} name='logo' width={126} />
+            <SvgIcon height={60} name='logo' width={100} />
           </a>
         </Link>
       </HeaderLogoContainer>
       <HeaderOptionContainer>
-        <SearchInput />
-        <Auth>
-          <Button
-            height={32}
-            marginLeft={47}
-            variant='primary'
-            width={80}
-            onClick={handleCreateClick}
-          >
-            Create
-          </Button>
-        </Auth>
         <DropDown OptionsNode={<User />}>
           <HeadeUserContainer>
             {user.token ? (
               <Image
                 alt='Wallet'
                 height={32}
-                src={
-                  user.portrait
-                    ? user.portrait
-                    : '/static/icon/avatar-icon1.png'
-                }
+                src='/static/icon/avatar-icon1.png'
                 width={32}
               />
             ) : (
-              <SvgIcon
-                color='#333333'
-                height={32}
-                name='user-icon'
-                width={32}
-              />
+              <SvgIcon color='#fff' height={32} name='user-icon' width={32} />
             )}
           </HeadeUserContainer>
         </DropDown>
@@ -101,7 +80,7 @@ export const Header: FC = memo(() => {
             });
           }}
         >
-          <SvgIcon color='#333333' height={32} name='wallet-icon' width={32} />
+          <SvgIcon color='#fff' height={32} name='wallet-icon' width={32} />
         </WalletContainer>
       </HeaderOptionContainer>
     </HeaderContainer>

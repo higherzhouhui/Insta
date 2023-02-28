@@ -57,7 +57,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
                       <Image
                         alt='Wallet'
                         height={32}
-                        src={user.portrait}
+                        src='/static/icon/avatar-icon1.png'
                         width={32}
                       />
                     ) : (

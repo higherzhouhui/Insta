@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 export const HeaderContainer = styled.header`
   width: 100vw;
-  height: 80px;
-  padding: 0 64px;
+  height: 60px;
+  padding: 0 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -12,7 +12,7 @@ export const HeaderContainer = styled.header`
   top: 0;
   box-shadow: 0px 4px 16px 1px rgba(201, 203, 205, 0.25);
   z-index: 110;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(6, 11, 25);
 `;
 
 export const HeaderLogoContainer = styled.div`

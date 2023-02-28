@@ -45,7 +45,7 @@ export const ImageWrapper = styled.div<BackgroundImageProps>`
 export const OptionWrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  padding-top: 80px;
+  padding-top: 60px;
   border-bottom: 1px solid #d2d2d2;
   padding-bottom: 40px;
   display: flex;

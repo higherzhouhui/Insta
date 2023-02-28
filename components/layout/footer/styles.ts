@@ -2,70 +2,67 @@ import styled from 'styled-components';
 
 export const FooterContainer = styled.div`
   width: 100%;
-  background: #53a9ff;
-  height: 209px;
-  padding: 27px 80px;
-  display: inline-block;
-  .footMiddle {
-    width: 100%;
-    height: 1px;
-    background: #ffffff;
-    opacity: 0.8;
-    margin: 42px 0 32px 0;
-  }
+  background: rgb(6, 25, 11);
 `;
 
 export const FooterTop = styled.div`
-  display: flex;
-  height: 60px;
   width: 100%;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const FooterHref = styled.div`
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  .link-item-box {
-    margin: 0 16px;
-    cursor: pointer;
+  padding: 24px 16px 92px 16px;
+  color: #fff;
+  h1 {
+    font-size: 20px;
+    margin: 12px 0;
+  }
+  h3 {
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  p {
+    font-size: 14px;
+    color: #999;
+  }
+  .learnList {
+    display: flex;
+    a {
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      margin-right: 12px;
+    }
+    svg {
+      height: 20px;
+      width: 20px;
+      margin-right: 12px;
+    }
   }
 `;
 
 export const FooterBot = styled.div`
-  height: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  .copyRight {
-    height: 20px;
-    font-size: 14px;
-    font-family: HarmonyOs-Medium;
-    color: #ffffff;
-    line-height: 20px;
-  }
-  a {
-    height: 20px;
-    font-size: 14px;
-    color: #ffffff;
-    line-height: 20px;
-    :visited {
-      color: #fff;
-    }
-    :hover {
-      font-family: HarmonyOs-Medium;
-    }
-  }
-  .termsPollcy {
+  background: rgb(6, 11, 25);
+  height: 60px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 9999;
+  .item {
+    color: #999;
+    flex-direction: column;
     display: flex;
     align-items: center;
+    justify-content: center;
+    svg {
+      width: 30px;
+      height: 30px;
+      fill: #999;
+    }
   }
-  .fenge {
-    margin: 0 8px;
-    width: 1px;
-    height: 100%;
-    display: inline-block;
-    border-left: 2px solid #fff;
+  .active {
+    color: #fff;
+    svg {
+      fill: #fff;
+    }
   }
 `;

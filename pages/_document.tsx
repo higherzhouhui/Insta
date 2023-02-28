@@ -39,12 +39,16 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta
-            content='PD-1 is an NFT derivative community, with great derivative works, talented creators and web3 native users.'
+            content='The best cross‑chain Yield Aggregator across DeFi. Buy, stake and earn optimized yield on BNB, Cronos, Polygon, Avalanche, and many more chains.'
             name='description'
           />
           <meta
-            content='PD-1,NFT,NFT Derivative Community,NFT Creator,NFT derivatives'
+            content='The best cross‑chain Yield Aggregator across DeFi. Buy, stake and earn optimized yield on BNB, Cronos, Polygon, Avalanche, and many more chains.'
             name='keywords'
+          />
+          <meta
+            content='width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no'
+            name='viewport'
           />
           <link href='/favicon.ico' rel='icon' />
         </Head>

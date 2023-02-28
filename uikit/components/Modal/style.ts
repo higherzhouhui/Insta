@@ -33,8 +33,8 @@ export const ModalContentContainer = styled.div<ModalProps>`
   display: ${({visible}) => (visible ? 'block' : 'none')};
   width: ${({width}) => (width ? handleToPx(width) : '422px')};
   height: ${({height}) => (height ? handleToPx(height) : '456px')};
-  background: ${(props) => (props.background ? props.background : '#FFF')};
-  border-radius: 16px;
+  background: ${(props) => (props.background ? props.background : '#181E30')};
+  border-radius: 8px;
   position: fixed;
   left: 50%;
   top: ${(props) => (props.top ? props.top : '50%')};

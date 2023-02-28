@@ -33,7 +33,7 @@ export interface FootLinkRes {
 }
 
 export interface FootLinkBase {
-  uri: string;
+  url: string;
   icon: string;
   title: string;
 }

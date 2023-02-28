@@ -1,57 +1,89 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 import {FC, memo, useEffect, useState} from 'react';
 
-import {FooterBot, FooterContainer, FooterHref, FooterTop} from './styles';
+import {FooterContainer, FooterTop, FooterBot} from './styles';
 
-import {getFooterLinks} from '@/services/common';
-import {FootLinkBase} from '@/services/common.d';
 import {SvgIcon} from '@/uikit';
 
 export const Footer: FC = memo(() => {
-  const [links, setLinks] = useState<FootLinkBase[]>([]);
-  useEffect(() => {
-    getFooterLinksRequest();
-  }, []);
+  const router = useRouter();
 
-  const getFooterLinksRequest = async () => {
-    const res = await getFooterLinks({page: 1, pageSize: 10});
-    if (res.code === 0) {
-      setLinks(res.data?.infoList || []);
-    }
-  };
+  const learnList = [
+    {title: 'Audit', link: '/'},
+    {title: 'Github', link: '/'},
+    {title: 'Contact', link: '/'},
+    {title: 'Docs', link: '/'},
+  ];
+  const joinList = [
+    {title: 'opensea', link: '/'},
+    {title: 'share-facebook', link: '/'},
+    {title: 'icon-Facebook', link: '/'},
+    {title: 'icon-Twiter', link: '/'},
+    {title: 'icon-INS', link: '/'},
+  ];
+
+  const [navList, setNavList] = useState([
+    {title: 'Home', link: '/', active: true, icon: 'home'},
+    {title: 'Deposits', link: '/deposits', active: false, icon: 'deposits'},
+    {title: 'Swap', link: '/swap', active: false, icon: 'swap'},
+    {title: 'Info', link: '/info', active: false, icon: 'info'},
+  ]);
+  useEffect(() => {
+    // eslint-disable-next-line array-callback-return
+    navList.map((item: any) => {
+      if (router.pathname === item.link) {
+        item.active = true;
+      } else {
+        item.active = false;
+      }
+    });
+    setNavList([...navList]);
+  }, [router.pathname]);
   return (
-    <FooterContainer>
+    <FooterContainer
+      style={{
+        display: navList.every((item) => {
+          return !item.active;
+        })
+          ? 'none'
+          : 'block',
+      }}
+    >
       <FooterTop>
-        <Link passHref href='/'>
-          <a>
-            <SvgIcon height={60} name='footer-logo' width={189} />
-          </a>
-        </Link>
-        <FooterHref>
-          {links.map((link, index) => (
-            <span className='link-item-box' key={`${index}_div`}>
-              <Link passHref href={link.uri}>
-                <a target='_blank'>
-                  <Image alt='icon' height={40} src={link.icon} width={40} />
-                </a>
+        <h1>Contact Us</h1>
+        <h3>Business Enquiries</h3>
+        <p>hell@autofarm.network</p>
+        <h3>Customer Support</h3>
+        <p>support@autofarm.network</p>
+        <h1>Learn More</h1>
+        <div className='learnList'>
+          {learnList.map((item, index) => {
+            return (
+              <Link href={item.link} key={index}>
+                {item.title}
               </Link>
-            </span>
-          ))}
-        </FooterHref>
+            );
+          })}
+        </div>
+        <h1>Join Community</h1>
+        <div className='learnList'>
+          {joinList.map((item, index) => {
+            return <SvgIcon key={index} name={item.title} />;
+          })}
+        </div>
       </FooterTop>
-      <div className='footMiddle' />
       <FooterBot>
-        <span className='copyRight'>Copyright © 2022 PD-1</span>
-        <span className='termsPollcy'>
-          <Link passHref href='/tos'>
-            <a>Terms & Conditions</a>
-          </Link>
-          <span className='fenge' />
-          <Link passHref href='/policy'>
-            <a>Privacy Policy</a>
-          </Link>
-        </span>
+        {navList.map((item, index) => {
+          return (
+            <Link href={item.link} key={index}>
+              <div className={`item ${item.active ? 'active' : ''}`}>
+                <SvgIcon name={item.icon} />
+                <p>{item.title}</p>
+              </div>
+            </Link>
+          );
+        })}
       </FooterBot>
     </FooterContainer>
   );

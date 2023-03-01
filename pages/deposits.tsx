@@ -46,7 +46,7 @@ const Deposits: NextPage = () => {
       });
     setDataSource(arr);
   };
-  const columns = [
+  const columns: any[] = [
     {
       title: 'Pool',
       dataIndex: 'pool',

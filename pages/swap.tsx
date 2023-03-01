@@ -10,8 +10,8 @@ const swap: NextPage = () => {
   const [setting, setSetting] = useState(false);
   const tabList = ['Avalance', 'BNB', 'Cronos', 'Polygon'];
   const [currentTab, setCurrentTab] = useState(tabList[0]);
-  const [gasPrice, setgasPrice] = useState();
-  const [slippage, setslippage] = useState();
+  const [gasPrice, setgasPrice] = useState<number>();
+  const [slippage, setslippage] = useState<number>();
   const [money, setMoney] = useState('');
   const [transFarMoney, settransFarMoney] = useState('');
   const [from, setFrom] = useState({
@@ -71,7 +71,7 @@ const swap: NextPage = () => {
                     return (
                       <div
                         className={`chooseBtn ${
-                          gasPrice * 1 === item ? 'active' : ''
+                          (gasPrice || 0) * 1 === item ? 'active' : ''
                         }`}
                         key={index}
                         onClick={() => {
@@ -101,7 +101,7 @@ const swap: NextPage = () => {
                     return (
                       <div
                         className={`chooseBtn ${
-                          slippage * 1 === item ? 'active' : ''
+                          (slippage || 0) * 1 === item ? 'active' : ''
                         }`}
                         key={index}
                         onClick={() => {

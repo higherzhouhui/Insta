@@ -5,7 +5,7 @@ import type {NextPage} from 'next';
 import {MoneyContainer, SwapContainer} from '@/styles/swap';
 import {SvgIcon} from '@/uikit';
 
-const swap: NextPage = () => {
+const Swap: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [setting, setSetting] = useState(false);
   const tabList = ['Avalance', 'BNB', 'Cronos', 'Polygon'];
@@ -173,6 +173,6 @@ const swap: NextPage = () => {
   );
 };
 
-swap.displayName = 'swap';
+Swap.displayName = 'Swap';
 
-export default swap;
+export default Swap;

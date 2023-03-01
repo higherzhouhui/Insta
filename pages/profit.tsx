@@ -7,7 +7,7 @@ import type {NextPage} from 'next';
 import {ProfitContainer} from '@/styles/profit';
 import {SvgIcon} from '@/uikit';
 
-const profit: NextPage = () => {
+const Porfit: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
@@ -74,6 +74,6 @@ const profit: NextPage = () => {
   );
 };
 
-profit.displayName = 'profit';
+Porfit.displayName = 'Porfit';
 
-export default profit;
+export default Porfit;

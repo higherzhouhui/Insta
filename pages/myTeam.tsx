@@ -8,7 +8,7 @@ import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
 
-const myTeam: NextPage = () => {
+const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
@@ -85,6 +85,6 @@ const myTeam: NextPage = () => {
   );
 };
 
-myTeam.displayName = 'profit';
+MyTeam.displayName = 'MyTeam';
 
-export default myTeam;
+export default MyTeam;

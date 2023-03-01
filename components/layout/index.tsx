@@ -31,7 +31,7 @@ export const Layout = memo(({children}) => {
   return (
     <>
       <Head>
-        <title>PD-1</title>
+        <title>Insta</title>
       </Head>
       <Header />
       <LayoutContainer>

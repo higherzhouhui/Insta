@@ -10,12 +10,51 @@ import {SvgIcon} from '@/uikit';
 
 const Home: NextPage = () => {
   const homeRef: any = useRef(null);
+  const logoList = [
+    '/static/image/img1.webp',
+    '/static/image/img2.webp',
+    '/static/image/img3.webp',
+    '/static/image/img4.webp',
+    '/static/image/img5.webp',
+    '/static/image/img6.webp',
+    '/static/image/img7.webp',
+    '/static/image/img8.webp',
+    '/static/image/img9.webp',
+    '/static/image/img7.webp',
+    '/static/image/img10.webp',
+  ];
+  const titleList = [
+    'WBNB-AUTO',
+    'BUSD-AUTO LP',
+    'WBNB-CAKE LP',
+    'WBNB-BUSD LP',
+    'ADA-WBNB LP',
+    'wbnb-xvs LP',
+    'ETH-WBNB LP',
+    'ADA-WBNB LP',
+    'TUSD-BUSD LP',
+    'TRX-BUSD LP',
+    'AXX-BUSD LP',
+  ];
+  const descList = [
+    'PancakeSwap',
+    'Auto',
+    'MDEX',
+    'BNB-PancakeSwap',
+    'Polygon-MeshSwap',
+    'Polygon-Sushi',
+    'Cronos-Crona',
+    'Polygon-MeshSwap',
+    'Polygon-Sushi',
+    'Polygon-Sushi',
+    'Polygon-Quickswap',
+  ];
   const newestObj = {
-    img1: 'https://tokens.autofarm.network/56-0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c.webp',
-    img2: '	https://tokens.autofarm.network/56-0xe4cc45bb5dbda06db6183e8bf016569f40497aa5.webp',
+    img1: '/static/image/img1.webp',
+    img2: '/static/image/img2.webp',
     title: 'WBNB-GAL LP',
     desc: 'BNB-PancakeSwap',
-    number: '5.11',
+    number: 5.11,
   };
   const [newestList, setNewestList] = useState();
   const ourPartners = [
@@ -516,35 +555,64 @@ const Home: NextPage = () => {
           <div className='product' key={index}>
             <div className='left'>
               <div className='img'>
-                <img alt='logo' className='img1' src={newestObj.img1} />
-                <img alt='logo' className='img2' src={newestObj.img2} />
+                <img
+                  alt='logo'
+                  className='img1'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
+                <img
+                  alt='logo'
+                  className='img2'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
               </div>
               <div />
               <div className='title'>
-                <div className='top'>{newestObj.title}</div>
-                <div className='bottom'>{newestObj.desc}</div>
+                <div className='top'>
+                  {titleList[Math.round(Math.random() * 10)]}
+                </div>
+                <div className='bottom'>
+                  {descList[Math.round(Math.random() * 10)]}
+                </div>
               </div>
             </div>
-            <div className='right'>{newestObj.number}% APY</div>
+            <div className='right'>
+              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+            </div>
           </div>
         );
       })}
+
       <h2>Highest APYS</h2>
       {[...Array(5)].map((item, index) => {
         return (
           <div className='product' key={index}>
             <div className='left'>
               <div className='img'>
-                <img alt='logo' className='img1' src={newestObj.img1} />
-                <img alt='logo' className='img2' src={newestObj.img2} />
+                <img
+                  alt='logo'
+                  className='img1'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
+                <img
+                  alt='logo'
+                  className='img2'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
               </div>
               <div />
               <div className='title'>
-                <div className='top'>{newestObj.title}</div>
-                <div className='bottom'>{newestObj.desc}</div>
+                <div className='top'>
+                  {titleList[Math.round(Math.random() * 10)]}
+                </div>
+                <div className='bottom'>
+                  {descList[Math.round(Math.random() * 10)]}
+                </div>
               </div>
             </div>
-            <div className='right'>{newestObj.number}% APY</div>
+            <div className='right'>
+              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+            </div>
           </div>
         );
       })}
@@ -554,16 +622,63 @@ const Home: NextPage = () => {
           <div className='product' key={index}>
             <div className='left'>
               <div className='img'>
-                <img alt='logo' className='img1' src={newestObj.img1} />
-                <img alt='logo' className='img2' src={newestObj.img2} />
+                <img
+                  alt='logo'
+                  className='img1'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
+                <img
+                  alt='logo'
+                  className='img2'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
               </div>
               <div />
               <div className='title'>
-                <div className='top'>{newestObj.title}</div>
-                <div className='bottom'>{newestObj.desc}</div>
+                <div className='top'>
+                  {titleList[Math.round(Math.random() * 10)]}
+                </div>
+                <div className='bottom'>
+                  {descList[Math.round(Math.random() * 10)]}
+                </div>
               </div>
             </div>
-            <div className='right'>{newestObj.number}% APY</div>
+            <div className='right'>
+              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+            </div>
+          </div>
+        );
+      })}
+      <h2>Stablecoins</h2>
+      {[...Array(5)].map((item, index) => {
+        return (
+          <div className='product' key={index}>
+            <div className='left'>
+              <div className='img'>
+                <img
+                  alt='logo'
+                  className='img1'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
+                <img
+                  alt='logo'
+                  className='img2'
+                  src={logoList[Math.round(Math.random() * 10)]}
+                />
+              </div>
+              <div />
+              <div className='title'>
+                <div className='top'>
+                  {titleList[Math.round(Math.random() * 10)]}
+                </div>
+                <div className='bottom'>
+                  {descList[Math.round(Math.random() * 10)]}
+                </div>
+              </div>
+            </div>
+            <div className='right'>
+              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+            </div>
           </div>
         );
       })}

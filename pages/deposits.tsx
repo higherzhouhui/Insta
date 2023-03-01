@@ -100,7 +100,7 @@ const Deposits: NextPage = () => {
   return (
     <DepositsContainer>
       <h2>Scanning</h2>
-      <Carousel autoplay dotPosition='right'>
+      <Carousel autoplay dotPosition='right' style={{overflow: 'hidden'}}>
         {[...Array(3)].map((_, index) => {
           return (
             <div key={index}>

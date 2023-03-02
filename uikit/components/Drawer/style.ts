@@ -51,4 +51,5 @@ export const DrawerContentContainer = styled.div<DrawerContentContainerProps>`
   ${getPlacement};
   overflow: hidden;
   top: 60px;
+  background-color: rgb(6, 25, 11);
 `;

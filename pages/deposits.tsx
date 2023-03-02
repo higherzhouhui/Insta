@@ -1,4 +1,3 @@
-import {Table} from 'antd';
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction} from 'react';
 import {Autoplay} from 'swiper';
@@ -9,6 +8,7 @@ import type {NextPage} from 'next';
 
 import {
   DepositsContainer,
+  MyTable,
   TotalAddress,
   WithDrawContainer,
 } from '@/styles/deposits';
@@ -19,10 +19,12 @@ const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [withDrawvisable, setWithDrawVisable] = useState(false);
   const [exchangeisable, setExchangeisable] = useState(false);
-  const [withDrawNumber, setWithDrawNumber] = useState();
+  const [withDrawNumber, setWithDrawNumber] = useState<number>();
+  const [exchangeNumber, setExchangeNumber] = useState<number>();
   const router = useRouter();
   const [deposits, setDeposits] = useState('');
   const [chain, setChain] = useState('ERC721');
+  const exchangeList = [25, 50, 75, 100];
   const zm = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'G'];
   const getName = (length: number) => {
     let str = '';
@@ -36,15 +38,14 @@ const Deposits: NextPage = () => {
   const [dataSource, setDataSource] = useState<any>([]);
   const initRequest = () => {
     const arr: any[] = [];
-    Array(11)
+    Array(12)
       .fill('')
       .forEach((_item, index) => {
         arr.push({
-          key: index,
           pool: getName(6),
           project: getName(10),
-          tvl: `$${Math.round(Math.random() * 10) / 10}b`,
-          apy: `${Math.round(Math.random() * 100) / 100}%`,
+          tvl: `$${Math.round(Math.random() * 100) / 10}b`,
+          apy: `${Math.round(Math.random() * 190) / 100}%`,
         });
       });
     setDataSource(arr);
@@ -97,33 +98,48 @@ const Deposits: NextPage = () => {
   const handleWithdraw = () => {
     setWithDrawVisable(false);
   };
+  const handleExchange = () => {
+    setExchangeisable(false);
+  };
   useEffect(() => {
     initRequest();
   }, []);
   return (
     <DepositsContainer>
       <h2>Scanning</h2>
+      <div className='header'>
+        {columns.map((item, index) => {
+          return <div key={index}>{item.title}</div>;
+        })}
+      </div>
       <Swiper
         loop
         autoplay={{
-          delay: 2500,
+          delay: 3500,
           disableOnInteraction: false,
         }}
         className='mySwiper'
         direction='vertical'
         modules={[Autoplay]}
-        style={{height: '181px'}}
+        speed={1000}
+        style={{height: '140px'}}
       >
         {[...Array(3)].map((_, index) => {
           return (
             <SwiperSlide key={index}>
-              <Table
-                bordered={false}
-                columns={columns}
-                dataSource={dataSource.slice(0, 4)}
-                pagination={false}
-                size='small'
-              />
+              <MyTable>
+                {dataSource
+                  .slice(index * 4, (index + 1) * 4)
+                  .map((citem: any, cindex: any) => {
+                    return (
+                      <div className='content' key={cindex}>
+                        {Object.keys(citem).map((ckey) => {
+                          return <div key={ckey}>{citem[ckey]}</div>;
+                        })}
+                      </div>
+                    );
+                  })}
+              </MyTable>
             </SwiperSlide>
           );
         })}
@@ -266,6 +282,7 @@ const Deposits: NextPage = () => {
             OK
           </div>
           <img
+            className='close'
             src='/static/image/close.png'
             onClick={() => {
               setWithDrawVisable(false);
@@ -283,26 +300,84 @@ const Deposits: NextPage = () => {
       >
         <WithDrawContainer>
           <h2>Exchange</h2>
-          <input
-            placeholder='Please Enter'
-            type='text'
-            value={withDrawNumber}
-            onChange={(e: any) => {
-              setWithDrawNumber(e.target.value);
-            }}
-          />
+          <div className='title'>
+            <div className='left'>
+              <SvgIcon height={20} name='usdt' width={20} />
+              <span>USDT</span>
+              <img
+                color='#fff'
+                height={20}
+                src='/static/image/gengduo.png'
+                width={20}
+              />
+            </div>
+            <div className='right'>Surplus: 0.4521623</div>
+          </div>
+          <div className='exchangeContent'>
+            <input
+              placeholder='Please Enter'
+              type='text'
+              value={exchangeNumber}
+              onChange={(e: any) => {
+                setExchangeNumber(e.target.value);
+              }}
+            />
+            <div className='tabList'>
+              {exchangeList.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setExchangeNumber(0.4521623 * item * 0.01);
+                    }}
+                  >
+                    {item}%
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className='transform'>
+            <SvgIcon
+              name='transform'
+              // onClick={() => {
+              //   transfarFrom2To();
+              // }}
+            />
+          </div>
+          <div className='title'>
+            <div className='left'>
+              <SvgIcon height={20} name='int' width={20} />
+              <span>INT</span>
+              <img
+                color='#fff'
+                height={20}
+                src='/static/image/gengduo.png'
+                width={20}
+              />
+            </div>
+            <div className='right'>Surplus: 0</div>
+          </div>
+          <div className='exchangeContent'>
+            <input
+              placeholder='Please Enter'
+              type='text'
+              value={(exchangeNumber || 0) * 0.4}
+            />
+          </div>
           <div
             className='submit'
             onClick={() => {
-              handleWithdraw();
+              handleExchange();
             }}
           >
             OK
           </div>
           <img
+            className='close'
             src='/static/image/close.png'
             onClick={() => {
-              setExchangeisable(false);
+              handleExchange(false);
             }}
           />
         </WithDrawContainer>

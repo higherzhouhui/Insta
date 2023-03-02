@@ -31,7 +31,7 @@ export const WalletHeadContainer = styled.div`
     span {
       font-size: 16px;
       font-family: HarmonyOs-Medium;
-      color: #333333;
+      color: #fff;
       line-height: 24px;
       background-clip: text;
       margin-left: 8px;
@@ -41,7 +41,7 @@ export const WalletHeadContainer = styled.div`
   .account-address-box {
     font-size: 10px;
     font-family: HarmonyOs-Medium;
-    color: #989898;
+    color: #fff;
   }
   .down-box {
     position: absolute;
@@ -71,7 +71,7 @@ export const WalletHeadContainer = styled.div`
         span {
           font-size: 14px;
           font-family: HarmonyOs-Medium;
-          color: #333333;
+          color: #fff;
           margin-left: 12px;
         }
       }
@@ -82,7 +82,7 @@ export const WalletHeadContainer = styled.div`
       &.is-active {
         .left {
           span {
-            color: #000000;
+            color: #fff;
           }
         }
         .right {
@@ -175,7 +175,7 @@ export const WalletItemContainer = styled.div`
     span {
       font-size: 14px;
       font-family: HarmonyOs-Medium;
-      color: #000000;
+      color: #fff;
       margin-left: 12px;
     }
   }

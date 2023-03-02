@@ -33,7 +33,7 @@ import {DropDown, Loading, Auth} from '@/components';
 import {RouterPath} from '@/config/routes';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {getSearchAuthor, getSearchImage, getSearchNft} from '@/services/search';
-import {getLoginNonce, onLogin, onLogout} from '@/services/user';
+import {onLogout} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {Button, IconInput, SvgIcon} from '@/uikit';
@@ -494,28 +494,36 @@ const Wallet = memo(() => {
   const {connectedAccount} = useContext(Web3ProviderContext);
 
   const onloginRequest = async (publicAddress: string) => {
-    const res: any = await getLoginNonce({publicAddress});
-    const nonce = res.data.nonce || '';
-    if (res.code === 0) {
-      const signature = getHashId(nonce);
-      const res1: any = await onLogin({
-        signature,
-        publicAddress,
-      });
-      if (res1.code === 0) {
-        const {expiresAt, portrait, token, username, uuid} = res1.data;
-        setUser({
-          expiresAt,
-          portrait,
-          token,
-          username,
-          userId: uuid,
-          accountAddress: publicAddress,
-        });
-        setLoading(false);
-        localStorage.setItem('x-token', res1.data.token);
-      }
-    }
+    setUser({
+      expiresAt: 265645,
+      portrait: '',
+      token: '45feafea5f',
+      username: 'james',
+      userId: 'uuid',
+      accountAddress: publicAddress,
+    });
+    // const res: any = await getLoginNonce({publicAddress});
+    // const nonce = res.data.nonce || '';
+    // if (res.code === 0) {
+    //   const signature = getHashId(nonce);
+    //   const res1: any = await onLogin({
+    //     signature,
+    //     publicAddress,
+    //   });
+    //   if (res1.code === 0) {
+    //     const {expiresAt, portrait, token, username, uuid} = res1.data;
+    //     setUser({
+    //       expiresAt,
+    //       portrait,
+    //       token,
+    //       username,
+    //       userId: uuid,
+    //       accountAddress: publicAddress,
+    //     });
+    //     setLoading(false);
+    //     localStorage.setItem('x-token', res1.data.token);
+    //   }
+    // }
   };
 
   // MetaMask链接
@@ -583,7 +591,18 @@ const User = memo(() => {
 
   // 退出登录
   const handleLogoutClick = async () => {
+    localStorage.removeItem('x-token');
+    setUser({
+      expiresAt: null,
+      portrait: null,
+      token: null,
+      username: null,
+      userId: null,
+      accountAddress: null,
+    });
+    showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
     disconnectWallect();
+    return;
     const res: any = await onLogout();
     if (res?.code === 0) {
       localStorage.removeItem('x-token');

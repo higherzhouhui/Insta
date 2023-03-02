@@ -21,7 +21,7 @@ const Login: NextPage = () => {
   }, []);
   return (
     <LoginContainer>
-      <h2>You need an Ethereum wallet to use PD-1.</h2>
+      <h2>You need an Ethereum wallet to use Insta.</h2>
       <p>
         Connect with one of our available wallet providers or create a new one.
       </p>

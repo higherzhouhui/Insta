@@ -7,17 +7,18 @@ export const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 12px;
   h2 {
     font-size: 20px;
     font-family: HarmonyOs-Bold;
-    color: #333333;
+    color: #fff;
     line-height: 26px;
     margin-top: 96px;
     margin-bottom: 12px;
   }
   p {
     font-size: 14px;
-    color: #333333;
+    color: #fff;
     line-height: 20px;
   }
 `;

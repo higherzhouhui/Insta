@@ -7,14 +7,18 @@ export const MessageWrapper = styled.div<BackgroundProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${(props) => props.background};
+  /* background: ${(props) => props.background}; */
+  background: #000;
+  color: #fff;
   position: fixed;
   left: 50%;
-  transform: translate(-50%, 0);
-  top: 0;
+  transform: translate(-50%, -50%);
+  top: 70%;
   z-index: 10001;
+  padding: 10px 20px;
+  border-radius: 8px;
   .text {
-    font-size: 12px;
+    font-size: 16px;
     font-family: HarmonyOs-Bold;
     color: #ffffff;
   }

@@ -1,7 +1,9 @@
-import {Table, Statistic} from 'antd';
+import {Statistic, Skeleton, Divider, List, Avatar} from 'antd';
+import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
 import CountUp from 'react-countup';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import type {NextPage} from 'next';
 
@@ -9,6 +11,21 @@ import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
 
+interface DataType {
+  gender: string;
+  name: {
+    title: string;
+    first: string;
+    last: string;
+  };
+  email: string;
+  picture: {
+    large: string;
+    medium: string;
+    thumbnail: string;
+  };
+  nat: string;
+}
 const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -41,7 +58,29 @@ const MyTeam: NextPage = () => {
     },
   ];
   const formatter = (value: any) => <CountUp end={value} separator=',' />;
+  const [data, setData] = useState<DataType[]>([]);
 
+  const loadMoreData = () => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    fetch(
+      'https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo'
+    )
+      .then((res) => res.json())
+      .then((body) => {
+        setData([...data, ...body.results]);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    loadMoreData();
+  }, []);
   useEffect(() => {
     initRequest();
   }, []);
@@ -77,14 +116,48 @@ const MyTeam: NextPage = () => {
         </div>
       </TotalAddress>
       <h2>Invited Users</h2>
-      <Table
-        bordered={false}
-        className='myTable'
-        columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-        scroll={{y: 400}}
-      />
+      <InfiniteScroll
+        dataLength={data.length}
+        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+        hasMore={data.length < 50}
+        loader={<Skeleton active avatar paragraph={{rows: 1}} />}
+        next={loadMoreData}
+        scrollableTarget='scrollableDiv'
+        style={{background: '#181E30', padding: '4px', borderRadius: '8px'}}
+      >
+        <List
+          dataSource={data}
+          loading={loading}
+          renderItem={(item, index) => (
+            <List.Item
+              key={item.email}
+              style={{borderBottom: '1px solid #000'}}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={item.picture.large} />}
+                description={
+                  <span style={{color: '#d3c2c2'}}>
+                    {`0x1eDd${item?.email
+                      ?.replace('.', '')
+                      .replace('@example.com', '')
+                      .toLowerCase()}E972`}
+                  </span>
+                }
+                title={
+                  <a href='https://ant.design' style={{color: '#fff'}}>
+                    {item.name.last}
+                  </a>
+                }
+              />
+              <div style={{color: '#afa9a9'}}>
+                {moment(
+                  new Date().getTime() - index * Math.random() * 86400000
+                ).format('YYYY-MM-DD HH:mm')}
+              </div>
+            </List.Item>
+          )}
+        />
+      </InfiniteScroll>
     </MyTeamContainer>
   );
 };

@@ -82,19 +82,17 @@ export const GlobalStyle = createGlobalStyle`
     }
     @keyframes appear {
         from {
-            height: 0;
+            opacity: 0;
         }
         to {
-            height: 38px;
+            opacity: 1;
         }
     }
     @keyframes disappear {
         from {
-            height: 38px;
             opacity: 1;
         }
         to {
-            height: 0;
             opacity: 0;
         }
     }

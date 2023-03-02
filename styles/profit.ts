@@ -24,7 +24,39 @@ export const ProfitContainer = styled.div`
       transform: translate(0, -50%) rotate(0);
     }
   }
-  .myTable {
-    padding-top: 42px;
+`;
+
+export const PMyTable = styled.div`
+  margin-top: 40px;
+  background: #181e30;
+  border-radius: 8px;
+  padding: 8px 4px;
+  .header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #6b7280;
+      height: 36px;
+      font-size: 16px;
+    }
+  }
+  .content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid #2a334d;
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #abb5c7;
+      font-size: 12px;
+      line-height: 32px;
+    }
+    .avtive {
+      color: #5297fe;
+    }
   }
 `;

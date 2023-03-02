@@ -165,6 +165,21 @@ export const DepositsContainer = styled.div`
       }
     }
   }
+  .header {
+    border-radius: 8px 8px 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #181e30;
+    padding: 0 8px;
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #6b7280;
+      height: 36px;
+      font-size: 16px;
+    }
+  }
 `;
 
 export const TotalAddress = styled.div`
@@ -189,9 +204,9 @@ export const TotalAddress = styled.div`
       text-align: center;
       color: #33c497;
       span {
-        font-size: 12px;
+        font-size: 18px;
         margin-left: 4px;
-        color: #6b7280;
+        color: #33c497;
       }
     }
   }
@@ -203,7 +218,7 @@ export const WithDrawContainer = styled.div`
   h2 {
     font-size: 16px;
     color: #fff;
-    margin: 12px 0;
+    margin: 12px 0 18px 0;
   }
   input {
     background: #060b19;
@@ -229,11 +244,97 @@ export const WithDrawContainer = styled.div`
     font-weight: 500;
     font-size: 16px;
   }
-  img {
+  .close {
     position: absolute;
     width: 20px;
     height: 20px;
     top: 10px;
     right: 10px;
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0;
+    .left {
+      display: flex;
+      align-items: center;
+      span {
+        font-size: 12px;
+        color: #fff;
+        font-weight: bold;
+        margin: 0 6px;
+      }
+    }
+    .right {
+      color: #abb5c7;
+    }
+  }
+  .exchangeContent {
+    position: relative;
+    height: 100px;
+    background: #060b19;
+    width: 100%;
+    .tabList {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      right: 10px;
+      bottom: 10px;
+      > div {
+        padding: 2px 4px;
+        border-radius: 4px;
+        border: 1px solid #776cff;
+        font-weight: 400;
+        color: #776cff;
+        margin-left: 8px;
+      }
+      .active {
+        background: #776cff;
+        color: #fff;
+      }
+    }
+  }
+  .transform {
+    text-align: center;
+    margin-top: 12px;
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
+`;
+
+export const MyTable = styled.div`
+  background: #181e30;
+  border-radius: 0 0 8px 8px;
+  padding: 0 4px 8px 4px;
+  .header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #6b7280;
+      height: 36px;
+      font-size: 16px;
+    }
+  }
+  .content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid #2a334d;
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #abb5c7;
+      font-size: 12px;
+      line-height: 32px;
+    }
+    .avtive {
+      color: #5297fe;
+    }
   }
 `;

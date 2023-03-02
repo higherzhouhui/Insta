@@ -137,6 +137,25 @@ export const WalletList = memo(() => {
   const {connectedAccount} = useContext(Web3ProviderContext);
 
   const onloginRequest = async (publicAddress: string) => {
+    setLoading(true);
+    const msg = getHashId(`this is a pd1 111`);
+    const signature = await getSignMessage(msg);
+    setLoading(false);
+    if (!signature.status) {
+      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      return;
+    }
+    setUser({
+      expiresAt: 265645,
+      portrait: '',
+      token: '45feafea5f',
+      username: 'james',
+      userId: 'uuid',
+      accountAddress: publicAddress,
+    });
+    localStorage.setItem('x-token', 'res1.data.token');
+
+    return;
     const res: any = await getLoginNonce({publicAddress});
     const {redirectUrl} = router.query;
     const nonce = res.data.nonce || '';
@@ -227,7 +246,18 @@ const DownList: FC<IDownListProps> = memo(() => {
 
   // 退出登录
   const handleLogoutClick = async () => {
+    localStorage.removeItem('x-token');
+    setUser({
+      expiresAt: null,
+      portrait: null,
+      token: null,
+      username: null,
+      userId: null,
+      accountAddress: null,
+    });
     disconnectWallect();
+    showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
+    return;
     const res: any = await onLogout();
     if (res?.code === 0) {
       localStorage.removeItem('x-token');

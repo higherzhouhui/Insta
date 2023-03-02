@@ -131,6 +131,7 @@ export const DepositsContainer = styled.div`
         color: #33c497;
         font-size: 14px;
         font-weight: bold;
+        display: flex;
         span {
           font-size: 12px;
           margin-left: 4px;

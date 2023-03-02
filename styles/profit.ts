@@ -7,12 +7,12 @@ export const ProfitContainer = styled.div`
     width: 100%;
     top: 60px;
     z-index: 5;
-    height: 30px;
+    height: 40px;
     font-size: 16px;
     color: #fff;
     left: 0;
     text-align: center;
-    line-height: 30px;
+    line-height: 40px;
     background: rgb(6, 11, 25);
     svg {
       fill: #fff;

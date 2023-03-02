@@ -14,4 +14,3 @@ export * from './message';
 export * from './wallet';
 export * from './addFundModal';
 export * from './twitterConnect';
-export * from './recaptchaV3';

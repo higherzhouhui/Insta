@@ -1,6 +1,7 @@
-import {Table} from 'antd';
+import {Table, Statistic} from 'antd';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
+import CountUp from 'react-countup';
 
 import type {NextPage} from 'next';
 
@@ -39,6 +40,8 @@ const MyTeam: NextPage = () => {
       key: 'address',
     },
   ];
+  const formatter = (value: any) => <CountUp end={value} separator=',' />;
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -62,12 +65,14 @@ const MyTeam: NextPage = () => {
       <TotalAddress>
         <div className='left'>
           <div className='top'>Total address</div>
-          <div className='bot'>845</div>
+          <div className='bot'>
+            <Statistic formatter={formatter} value={845} />
+          </div>
         </div>
         <div className='left'>
           <div className='top'>Total deposit</div>
           <div className='bot'>
-            166548.875<span>USDT</span>
+            <Statistic formatter={formatter} suffix='USDT' value={166548.875} />
           </div>
         </div>
       </TotalAddress>
@@ -79,7 +84,6 @@ const MyTeam: NextPage = () => {
         dataSource={dataSource}
         pagination={false}
         scroll={{y: 400}}
-        size='small'
       />
     </MyTeamContainer>
   );

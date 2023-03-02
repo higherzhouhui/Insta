@@ -1,6 +1,5 @@
 import {useRouter} from 'next/router';
 import {useEffect} from 'react';
-import {loadReCaptcha} from 'react-recaptcha-v3';
 
 import type {AppProps} from 'next/app';
 
@@ -13,7 +12,7 @@ import {progressInit} from '@/utils';
 function MyApp({Component, pageProps}: AppProps) {
   const router = useRouter();
   useEffect(() => {
-    loadReCaptcha('6Ld_5qofAAAAAF3WTqQeNBd2U1OktPEMdhnZn6nb');
+    // loadReCaptcha('6Ld_5qofAAAAAF3WTqQeNBd2U1OktPEMdhnZn6nb');
     progressInit(router);
   }, []);
   return (

@@ -1,7 +1,10 @@
-import {Table, Carousel} from 'antd';
+import {Table} from 'antd';
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction} from 'react';
+import {Autoplay} from 'swiper';
+import {Swiper, SwiperSlide} from 'swiper/react';
 
+import 'swiper/css';
 import type {NextPage} from 'next';
 
 import {
@@ -100,10 +103,20 @@ const Deposits: NextPage = () => {
   return (
     <DepositsContainer>
       <h2>Scanning</h2>
-      <Carousel autoplay dotPosition='right' style={{overflow: 'hidden'}}>
+      <Swiper
+        loop
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        className='mySwiper'
+        direction='vertical'
+        modules={[Autoplay]}
+        style={{height: '181px'}}
+      >
         {[...Array(3)].map((_, index) => {
           return (
-            <div key={index}>
+            <SwiperSlide key={index}>
               <Table
                 bordered={false}
                 columns={columns}
@@ -111,10 +124,10 @@ const Deposits: NextPage = () => {
                 pagination={false}
                 size='small'
               />
-            </div>
+            </SwiperSlide>
           );
         })}
-      </Carousel>
+      </Swiper>
       <h2>Deposits</h2>
       <div className='approveContainer'>
         <div className='content'>
@@ -152,7 +165,7 @@ const Deposits: NextPage = () => {
           Details <SvgIcon color='#999' name='right-icon' />
         </div>
       </div>
-      <div className='gridTwoContent'>
+      <TotalAddress>
         <div className='left'>
           <div className='top'>Cumulative deposits</div>
           <div className='bot'>
@@ -165,7 +178,7 @@ const Deposits: NextPage = () => {
             251354.875<span>USDT</span>
           </div>
         </div>
-      </div>
+      </TotalAddress>
       <div className='normalContent'>
         <div className='left'>
           <div className='top'>Balance</div>

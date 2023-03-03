@@ -14,7 +14,7 @@ import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
-import {TwitterConnect, RecaptchaV3} from '@/components';
+import {TwitterConnect} from '@/components';
 import {getMyInfo, updateUserInfo} from '@/services/user';
 import {userState} from '@/store/user';
 import {
@@ -177,7 +177,6 @@ export const AccountForm: FC<AccountFormProps> = memo(() => {
           </Button>
         </FormItemContainer>
       </Form>
-      <RecaptchaV3 action='homepage' ref={recaptchaRef} />
     </AccountFormContainer>
   );
 });

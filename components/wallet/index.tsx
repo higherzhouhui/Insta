@@ -15,14 +15,13 @@ import {
 } from './styles';
 
 import {Loading, AddFundModal, DropDown} from '@/components';
-import {webUrl} from '@/config';
 import {
   useMetaMask,
   useContract,
   useEthersUtils,
   Web3ProviderContext,
 } from '@/ethers-react';
-import {getLoginNonce, onLogin, onLogout} from '@/services/user';
+import {onLogout} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
@@ -155,43 +154,42 @@ export const WalletList = memo(() => {
     });
     localStorage.setItem('x-token', 'res1.data.token');
 
-    return;
-    const res: any = await getLoginNonce({publicAddress});
-    const {redirectUrl} = router.query;
-    const nonce = res.data.nonce || '';
+    // const res: any = await getLoginNonce({publicAddress});
+    // const {redirectUrl} = router.query;
+    // const nonce = res.data.nonce || '';
 
-    if (res.code === 0) {
-      const msg = getHashId(`this is a pd1 ${nonce}`);
-      const signature = await getSignMessage(msg);
-      if (!signature.status) {
-        setLoading(false);
-        showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-        return;
-      }
-      const res1: any = await onLogin({
-        signature: signature.sign,
-        publicAddress,
-      });
-      if (res1.code === 0) {
-        const {expiresAt, portrait, token, username, uuid} = res1.data;
-        setUser({
-          expiresAt,
-          portrait,
-          token,
-          username,
-          userId: uuid,
-          accountAddress: publicAddress,
-        });
-        setLoading(false);
-        localStorage.setItem('x-token', res1.data.token);
+    // if (res.code === 0) {
+    //   const msg = getHashId(`this is a pd1 ${nonce}`);
+    //   const signature = await getSignMessage(msg);
+    //   if (!signature.status) {
+    //     setLoading(false);
+    //     showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+    //     return;
+    //   }
+    //   const res1: any = await onLogin({
+    //     signature: signature.sign,
+    //     publicAddress,
+    //   });
+    //   if (res1.code === 0) {
+    //     const {expiresAt, portrait, token, username, uuid} = res1.data;
+    //     setUser({
+    //       expiresAt,
+    //       portrait,
+    //       token,
+    //       username,
+    //       userId: uuid,
+    //       accountAddress: publicAddress,
+    //     });
+    //     setLoading(false);
+    //     localStorage.setItem('x-token', res1.data.token);
 
-        if (redirectUrl && typeof redirectUrl === 'string') {
-          router.push(redirectUrl.split(webUrl).join(''));
-        } else {
-          router.push('/');
-        }
-      }
-    }
+    //     if (redirectUrl && typeof redirectUrl === 'string') {
+    //       router.push(redirectUrl.split(webUrl).join(''));
+    //     } else {
+    //       router.push('/');
+    //     }
+    //   }
+    // }
   };
 
   // MetaMask链接

@@ -377,7 +377,7 @@ const Deposits: NextPage = () => {
             className='close'
             src='/static/image/close.png'
             onClick={() => {
-              handleExchange(false);
+              handleExchange();
             }}
           />
         </WithDrawContainer>

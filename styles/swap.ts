@@ -2,6 +2,15 @@ import styled from 'styled-components';
 
 export const SwapContainer = styled.div`
   position: relative;
+  select {
+    background: rgb(6, 25, 11);
+    color: #fff;
+    border: none;
+    opacity: 0.8;
+    &:focus-visible {
+      outline: none;
+    }
+  }
   input {
     background: #060b19;
     border: none;

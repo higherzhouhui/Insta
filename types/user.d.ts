@@ -12,4 +12,8 @@ declare namespace GlobalUser {
     favorite?: number;
     twitterInfo?: GlobalTwitter.User;
   }
+  interface Register {
+    parent: number | string;
+    wallet: string;
+  }
 }

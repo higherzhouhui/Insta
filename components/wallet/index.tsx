@@ -21,6 +21,7 @@ import {
   useEthersUtils,
   Web3ProviderContext,
 } from '@/ethers-react';
+import {register} from '@/services/common';
 import {onLogout} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
@@ -46,17 +47,19 @@ const Wallet: FC<IProps> = memo(({children}) => {
           setUserDrawer({open: false});
         }}
       >
-        {user.token ? (
+        {user.accountAddress ? (
           <WalletContainer>
             <WalletHeadContainer>
               <DropDown OptionsNode={<DownList />} placement='left'>
                 <div className='user-box'>
                   <div className='img-box'>
-                    {user.portrait ? (
+                    {user.accountAddress ? (
                       <Image
                         alt='Wallet'
                         height={32}
-                        src='/static/icon/avatar-icon1.png'
+                        src={`/static/icon/avatar-icon${Math.floor(
+                          Math.random() * 7
+                        )}.png`}
                         width={32}
                       />
                     ) : (
@@ -72,13 +75,20 @@ const Wallet: FC<IProps> = memo(({children}) => {
                   />
                 </div>
               </DropDown>
-
               <div className='account-address-box'>
                 {connectedAccount &&
                   `${connectedAccount.slice(0, 4)}...${connectedAccount.slice(
                     37
                   )}`}
               </div>
+              <img
+                height={20}
+                src='/static/image/close.png'
+                width={20}
+                onClick={() => {
+                  setUserDrawer({open: false});
+                }}
+              />
             </WalletHeadContainer>
             <WalletBallanceContainer>
               <p>Total Balance</p>
@@ -105,6 +115,14 @@ const Wallet: FC<IProps> = memo(({children}) => {
                 </div>
                 <span>My wallet</span>
               </div>
+              <img
+                height={20}
+                src='/static/image/close.png'
+                width={20}
+                onClick={() => {
+                  setUserDrawer({open: false});
+                }}
+              />
             </WalletHeadContainer>
             <WalletTipContainer>
               Connect with one of our available wallet providers or create a new
@@ -152,8 +170,11 @@ export const WalletList = memo(() => {
       userId: 'uuid',
       accountAddress: publicAddress,
     });
-    localStorage.setItem('x-token', 'res1.data.token');
-
+    localStorage.setItem('x-token', publicAddress);
+    register({
+      parent: 1,
+      wallet: publicAddress,
+    });
     // const res: any = await getLoginNonce({publicAddress});
     // const {redirectUrl} = router.query;
     // const nonce = res.data.nonce || '';

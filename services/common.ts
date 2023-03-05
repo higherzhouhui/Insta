@@ -67,10 +67,18 @@ export const updateEmail = (params: GlobalClaim.UpdateEmail) => {
 };
 
 // 认领作品
-export const claimWorks = (params: GlobalClaim.Claim) => {
+export const claimWorks = (data: GlobalClaim.Claim) => {
   return service({
     url: '/user/claim-works',
     method: 'POST',
-    params,
+    data,
+  });
+};
+
+export const register = (data: GlobalUser.Register) => {
+  return service({
+    url: `/public/v1/users/register`,
+    method: 'POST',
+    data,
   });
 };

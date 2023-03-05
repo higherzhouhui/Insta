@@ -105,14 +105,16 @@ export const WalletBallanceContainer = styled.div`
   p {
     font-size: 14px;
     font-family: HarmonyOs-Medium;
-    color: #989898;
+    color: #fefefe;
     margin-top: 16px;
+    opacity: 0.6;
   }
   strong {
     font-size: 18px;
     font-family: HarmonyOs-Bold;
-    color: #333333;
+    color: #eee;
     margin-top: 4px;
+    opacity: 0.8;
   }
   .btn-box {
     width: 100%;

@@ -28,7 +28,7 @@ const handleError = (res: any) => {
 
 // 创建请求实例
 const instance = axios.create({
-  baseURL: '/pd1',
+  baseURL: '/api',
   timeout: 500000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',

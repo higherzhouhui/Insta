@@ -131,3 +131,37 @@ export const HomeContainer = styled.div`
     }
   }
 `;
+
+export const InviterComp = styled.div`
+  position: relative;
+  padding: 12px;
+  h2 {
+    color: #fff;
+    font-size: 14px;
+  }
+  p {
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 4px;
+    margin: 20px 0;
+    line-height: 21px;
+  }
+  .confirm {
+    padding: 4px 8px;
+    background: #776cff;
+    color: #fff;
+    width: fit-content;
+    margin: 0 auto;
+    border-radius: 5px;
+  }
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+  }
+`;

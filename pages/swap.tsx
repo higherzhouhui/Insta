@@ -1,7 +1,10 @@
 import {useState, useEffect, SetStateAction} from 'react';
+import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
+import {userState} from '@/store/user';
+import {userDrawerState} from '@/store/userDrawer';
 import {MoneyContainer, SwapContainer} from '@/styles/swap';
 import {SvgIcon} from '@/uikit';
 
@@ -14,22 +17,45 @@ const Swap: NextPage = () => {
   const [slippage, setslippage] = useState<number>();
   const [money, setMoney] = useState('');
   const [transFarMoney, settransFarMoney] = useState('');
-  const [from, setFrom] = useState({
-    url: 'https://tokens.autofarm.network/43114-0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7.webp',
-    title: 'AVAX',
-  });
-  const [transfar, setTransfar] = useState({
-    url: 'https://tokens.autofarm.network/56-0x3ee2200efb3400fabb9aacf31297cbdd1d435d47.webp',
-    title: 'ADE',
-  });
+  const exchangeOptionList = [
+    {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
+    {label: 'INT', value: 'INT', img: '/static/image/int.png'},
+    {label: 'LTC', value: 'LTC', img: '/static/image/ltc.png'},
+    {label: 'LINK', value: 'LINK', img: '/static/image/link.png'},
+    {label: 'BNB', value: 'BNB', img: '/static/image/bnb.png'},
+    {label: 'ADA', value: 'ADA', img: '/static/image/ada.png'},
+    {label: 'DOGE', value: 'DOGE', img: '/static/image/doge.png'},
+  ];
+  const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
+  const [toObj, setToObj] = useState(exchangeOptionList[1]);
+  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
+  const [user, _setUser] = useRecoilState(userState);
+  const handleClickBtn = () => {
+    if (!user.accountAddress) {
+      setUserDrawer({
+        open: !userDrawer.open,
+      });
+    }
+  };
   const transfarFrom2To = () => {
-    const cfrom = JSON.parse(JSON.stringify(from));
-    const ctransfar = JSON.parse(JSON.stringify(transfar));
-    setFrom(ctransfar);
-    setTransfar(cfrom);
+    const cfrom = JSON.parse(JSON.stringify(fromObj));
+    const ctransfar = JSON.parse(JSON.stringify(toObj));
+    setFromObj(ctransfar);
+    setToObj(cfrom);
   };
   const handleChangeMoney = (e: {target: {value: SetStateAction<string>}}) => {
     setMoney(e.target.value);
+  };
+  const onchangeFrom = (e: any, type: string) => {
+    const value = e.target.value;
+    const list = exchangeOptionList.filter((item) => {
+      return item.value === value;
+    });
+    if (type === 'from') {
+      setFromObj({...list[0]});
+    } else {
+      setToObj({...list[0]});
+    }
   };
   useEffect(() => {}, [currentTab]);
   return (
@@ -139,9 +165,21 @@ const Swap: NextPage = () => {
               <div className='bot'>$-</div>
             </div>
             <div className='right'>
-              <img alt='AVAX' src={from.url} />
-              <span>{from.title}</span>
-              <SvgIcon color='#fff' name='back' />
+              <img src={fromObj.img} />
+              <select
+                value={fromObj.value}
+                onChange={(e) => {
+                  onchangeFrom(e, 'from');
+                }}
+              >
+                {exchangeOptionList.map((item, index) => {
+                  return (
+                    <option key={index} value={item.value}>
+                      {item.label}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
           </MoneyContainer>
           <div className='transform'>
@@ -161,13 +199,32 @@ const Swap: NextPage = () => {
               <div className='bot'>$-</div>
             </div>
             <div className='right'>
-              <img alt='ADA' src={transfar.url} />
-              <span>{transfar.title}</span>
-              <SvgIcon color='#fff' name='back' />
+              <img src={toObj.img} />
+              <select
+                value={toObj.value}
+                onChange={(e) => {
+                  onchangeFrom(e, 'to');
+                }}
+              >
+                {exchangeOptionList.map((item, index) => {
+                  return (
+                    <option key={index} value={item.value}>
+                      {item.label}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
           </MoneyContainer>
         </div>
-        <div className='connectBtn'>Connect Wallet</div>
+        <div
+          className='connectBtn'
+          onClick={() => {
+            handleClickBtn();
+          }}
+        >
+          {user.accountAddress ? 'confirm' : 'Connect Wallet'}
+        </div>
       </div>
     </SwapContainer>
   );

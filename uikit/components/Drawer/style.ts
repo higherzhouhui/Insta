@@ -25,7 +25,7 @@ export const DrawerContainer = styled.div<DrawerContainerProps>`
   right: 0;
   height: 100vh;
   overflow: hidden;
-  z-index: ${({zIndex}) => (zIndex ? zIndex : '10')};
+  z-index: ${({zIndex}) => (zIndex ? zIndex : '150')};
   position: fixed;
   ${getPlacement};
 `;
@@ -52,4 +52,5 @@ export const DrawerContentContainer = styled.div<DrawerContentContainerProps>`
   overflow: hidden;
   top: 60px;
   background-color: rgb(6, 25, 11);
+  z-index: 320;
 `;

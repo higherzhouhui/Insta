@@ -8,7 +8,7 @@ interface IUserStore {
   token: string | null;
   username: string | null;
   userId: number | string | null;
-  accountAddress: number | string | null;
+  accountAddress: any;
 }
 
 export const userState = atom<IUserStore>({

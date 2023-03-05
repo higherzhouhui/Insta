@@ -1,11 +1,14 @@
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction} from 'react';
+import {useRecoilState} from 'recoil';
 import {Autoplay} from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 import 'swiper/css';
 import type {NextPage} from 'next';
 
+import {userState} from '@/store/user';
+import {userDrawerState} from '@/store/userDrawer';
 import {
   DepositsContainer,
   MyTable,
@@ -21,11 +24,42 @@ const Deposits: NextPage = () => {
   const [exchangeisable, setExchangeisable] = useState(false);
   const [withDrawNumber, setWithDrawNumber] = useState<number>();
   const [exchangeNumber, setExchangeNumber] = useState<number>();
+  const [user, setUser] = useRecoilState(userState);
+  const [copyLink, setCopyLink] = useState('');
   const router = useRouter();
-  const [deposits, setDeposits] = useState('');
+  const [deposits, setDeposits] = useState<number>();
+  const [depositError, setDepositError] = useState(false);
   const [chain, setChain] = useState('ERC721');
   const exchangeList = [25, 50, 75, 100];
+  const exchangeOptionList = [
+    {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
+    {label: 'INT', value: 'INT', img: '/static/image/int.png'},
+    {label: 'LTC', value: 'LTC', img: '/static/image/ltc.png'},
+    {label: 'LINK', value: 'LINK', img: '/static/image/link.png'},
+    {label: 'BNB', value: 'BNB', img: '/static/image/bnb.png'},
+    {label: 'ADA', value: 'ADA', img: '/static/image/ada.png'},
+    {label: 'DOGE', value: 'DOGE', img: '/static/image/doge.png'},
+  ];
+  const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
+  const [toObj, setToObj] = useState(exchangeOptionList[1]);
   const zm = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'G'];
+  const onchangeFrom = (e: any, type: string) => {
+    const value = e.target.value;
+    const list = exchangeOptionList.filter((item) => {
+      return item.value === value;
+    });
+    if (type === 'from') {
+      setFromObj({...list[0]});
+    } else {
+      setToObj({...list[0]});
+    }
+  };
+  const transfarFrom2To = () => {
+    const cfrom = JSON.parse(JSON.stringify(fromObj));
+    const ctransfar = JSON.parse(JSON.stringify(toObj));
+    setFromObj(ctransfar);
+    setToObj(cfrom);
+  };
   const getName = (length: number) => {
     let str = '';
     Array(length)
@@ -89,7 +123,19 @@ const Deposits: NextPage = () => {
     setChain(e.target.value);
   };
   const onChangeDeposits = (e: {target: {value: SetStateAction<string>}}) => {
-    setDeposits(e.target.value);
+    let value = e.target.value as any;
+    if (value > 1000) {
+      value = 1000;
+    }
+    if (value < 0) {
+      value = 0;
+    }
+    if (value < 100 || value % 10 !== 0) {
+      setDepositError(true);
+    } else {
+      setDepositError(false);
+    }
+    setDeposits(value);
   };
   const copyToClip = (url: string) => {
     copyUrlToClip(url);
@@ -101,8 +147,17 @@ const Deposits: NextPage = () => {
   const handleExchange = () => {
     setExchangeisable(false);
   };
+  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
+  const handleClickBtn = () => {
+    if (!user.accountAddress) {
+      setUserDrawer({
+        open: !userDrawer.open,
+      });
+    }
+  };
   useEffect(() => {
     initRequest();
+    setCopyLink(`${location.host}/inviteId=${user?.userId}`);
   }, []);
   return (
     <DepositsContainer>
@@ -115,13 +170,13 @@ const Deposits: NextPage = () => {
       <Swiper
         loop
         autoplay={{
-          delay: 3500,
+          delay: 0,
           disableOnInteraction: false,
         }}
         className='mySwiper'
         direction='vertical'
         modules={[Autoplay]}
-        speed={1000}
+        speed={2000}
         style={{height: '140px'}}
       >
         {[...Array(3)].map((_, index) => {
@@ -151,11 +206,16 @@ const Deposits: NextPage = () => {
           <div className='inputWrapper'>
             <input
               className='inputDeposit'
+              max={1000}
+              min={100}
               placeholder='Please Enter'
-              type='text'
+              type='number'
               value={deposits}
               onChange={onChangeDeposits}
             />
+            {depositError && (
+              <div className='error'>Multiple of 10(100-1000)</div>
+            )}
             <div className='usdtWrapper'>
               <SvgIcon name='usdt' />
               <span>USDT</span>
@@ -173,7 +233,14 @@ const Deposits: NextPage = () => {
           <div className='left'>Invest Days:120D</div>
           <div className='left'>Daily Yield:0.5%-2%</div>
         </div>
-        <div className='approveBtn'>Approve</div>
+        <div
+          className='approveBtn'
+          onClick={() => {
+            handleClickBtn();
+          }}
+        >
+          {user?.accountAddress ? 'Deposit' : 'Approve'}
+        </div>
       </div>
       <div className='title'>
         <div className='left'>Summary</div>
@@ -195,32 +262,48 @@ const Deposits: NextPage = () => {
           </div>
         </div>
       </TotalAddress>
-      <div className='normalContent'>
-        <div className='left'>
-          <div className='top'>Balance</div>
-          <div className='bot'>
-            251354.626<span>USDT</span>
+      <div className='balanceWrapper'>
+        <div className='normalContent'>
+          <div className='left'>
+            <div className='top'>Balance</div>
+            <div className='bot'>$251354.626</div>
+          </div>
+          <div className='right'>+2.5%</div>
+        </div>
+        <div className='normalContent'>
+          <div className='left'>
+            <div className='top'>USDT</div>
+            <div className='bot'>234.35</div>
+          </div>
+          <div className='right'>
+            <div
+              className='top'
+              onClick={() => {
+                setExchangeisable(true);
+              }}
+            >
+              Exchange
+            </div>
           </div>
         </div>
-        <div className='right'>
-          <div
-            className='top'
-            onClick={() => {
-              setExchangeisable(true);
-            }}
-          >
-            Exchange
+        <div className='normalContent'>
+          <div className='left'>
+            <div className='top'>INT</div>
+            <div className='bot'>9548.332</div>
           </div>
-          <div
-            className='bot'
-            onClick={() => {
-              setWithDrawVisable(true);
-            }}
-          >
-            Withdraw
+          <div className='right'>
+            <div
+              className='top'
+              onClick={() => {
+                setWithDrawVisable(true);
+              }}
+            >
+              Withdraw
+            </div>
           </div>
         </div>
       </div>
+
       <div className='title'>
         <div className='left'>My Team</div>
         <div className='right' onClick={() => router.push('/myTeam')}>
@@ -243,12 +326,12 @@ const Deposits: NextPage = () => {
         <div className='left'>Share Link</div>
       </div>
       <div className='normalContent'>
-        <div className='network'>www.baidu.com.zky.111.iiioo</div>
+        <div className='network'>{copyLink}</div>
         <div className='right'>
           <div
             className='top'
             onClick={() => {
-              copyToClip('www.baidu.com.zky.111.iiioo');
+              copyToClip(copyLink);
             }}
           >
             Copy
@@ -302,14 +385,21 @@ const Deposits: NextPage = () => {
           <h2>Exchange</h2>
           <div className='title'>
             <div className='left'>
-              <SvgIcon height={20} name='usdt' width={20} />
-              <span>USDT</span>
-              <img
-                color='#fff'
-                height={20}
-                src='/static/image/gengduo.png'
-                width={20}
-              />
+              <img src={fromObj.img} />
+              <select
+                value={fromObj.value}
+                onChange={(e) => {
+                  onchangeFrom(e, 'from');
+                }}
+              >
+                {exchangeOptionList.map((item, index) => {
+                  return (
+                    <option key={index} value={item.value}>
+                      {item.label}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <div className='right'>Surplus: 0.4521623</div>
           </div>
@@ -340,21 +430,28 @@ const Deposits: NextPage = () => {
           <div className='transform'>
             <SvgIcon
               name='transform'
-              // onClick={() => {
-              //   transfarFrom2To();
-              // }}
+              onClick={() => {
+                transfarFrom2To();
+              }}
             />
           </div>
           <div className='title'>
             <div className='left'>
-              <SvgIcon height={20} name='int' width={20} />
-              <span>INT</span>
-              <img
-                color='#fff'
-                height={20}
-                src='/static/image/gengduo.png'
-                width={20}
-              />
+              <img src={toObj.img} />
+              <select
+                value={toObj.value}
+                onChange={(e) => {
+                  onchangeFrom(e, 'to');
+                }}
+              >
+                {exchangeOptionList.map((item, index) => {
+                  return (
+                    <option key={index} value={item.value}>
+                      {item.label}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <div className='right'>Surplus: 0</div>
           </div>

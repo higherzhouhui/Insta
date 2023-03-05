@@ -103,15 +103,15 @@ const MyTeam: NextPage = () => {
 
       <TotalAddress>
         <div className='left'>
-          <div className='top'>Total address</div>
+          <div className='top'>Total deposit</div>
           <div className='bot'>
-            <Statistic formatter={formatter} value={845} />
+            <Statistic formatter={formatter} suffix='usdt' value={19999.365} />
           </div>
         </div>
         <div className='left'>
-          <div className='top'>Total deposit</div>
+          <div className='top'>Other deposit</div>
           <div className='bot'>
-            <Statistic formatter={formatter} suffix='USDT' value={166548.875} />
+            <Statistic formatter={formatter} suffix='usdt' value={166548.875} />
           </div>
         </div>
       </TotalAddress>

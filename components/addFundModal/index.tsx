@@ -22,7 +22,7 @@ export const AddFundModal: FC<IProps> = memo(({show, onClose}) => {
     showTip({type: IMessageType.SUCCESS, content: 'copy successfully!'});
   };
   return (
-    <Modal height={432} visible={show} width={560} onClose={onClose}>
+    <Modal height={432} visible={show} width='90%' onClose={onClose}>
       <AddFundContainer>
         <h2>Add funds</h2>
         <div className='img-box'>
@@ -51,6 +51,13 @@ export const AddFundModal: FC<IProps> = memo(({show, onClose}) => {
         <p className='tip'>
           Only send ETH or any other ERC-20 token to this address.
         </p>
+        <img
+          className='close'
+          src='/static/image/close.png'
+          onClick={() => {
+            onClose();
+          }}
+        />
       </AddFundContainer>
     </Modal>
   );

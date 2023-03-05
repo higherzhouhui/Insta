@@ -1,15 +1,39 @@
-import {useRef, useState} from 'react';
+import {useRouter} from 'next/router';
+import {useEffect, useRef, useState} from 'react';
+import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
 // eslint-disable-next-line import/order
-import {HomeContainer} from '@/styles/home';
+import {userState} from '@/store/user';
+import {userDrawerState} from '@/store/userDrawer';
+import {HomeContainer, InviterComp} from '@/styles/home';
+import {Modal, SvgIcon} from '@/uikit';
 
 import 'swiper/css';
-import {SvgIcon} from '@/uikit';
 
 const Home: NextPage = () => {
   const homeRef: any = useRef(null);
+  const [visible, setVisible] = useState(false);
+  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
+  const [user, _setUser] = useRecoilState(userState);
+  const router = useRouter();
+  const {inviterId} = router.query;
+  const handleClickBtn = () => {
+    if (!user.accountAddress) {
+      setUserDrawer({
+        open: !userDrawer.open,
+      });
+    } else {
+      // 注册
+    }
+    setVisible(false);
+  };
+  useEffect(() => {
+    if (inviterId) {
+      setVisible(true);
+    }
+  }, [inviterId]);
   const logoList = [
     '/static/image/img1.webp',
     '/static/image/img2.webp',
@@ -693,6 +717,35 @@ const Home: NextPage = () => {
         })}
       </div>
       <div className='divide' />
+      <Modal
+        height='auto'
+        visible={visible}
+        width='80%'
+        onClose={() => {
+          setVisible(false);
+        }}
+      >
+        <InviterComp>
+          <h2>Inviter Id</h2>
+          <p>{inviterId}</p>
+          <div
+            className='confirm'
+            onClick={() => {
+              handleClickBtn();
+            }}
+          >
+            Confirm
+          </div>
+          <img
+            alt='close'
+            className='close'
+            src='/static/image/close.png'
+            onClick={() => {
+              setVisible(false);
+            }}
+          />
+        </InviterComp>
+      </Modal>
     </HomeContainer>
   );
 };

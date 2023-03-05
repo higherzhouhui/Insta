@@ -17,7 +17,6 @@ import {
   HeaderContainer,
   HeaderLogoContainer,
   HeaderOptionContainer,
-  HeadeUserContainer,
   HeadeSearchContainer,
   WalletListContainer,
   UserListContainer,
@@ -29,7 +28,7 @@ import {
   SearchList,
 } from './styles';
 
-import {DropDown, Loading, Auth} from '@/components';
+import {Loading, Auth} from '@/components';
 import {RouterPath} from '@/config/routes';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {getSearchAuthor, getSearchImage, getSearchNft} from '@/services/search';
@@ -59,7 +58,7 @@ export const Header: FC = memo(() => {
         </Link>
       </HeaderLogoContainer>
       <HeaderOptionContainer>
-        <DropDown OptionsNode={<User />}>
+        {/* <DropDown OptionsNode={<User />}>
           <HeadeUserContainer>
             {user.token ? (
               <Image
@@ -72,7 +71,7 @@ export const Header: FC = memo(() => {
               <SvgIcon color='#fff' height={32} name='user-icon' width={32} />
             )}
           </HeadeUserContainer>
-        </DropDown>
+        </DropDown> */}
         <WalletContainer
           onClick={() => {
             setUserDrawer({
@@ -80,7 +79,19 @@ export const Header: FC = memo(() => {
             });
           }}
         >
-          <SvgIcon color='#fff' height={32} name='wallet-icon' width={32} />
+          {user?.accountAddress ? (
+            <div className='account-address-box'>
+              {`${user.accountAddress.slice(
+                0,
+                4
+              )}...${user.accountAddress.slice(37)}`}
+            </div>
+          ) : (
+            <>
+              <SvgIcon name='wallet-icon' />
+              <span className='wallet'>Wallet</span>
+            </>
+          )}
         </WalletContainer>
       </HeaderOptionContainer>
     </HeaderContainer>

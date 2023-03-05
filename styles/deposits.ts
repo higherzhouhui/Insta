@@ -34,7 +34,7 @@ export const DepositsContainer = styled.div`
       border-radius: 8px;
       opacity: 1;
       border: 1px solid #2a334d;
-      padding: 8px;
+      padding: 12px 8px;
       p {
         color: #fff;
         font-size: 14px;
@@ -67,6 +67,21 @@ export const DepositsContainer = styled.div`
           }
           color: #fff;
           font-weight: bold;
+        }
+        .error {
+          position: absolute;
+          color: #e11010;
+          bottom: -8px;
+          left: 5px;
+        }
+        select {
+          background: rgb(6, 25, 11);
+          color: #fff;
+          border: none;
+          opacity: 0.8;
+          &:focus-visible {
+            outline: none;
+          }
         }
       }
     }
@@ -113,21 +128,25 @@ export const DepositsContainer = styled.div`
       }
     }
   }
-  .normalContent {
+  .balanceWrapper {
     background: #181e30;
     border-radius: 8px;
     padding: 12px 10px;
+    margin: 12px 0;
+  }
+  .normalContent {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 12px 0;
+    border-bottom: 1px solid #2a334d;
+    padding: 8px 0;
     .left {
       .top {
         font-size: 14px;
         color: #abb5c7;
       }
       .bot {
-        margin-top: 20px;
+        margin-top: 12px;
         color: #33c497;
         font-size: 14px;
         font-weight: bold;
@@ -147,6 +166,8 @@ export const DepositsContainer = styled.div`
       border-radius: 6px;
     }
     .right {
+      color: #33c497;
+      font-size: 16px;
       .top {
         padding: 4px 6px;
         font-size: 14px;
@@ -164,6 +185,9 @@ export const DepositsContainer = styled.div`
         margin-top: 12px;
       }
     }
+  }
+  .normalContent:last-child {
+    border-bottom: none;
   }
   .header {
     border-radius: 8px 8px 0 0;
@@ -215,6 +239,15 @@ export const TotalAddress = styled.div`
 export const WithDrawContainer = styled.div`
   padding: 12px;
   position: relative;
+  select {
+    background: rgb(6, 25, 11);
+    color: #fff;
+    border: none;
+    opacity: 0.8;
+    &:focus-visible {
+      outline: none;
+    }
+  }
   h2 {
     font-size: 16px;
     color: #fff;
@@ -259,6 +292,13 @@ export const WithDrawContainer = styled.div`
     .left {
       display: flex;
       align-items: center;
+      img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 5px;
+      }
       span {
         font-size: 12px;
         color: #fff;

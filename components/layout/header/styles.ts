@@ -25,6 +25,10 @@ export const HeaderOptionContainer = styled.div`
   flex: 1;
   align-items: center;
   justify-content: flex-end;
+  .account-address-box {
+    font-size: 14px;
+    color: #776cff;
+  }
 `;
 export const HeadeSearchContainer = styled.div`
   flex: 1;
@@ -53,6 +57,18 @@ export const WalletContainer = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
+  padding: 4px 6px;
+  border: 1px solid #776cff;
+  border-radius: 12px;
+  svg {
+    width: 22px;
+    height: 22px;
+    fill: #776cff;
+  }
+  .wallet {
+    color: #776cff;
+    font-size: 14px;
+  }
 `;
 export const WalletListContainer = styled.div`
   width: 288px;

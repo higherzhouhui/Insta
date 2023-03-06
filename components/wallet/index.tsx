@@ -17,12 +17,8 @@ import {
 
 import {Loading, AddFundModal, DropDown} from '@/components';
 import {apiUrl} from '@/config';
-import {
-  useMetaMask,
-  useContract,
-  useEthersUtils,
-  Web3ProviderContext,
-} from '@/ethers-react';
+import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
+import {useSigner} from '@/ethers-react/useSigner';
 import {onLogout} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
@@ -150,7 +146,7 @@ export const WalletList = memo(() => {
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useRecoilState(userState);
   const {getHashId} = useEthersUtils();
-  const {getSignMessage} = useContract();
+  const {getSignMessage} = useSigner();
   const {connectWallect} = useMetaMask();
   const {connectedAccount} = useContext(Web3ProviderContext);
   const {inviterId} = router.query;

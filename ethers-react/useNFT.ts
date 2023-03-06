@@ -58,8 +58,8 @@ export const useNFT = (
     nftObj: nftIprops,
     callback: (tokenId: string | number) => void
   ) => {
-    let contract = getContract(nftAddress, nftABI);
-    let transaction = await contract.createToken(url);
+    let contract: any = getContract(nftAddress, nftABI);
+    let transaction: any = await contract.createToken(url);
     const tx = await transaction.wait();
     console.log(tx);
     const event = tx.events[0];
@@ -85,8 +85,8 @@ export const useNFT = (
   // get Market NFT
   const getMarketNFTs = async () => {
     setIsLoading(true);
-    const contract = getContract(marketAddress, marketABI);
-    const NFTContract = getContract(nftAddress, nftABI);
+    const contract: any = getContract(marketAddress, marketABI);
+    const NFTContract: any = getContract(nftAddress, nftABI);
     const data = await contract.fetchMarketItems();
     const items = await Promise.all(
       data.map(async (i: any) => {
@@ -112,8 +112,8 @@ export const useNFT = (
   // get My NFT
   const getMyNFTs = async () => {
     setIsLoading(true);
-    const marketContract = getContract(marketAddress, marketABI);
-    const NFTContract = getContract(nftAddress, nftABI);
+    const marketContract: any = getContract(marketAddress, marketABI);
+    const NFTContract: any = getContract(nftAddress, nftABI);
     const data = await marketContract.fetchMyNFTs();
     const items = await Promise.all(
       data.map(async (i: any) => {
@@ -140,7 +140,7 @@ export const useNFT = (
   const buyNFT = async (nft: any, callback: () => void) => {
     console.log('start buy...');
     setIsLoading(true);
-    const contract = getContract(marketAddress, marketABI);
+    const contract: any = getContract(marketAddress, marketABI);
     const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
     const transaction = await contract.createMarketSale(
       nftAddress,

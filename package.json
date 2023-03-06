@@ -25,6 +25,7 @@
 		"antd": "^5.2.3",
 		"axios": "^0.26.1",
 		"eccrypto-js": "^5.4.0",
+		"echarts": "^5.4.1",
 		"ethers": "^5.6.1",
 		"express": "^4.17.3",
 		"http-proxy-middleware": "^2.0.4",

@@ -30,4 +30,9 @@ export const InfoContainer = styled.div`
     height: auto;
     object-fit: contain;
   }
+  #main {
+    width: 100%;
+    height: 300px;
+    margin: 12px 0;
+  }
 `;

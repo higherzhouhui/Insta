@@ -157,7 +157,11 @@ const Deposits: NextPage = () => {
   };
   useEffect(() => {
     initRequest();
-    setCopyLink(`${location.host}/inviteId=${user?.userId}`);
+    setCopyLink(
+      `${location.host}?inviterId=${
+        user?.uuid || '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
+      }`
+    );
   }, []);
   return (
     <DepositsContainer>

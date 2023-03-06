@@ -4,6 +4,7 @@ import {FC, memo, useEffect, useState} from 'react';
 
 import {FooterContainer, FooterTop, FooterBot} from './styles';
 
+import {Auth} from '@/components/auth';
 import {SvgIcon} from '@/uikit';
 
 export const Footer: FC = memo(() => {
@@ -77,10 +78,19 @@ export const Footer: FC = memo(() => {
         {navList.map((item, index) => {
           return (
             <Link href={item.link} key={index}>
-              <div className={`item ${item.active ? 'active' : ''}`}>
-                <SvgIcon name={item.icon} />
-                <p>{item.title}</p>
-              </div>
+              {index === 0 ? (
+                <div className={`item ${item.active ? 'active' : ''}`}>
+                  <SvgIcon name={item.icon} />
+                  <p>{item.title}</p>
+                </div>
+              ) : (
+                <Auth>
+                  <div className={`item ${item.active ? 'active' : ''}`}>
+                    <SvgIcon name={item.icon} />
+                    <p>{item.title}</p>
+                  </div>
+                </Auth>
+              )}
             </Link>
           );
         })}

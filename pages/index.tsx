@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {useRouter} from 'next/router';
 import {useEffect, useRef, useState} from 'react';
 import {useRecoilState} from 'recoil';
@@ -5,6 +6,7 @@ import {useRecoilState} from 'recoil';
 import type {NextPage} from 'next';
 
 // eslint-disable-next-line import/order
+import {apiUrl} from '@/config';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {HomeContainer, InviterComp} from '@/styles/home';
@@ -16,7 +18,7 @@ const Home: NextPage = () => {
   const homeRef: any = useRef(null);
   const [visible, setVisible] = useState(false);
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
-  const [user, _setUser] = useRecoilState(userState);
+  const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const {inviterId} = router.query;
   const handleClickBtn = () => {
@@ -24,8 +26,6 @@ const Home: NextPage = () => {
       setUserDrawer({
         open: !userDrawer.open,
       });
-    } else {
-      // 注册
     }
     setVisible(false);
   };
@@ -34,6 +34,38 @@ const Home: NextPage = () => {
       setVisible(true);
     }
   }, [inviterId]);
+
+  useEffect(() => {
+    const wallet = localStorage.getItem('accountAddress');
+    if (wallet && !user.uuid) {
+      axios({
+        url: `${apiUrl}/api/public/v1/users/info`,
+        method: 'get',
+        params: {wallet: user.accountAddress},
+      }).then((res: any) => {
+        if (!res?.data?.data) {
+          return;
+        }
+        const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+          res.data.data;
+        setUser({
+          expiresAt: 154154125154,
+          portrait: '',
+          token: uuid,
+          username: 'james',
+          userId: id,
+          accountAddress: user.accountAddress,
+          createdAt,
+          id,
+          last_login,
+          path,
+          pid,
+          updatedAt,
+          uuid,
+        });
+      });
+    }
+  }, []);
   const logoList = [
     '/static/image/img1.webp',
     '/static/image/img2.webp',

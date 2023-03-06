@@ -21,6 +21,24 @@ export const LoginContainer = styled.div`
     color: #fff;
     line-height: 20px;
   }
+  .title {
+    width: 100%;
+    position: relative;
+    color: #fff;
+    text-align: center;
+    align-items: center;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .back {
+    width: 50px;
+    height: 50px;
+    fill: #fff;
+    position: absolute;
+    left: 0px;
+    top: 0;
+  }
 `;
 
 export const LoginContentContainer = styled.div`

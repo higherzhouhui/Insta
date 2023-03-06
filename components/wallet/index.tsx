@@ -1,3 +1,4 @@
+import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
@@ -15,13 +16,13 @@ import {
 } from './styles';
 
 import {Loading, AddFundModal, DropDown} from '@/components';
+import {apiUrl} from '@/config';
 import {
   useMetaMask,
   useContract,
   useEthersUtils,
   Web3ProviderContext,
 } from '@/ethers-react';
-import {register} from '@/services/common';
 import {onLogout} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
@@ -152,7 +153,7 @@ export const WalletList = memo(() => {
   const {getSignMessage} = useContract();
   const {connectWallect} = useMetaMask();
   const {connectedAccount} = useContext(Web3ProviderContext);
-
+  const {inviterId} = router.query;
   const onloginRequest = async (publicAddress: string) => {
     setLoading(true);
     const msg = getHashId(`this is a pd1 111`);
@@ -162,18 +163,39 @@ export const WalletList = memo(() => {
       showTip({type: IMessageType.ERROR, content: signature.sign || ''});
       return;
     }
-    setUser({
-      expiresAt: 265645,
-      portrait: '',
-      token: '45feafea5f',
-      username: 'james',
-      userId: 'uuid',
-      accountAddress: publicAddress,
-    });
-    localStorage.setItem('x-token', publicAddress);
-    register({
-      parent: 1,
-      wallet: publicAddress,
+    setLoading(true);
+    axios({
+      url: `${apiUrl}/api/public/v1/users/register`,
+      method: 'post',
+      data: {parent: inviterId, wallet: publicAddress},
+    }).then((res: any) => {
+      setLoading(false);
+      if (!res?.data?.data) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: res?.data?.meta?.msg || 'Current user is registered!',
+        });
+        return;
+      }
+      const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+        res.data.data;
+      setUser({
+        expiresAt: 15155,
+        portrait: '',
+        token: uuid,
+        username: 'james',
+        userId: id,
+        accountAddress: publicAddress,
+        createdAt,
+        id,
+        last_login,
+        path,
+        pid,
+        updatedAt,
+        uuid,
+      });
+      showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+      localStorage.setItem('accountAddress', user.accountAddress);
     });
     // const res: any = await getLoginNonce({publicAddress});
     // const {redirectUrl} = router.query;
@@ -215,6 +237,14 @@ export const WalletList = memo(() => {
 
   // MetaMask链接
   const handleMetaMaskClick = () => {
+    if (!inviterId) {
+      showTip({
+        type: IMessageType.SUCCESS,
+        content:
+          'We adopt an invitation system, please contact the recommender',
+      });
+      return;
+    }
     setLoading(true);
     if (!connectedAccount) {
       connectWallect((account: string | null) => {
@@ -256,6 +286,7 @@ type IDownListProps = {};
 const DownList: FC<IDownListProps> = memo(() => {
   const [user, setUser] = useRecoilState(userState);
   const {disconnectWallect} = useMetaMask();
+  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
 
   // useEffect(() => {
   //     if (user.token && !connectedAccount) {
@@ -273,9 +304,20 @@ const DownList: FC<IDownListProps> = memo(() => {
       username: null,
       userId: null,
       accountAddress: null,
+      createdAt: null,
+      id: null,
+      last_login: null,
+      path: null,
+      pid: null,
+      updatedAt: null,
+      uuid: null,
+    });
+    localStorage.setItem('accountAddress', '');
+    showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
+    setUserDrawer({
+      open: !userDrawer.open,
     });
     disconnectWallect();
-    showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
     return;
     const res: any = await onLogout();
     if (res?.code === 0) {

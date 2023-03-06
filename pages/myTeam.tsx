@@ -1,12 +1,16 @@
 import {Statistic, Skeleton, Divider, List, Avatar} from 'antd';
+import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
 import CountUp from 'react-countup';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
+import {apiUrl} from '@/config';
+import {userState} from '@/store/user';
 import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
@@ -30,6 +34,8 @@ const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
+  const [user, setUser] = useRecoilState(userState);
+
   const initRequest = () => {
     const arr: any[] = [];
     Array(11)
@@ -41,6 +47,11 @@ const MyTeam: NextPage = () => {
           address: '0x5B9a81C121790575b3BF4e771a11c881BD176C08',
         });
       });
+    axios({
+      url: `${apiUrl}/api/public/v1/users/team`,
+      method: 'get',
+      params: {wallet: user.accountAddress},
+    });
     setDataSource(arr);
   };
   const columns: any[] = [

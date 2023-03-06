@@ -162,12 +162,13 @@ export const DepositsContainer = styled.div`
       border: 1px solid #776cff;
       background: #060b19;
       color: #fff;
-      padding: 8px 18px;
+      padding: 8px 6px;
       border-radius: 6px;
     }
     .right {
       color: #33c497;
       font-size: 16px;
+      margin-left: 12px;
       .top {
         padding: 4px 6px;
         font-size: 14px;

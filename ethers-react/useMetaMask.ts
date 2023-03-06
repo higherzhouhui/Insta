@@ -1,56 +1,38 @@
-import {useEffect, useState} from 'react';
+import {useState, useEffect} from 'react';
+
 export const useMetaMask = () => {
-  const [account, setAccount] = useState<string | null>(null);
-  // Check wallet is installed
+  // is installed wallet
+  const [isInstalledWallet, setIsInstalledWallet] = useState<boolean>(false);
+  // is connected wallet
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  // connected accounts
+  const [connectedAccount, setConnectedAccount] = useState<string | null>(null);
+  // connected accounts
+  const [connectedChainId, setConnectedChainId] = useState<string | null>(null);
+
+  // check wallet is installed
   const checkIfWalletIsInstalled = async () => {
     let flag: boolean = true;
     if (!window.ethereum) {
       flag = false;
     }
+    setIsInstalledWallet(flag);
     return flag;
   };
-  // Connect wallet
-  const connectWallet = async () => {
-    const flag = await checkIfWalletIsInstalled();
-    try {
-      if (!flag) {
-        window.open('https://metamask.io/download/');
-        return false;
-      }
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      if (accounts && accounts.length) {
-        setAccount(accounts[0]);
-        return accounts[0];
-      }
-    } catch (error) {
-      throw new Error('No ethereum object.');
+
+  // check wallet is network
+  const checkIfWalletNetWork = async () => {
+    if (window?.ethereum?.chainId) {
+      // if (window?.ethereum?.chainId !== '0x4') {
+      //     switchWalletNetwork('0x4');
+      //     return
+      // }
+      setConnectedChainId(window?.ethereum?.chainId);
     }
   };
 
-  // Disconnect Wallet
-  const disconnectWallet = async () => {
-    setAccount(null);
-  };
-
-  // Switch network
-  const switchWalletNetwork = async (
-    chain: 'Ethereum' | 'Ropsten' | 'Rinkeby' | 'Goerli' | 'Kovan'
-  ) => {
-    const flag = await checkIfWalletIsInstalled();
-    if (!flag) {
-      window.open('https://metamask.io/download/');
-      return false;
-    }
-    const chainObj = {
-      Ethereum: '0x1',
-      Ropsten: '0x3',
-      Rinkeby: '0x4',
-      Goerli: '0x5',
-      Kovan: '0x2a',
-    };
-    const chainId = chainObj[chain];
+  // check network is normal
+  const switchWalletNetwork = async (chainId: string) => {
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{chainId}],
@@ -58,51 +40,122 @@ export const useMetaMask = () => {
   };
 
   // monitor accounts change
-  const onChangeAccount = async (callback?: (accounts: string[]) => void) => {
+  const onChangeAccounts = async () => {
     try {
-      const flag = await checkIfWalletIsInstalled();
-      if (!flag) {
+      if (!isInstalledWallet) {
         return false;
       }
-      window.ethereum.on('accountsChanged', (accounts: string[]) => {
+      window.ethereum.on('accountsChanged', function (accounts: string[]) {
         if (accounts && accounts.length) {
-          setAccount(accounts[0]);
+          setConnectedAccount(accounts[0]);
         } else {
-          setAccount(null);
+          setConnectedAccount(null);
         }
-        callback && callback(accounts);
       });
     } catch (error) {
-      throw new Error('No ethereum object.');
+      console.log(error);
+      // throw new Error("No ethereum object.");
     }
   };
-  // monitor network change
-  const onChangeNetwork = async (callback?: (accounts: string[]) => void) => {
+
+  // monitor chain change
+  const onChangeChain = async () => {
     try {
-      const flag = await checkIfWalletIsInstalled();
-      if (!flag) {
+      if (!isInstalledWallet) {
         return false;
       }
-      window.ethereum.on('chainChanged', (networkIDstring: string) => {
-        // 可指定测试网络退出登陆状态
-        console.log(networkIDstring);
-        // setAccount(null);
+      window.ethereum.on('chainChanged', function (_chainId: string) {
+        console.log('chainChanged:', parseInt(_chainId));
+        setConnectedChainId(_chainId);
+        window.location.reload();
       });
     } catch (error) {
-      throw new Error('No ethereum object.');
+      console.log(error);
+      // throw new Error("No ethereum object.");
+    }
+  };
+
+  // check wallet is connected
+  const checkIfWalletIsConnected = async () => {
+    try {
+      if (!isInstalledWallet) {
+        return false;
+      }
+      const accounts = await window.ethereum.request({
+        method: 'eth_accounts',
+      });
+      if (accounts && accounts.length) {
+        setConnectedAccount(accounts[0]);
+      } else {
+        setConnectedAccount(null);
+        console.log('No accounts found');
+      }
+    } catch (error) {
+      console.log(error);
+      // throw new Error("No ethereum object.");
+    }
+  };
+
+  // connect wallect
+  const connectWallect = async (
+    callback?: (account: string | null) => void
+  ) => {
+    try {
+      if (!isInstalledWallet) {
+        window.open('https://metamask.io/download/');
+        return false;
+      }
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      if (accounts && accounts.length) {
+        setConnectedAccount(accounts[0]);
+        callback && callback(accounts[0]);
+      }
+    } catch (error) {
+      console.log(error);
+      callback && callback(null);
+      // throw new Error("No ethereum object.");
+    }
+  };
+
+  // disconnect wallect
+  const disconnectWallect = async () => {
+    console.log('disvon');
+    try {
+      // if (!isInstalledWallet || !connectedAccount) {
+      //     return false;
+      // }
+      setConnectedAccount(null);
+    } catch (error) {
+      console.log(error);
+      // throw new Error("No ethereum object.");
     }
   };
 
   useEffect(() => {
-    onChangeNetwork();
-    onChangeAccount();
+    checkIfWalletIsInstalled();
   }, []);
 
+  useEffect(() => {
+    checkIfWalletNetWork();
+    onChangeChain();
+  }, [isInstalledWallet]);
+
+  useEffect(() => {
+    checkIfWalletIsConnected();
+    onChangeAccounts();
+  }, [connectedChainId]);
+
   return {
-    account,
-    connectWallet,
-    disconnectWallet,
-    onChangeAccount,
+    isInstalledWallet,
+    isConnected,
+    connectedAccount,
+    connectedChainId,
     switchWalletNetwork,
+    checkIfWalletIsInstalled,
+    checkIfWalletIsConnected,
+    connectWallect,
+    disconnectWallect,
   };
 };

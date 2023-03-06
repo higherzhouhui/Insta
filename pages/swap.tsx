@@ -12,7 +12,7 @@ const Swap: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [setting, setSetting] = useState(false);
   const tabList = ['Avalance', 'BNB', 'Cronos', 'Polygon'];
-  const [currentTab, setCurrentTab] = useState(tabList[0]);
+  const [currentTab, setCurrentTab] = useState(tabList[1]);
   const [gasPrice, setgasPrice] = useState<number>();
   const [slippage, setslippage] = useState<number>();
   const [money, setMoney] = useState('');
@@ -27,7 +27,7 @@ const Swap: NextPage = () => {
     {label: 'DOGE', value: 'DOGE', img: '/static/image/doge.png'},
   ];
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
-  const [toObj, setToObj] = useState(exchangeOptionList[1]);
+  const [toObj, setToObj] = useState(exchangeOptionList[4]);
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const [user, _setUser] = useRecoilState(userState);
   const handleClickBtn = () => {
@@ -66,9 +66,6 @@ const Swap: NextPage = () => {
             <div
               className={`tab ${item === currentTab ? 'active' : ''}`}
               key={index}
-              onClick={() => {
-                setCurrentTab(item);
-              }}
             >
               {item}
             </div>
@@ -167,6 +164,7 @@ const Swap: NextPage = () => {
             <div className='right'>
               <img src={fromObj.img} />
               <select
+                disabled
                 value={fromObj.value}
                 onChange={(e) => {
                   onchangeFrom(e, 'from');
@@ -201,6 +199,7 @@ const Swap: NextPage = () => {
             <div className='right'>
               <img src={toObj.img} />
               <select
+                disabled
                 value={toObj.value}
                 onChange={(e) => {
                   onchangeFrom(e, 'to');

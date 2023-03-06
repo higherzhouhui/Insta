@@ -1,3 +1,4 @@
+import {ethers} from 'ethers';
 import {NextRouter} from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -55,4 +56,16 @@ export const progressInit = (router: NextRouter) => {
     router.events.off('routeChangeStart', handleRouteChange);
     router.events.off('routeChangeComplete', handleRouteComplete);
   };
+};
+
+export const getAccount = async () => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  let currentAccount = '';
+  try {
+    const accounts = await provider.send('eth_requestAccounts', []);
+    currentAccount = accounts[0];
+  } catch {
+    currentAccount = '';
+  }
+  return currentAccount;
 };

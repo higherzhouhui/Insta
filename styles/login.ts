@@ -42,6 +42,6 @@ export const LoginContainer = styled.div`
 `;
 
 export const LoginContentContainer = styled.div`
-  width: 422px;
+  width: 100%;
   margin-top: 40px;
 `;

@@ -224,6 +224,7 @@ export const TotalAddress = styled.div`
     border-radius: 8px;
     opacity: 1;
     padding: 12px;
+    text-align: center;
     .top {
       font-size: 14px;
       color: #abb5c7;
@@ -236,10 +237,15 @@ export const TotalAddress = styled.div`
       text-align: center;
       color: #33c497;
       span {
-        font-size: 18px;
+        font-size: 12px;
         margin-left: 4px;
         color: #33c497;
       }
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      margin-top: 6px;
     }
   }
 `;

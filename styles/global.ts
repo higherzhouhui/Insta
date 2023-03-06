@@ -116,8 +116,11 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
     .loading {
-        position: relative;
-        max-height: 100vh;
+        position: fixed;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        width: 100vw;
         &::after {
             position: absolute;
             z-index: 999;

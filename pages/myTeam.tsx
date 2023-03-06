@@ -1,10 +1,9 @@
-import {Statistic, Skeleton, Divider, List, Avatar} from 'antd';
+import {Statistic, List, Avatar} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
 import CountUp from 'react-countup';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
@@ -14,6 +13,7 @@ import {userState} from '@/store/user';
 import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
+import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
 interface DataType {
   gender: string;
@@ -37,67 +37,23 @@ const MyTeam: NextPage = () => {
   const [user, setUser] = useRecoilState(userState);
   const [requestData, setRequestData] = useState<any>({});
   const initRequest = () => {
-    const arr: any[] = [];
-    Array(11)
-      .fill('')
-      .forEach((_item, index) => {
-        arr.push({
-          key: index,
-          time: Math.random() > 0.5 ? '02-20 18: 59' : '02-23 12: 29',
-          address: '0x5B9a81C121790575b3BF4e771a11c881BD176C08',
-        });
-      });
+    setLoading(true);
     axios({
       url: `${apiUrl}/api/public/v1/users/team`,
       method: 'get',
       params: {wallet: user.accountAddress},
     }).then((res: any) => {
-      if (res?.data?.data) {
+      setLoading(false);
+      if (res?.data?.meta?.status === 200) {
         setRequestData(res.data.data);
       } else {
         setRequestData({});
       }
     });
-    setDataSource(arr);
   };
-  const columns: any[] = [
-    {
-      title: 'Time',
-      dataIndex: 'time',
-      align: 'center',
-      key: 'time',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      align: 'center',
-      key: 'address',
-    },
-  ];
+
   const formatter = (value: any) => <CountUp end={value} separator=',' />;
-  const [data, setData] = useState<DataType[]>([]);
 
-  const loadMoreData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    fetch(
-      'https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo'
-    )
-      .then((res) => res.json())
-      .then((body) => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    loadMoreData();
-  }, []);
   useEffect(() => {
     initRequest();
   }, []);
@@ -125,7 +81,7 @@ const MyTeam: NextPage = () => {
             <Statistic
               formatter={formatter}
               suffix='usdt'
-              value={requestData.deposits_total || 19999.365}
+              value={requestData.deposits_total || 0}
             />
           </div>
         </div>
@@ -135,50 +91,54 @@ const MyTeam: NextPage = () => {
             <Statistic
               formatter={formatter}
               suffix='usdt'
-              value={requestData.invite_num || 166548.875}
+              value={requestData.other_deposits_total || 0}
             />
           </div>
         </div>
       </TotalAddress>
-      <h2>Invited Users({requestData.invite_num || 995})</h2>
-      <InfiniteScroll
-        dataLength={data.length}
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        hasMore={data.length < 50}
-        loader={<Skeleton active avatar paragraph={{rows: 1}} />}
-        next={loadMoreData}
-        scrollableTarget='scrollableDiv'
-        style={{background: '#181E30', padding: '4px', borderRadius: '8px'}}
-      >
-        <List
-          dataSource={data}
-          loading={loading}
-          renderItem={(item, index) => (
-            <List.Item
-              key={item.email}
-              style={{borderBottom: '1px solid #000'}}
-            >
-              <List.Item.Meta
-                avatar={<Avatar src={item.picture.large} />}
-                description={
-                  <span style={{color: '#d3c2c2'}}>
-                    {`0x1eDd${item?.email
-                      ?.replace('.', '')
-                      .replace('@example.com', '')
-                      .toLowerCase()}E972`}
-                  </span>
-                }
-                title=''
-              />
-              <div style={{color: '#afa9a9'}}>
-                {moment(
-                  new Date().getTime() - index * Math.random() * 86400000
-                ).format('YYYY-MM-DD HH:mm')}
-              </div>
-            </List.Item>
-          )}
-        />
-      </InfiniteScroll>
+      <h2>Invited Users({requestData.invite_num || 0})</h2>
+      <List
+        dataSource={requestData?.wallets}
+        loading={loading}
+        renderItem={(item: any, index) => (
+          <List.Item key={index} style={{borderBottom: '1px solid #000'}}>
+            <List.Item.Meta
+              avatar={
+                <Avatar
+                  src={`/static/icon/avatar-icon${
+                    Math.ceil(Math.random() * 6) + 1
+                  }.png`}
+                />
+              }
+              description={
+                <span
+                  style={{
+                    color: '#d3c2c2',
+                    textOverflow: 'ellipsis',
+                    width: '100%',
+                    overflow: 'hidden',
+                    display: 'inline-block',
+                  }}
+                  onClick={() => {
+                    copyUrlToClip(item);
+                    showTip({type: IMessageType.SUCCESS, content: 'copied!'});
+                  }}
+                >
+                  {item}
+                </span>
+              }
+              title={
+                <div style={{color: '#afa9a9'}}>
+                  {moment(
+                    new Date().getTime() -
+                      (index + 3) * Math.random() * 86400000
+                  ).format('YYYY-MM-DD HH:mm')}
+                </div>
+              }
+            />
+          </List.Item>
+        )}
+      />
     </MyTeamContainer>
   );
 };

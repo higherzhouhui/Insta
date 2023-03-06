@@ -1,19 +1,25 @@
+import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
 import {memo, useEffect} from 'react';
+import {useRecoilState} from 'recoil';
 
 import {CommonLayout} from './CommonLayout';
 import {ListLayout} from './ListLayout';
 import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
-import {progressInit} from '@/utils';
+import {apiUrl} from '@/config';
+import {userState} from '@/store/user';
+import {getAccount, progressInit} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
 const Header = dynamic(import('./header'), {ssr: false});
 
 export const Layout = memo(({children}) => {
   const router = useRouter();
+  const [user, setUser] = useRecoilState(userState);
+
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -28,6 +34,57 @@ export const Layout = memo(({children}) => {
   useEffect(() => {
     progressInit(router);
   }, []);
+  const judgeIsLogin = async () => {
+    const currentAccount = await getAccount();
+    if (!currentAccount) {
+      setUser({
+        expiresAt: null,
+        portrait: null,
+        token: null,
+        username: null,
+        userId: null,
+        accountAddress: null,
+        createdAt: null,
+        id: null,
+        last_login: null,
+        path: null,
+        pid: null,
+        updatedAt: null,
+        uuid: null,
+      });
+      return;
+    }
+    axios({
+      url: `${apiUrl}/api/public/v1/users/info`,
+      method: 'get',
+      params: {wallet: currentAccount},
+    }).then((res: any) => {
+      if (res?.data?.meta?.status !== 200) {
+        setUser({...user, accountAddress: currentAccount});
+        return;
+      }
+      const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+        res.data.data;
+      setUser({
+        expiresAt: 154154125154,
+        portrait: '',
+        token: uuid,
+        username: 'james',
+        userId: id,
+        accountAddress: currentAccount,
+        createdAt,
+        id,
+        last_login,
+        path,
+        pid,
+        updatedAt,
+        uuid,
+      });
+    });
+  };
+  useEffect(() => {
+    judgeIsLogin();
+  }, [router.pathname]);
   return (
     <>
       <Head>

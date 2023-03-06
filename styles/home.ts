@@ -130,14 +130,31 @@ export const HomeContainer = styled.div`
       font-weight: bold;
     }
   }
+  .HomePage_partners__T7882 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 20px;
+    column-gap: 10px;
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 32px;
+      background: rgb(5, 22, 96);
+      color: #daa;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
 `;
 
 export const InviterComp = styled.div`
   position: relative;
-  padding: 12px;
+  padding: 18px 12px;
   h2 {
     color: #fff;
-    font-size: 14px;
+    font-size: 16px;
   }
   p {
     background: #000;
@@ -156,6 +173,7 @@ export const InviterComp = styled.div`
     width: fit-content;
     margin: 0 auto;
     border-radius: 5px;
+    font-size: 14px;
   }
   .close {
     position: absolute;

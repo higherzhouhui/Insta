@@ -43,7 +43,7 @@ import {showTip, IMessageType} from '@/utils';
 
 export const Header: FC = memo(() => {
   const router = useRouter();
-  const [user, _setUser] = useRecoilState(userState);
+  const [user, setUser] = useRecoilState(userState);
   const [_userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
 
   // 创建商品
@@ -565,7 +565,6 @@ const Wallet = memo(() => {
         uuid,
       });
       showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
-      localStorage.setItem('accountAddress', user.accountAddress);
       setLoading(false);
     });
 
@@ -623,7 +622,6 @@ const Wallet = memo(() => {
       uuid,
     });
     showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
-    localStorage.setItem('accountAddress', user.accountAddress);
     return uuid;
   };
   // MetaMask链接
@@ -697,6 +695,7 @@ const User = memo(() => {
       username: null,
       userId: null,
       accountAddress: null,
+      uuid: null,
     });
     showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
     disconnectWallect();

@@ -11,6 +11,7 @@ import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {HomeContainer, InviterComp} from '@/styles/home';
 import {Modal, SvgIcon} from '@/uikit';
+import {getAccount, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
 
@@ -21,40 +22,30 @@ const Home: NextPage = () => {
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const {inviterId} = router.query;
-  const handleClickBtn = () => {
-    if (!user.accountAddress) {
-      setUserDrawer({
-        open: !userDrawer.open,
-      });
+  const [loading, setLoading] = useState(false);
+  const handleClickBtn = async () => {
+    setLoading(true);
+    let accountAddress = user.accountAddress;
+    if (!accountAddress) {
+      // eslint-disable-next-line require-atomic-updates
+      accountAddress = await getAccount();
     }
-    setVisible(false);
-  };
-  useEffect(() => {
-    if (inviterId) {
-      setVisible(true);
-    }
-  }, [inviterId]);
-
-  useEffect(() => {
-    const wallet = localStorage.getItem('accountAddress');
-    if (wallet && !user.uuid) {
-      axios({
-        url: `${apiUrl}/api/public/v1/users/info`,
-        method: 'get',
-        params: {wallet: user.accountAddress},
-      }).then((res: any) => {
-        if (!res?.data?.data) {
-          return;
-        }
+    axios({
+      url: `${apiUrl}/api/public/v1/users/register`,
+      method: 'post',
+      data: {parent: inviterId, wallet: accountAddress},
+    }).then((res: any) => {
+      setLoading(false);
+      if (res?.data?.meta?.status === 200) {
         const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
           res.data.data;
         setUser({
-          expiresAt: 154154125154,
+          expiresAt: 15155,
           portrait: '',
           token: uuid,
           username: 'james',
           userId: id,
-          accountAddress: user.accountAddress,
+          accountAddress,
           createdAt,
           id,
           last_login,
@@ -63,9 +54,22 @@ const Home: NextPage = () => {
           updatedAt,
           uuid,
         });
-      });
+        showTip({
+          type: IMessageType.SUCCESS,
+          content: 'Register successfully!',
+        });
+      } else {
+        showTip({type: IMessageType.ERROR, content: res?.data?.meta?.msg});
+      }
+    });
+    setVisible(false);
+  };
+  useEffect(() => {
+    if (inviterId && !user.uuid) {
+      setVisible(true);
     }
-  }, []);
+  }, [inviterId, user.uuid]);
+
   const logoList = [
     '/static/image/img1.webp',
     '/static/image/img2.webp',
@@ -126,7 +130,7 @@ const Home: NextPage = () => {
   return (
     <HomeContainer ref={homeRef}>
       <h1>The best cross‑chain Yield Aggregator across DeFi</h1>
-      <h3>Buy and deposit on Autofarm and start earning</h3>
+      <h3>Buy and deposit on insta and start earning</h3>
       <div className='btnGroup'>
         <div className='btn'>
           Browse Vaults
@@ -739,14 +743,169 @@ const Home: NextPage = () => {
         );
       })}
       <h2>Our Partners</h2>
-      <div className='partners'>
-        {ourPartners.map((item, index) => {
-          return (
-            <div className='item' key={index}>
-              {item}
-            </div>
-          );
-        })}
+      <div className='HomePage_partners__T7882'>
+        <a
+          href='https://www.alpacafinance.org/'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Alpaca
+        </a>
+        <a href='https://apeswap.finance/' rel='noreferrer' target='_blank'>
+          ApeSwap
+        </a>
+        <a href='https://augmented.finance/' rel='noreferrer' target='_blank'>
+          Augmented
+        </a>
+        <a href='https://basedfinance.io/' rel='noreferrer' target='_blank'>
+          Based
+        </a>
+        <a href='https://beamswap.io/' rel='noreferrer' target='_blank'>
+          BeamSwap
+        </a>
+        <a href='https://belt.fi/landing' rel='noreferrer' target='_blank'>
+          Belt
+        </a>
+        <a href='https://benqi.fi/' rel='noreferrer' target='_blank'>
+          BenQi
+        </a>
+        <a href='https://biswap.org/' rel='noreferrer' target='_blank'>
+          BiSwap
+        </a>
+        <a href='https://bitbomb.io/' rel='noreferrer' target='_blank'>
+          BitBomb
+        </a>
+        <a href='https://www.bomb.money/' rel='noreferrer' target='_blank'>
+          Bomb
+        </a>
+        <a href='https://cz.farm/' rel='noreferrer' target='_blank'>
+          CZodiac
+        </a>
+        <a target='_blank'>CZpegs</a>
+        <a target='_blank'>Cherry</a>
+        <a
+          href='https://app.cronaswap.org/swap'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Crona
+        </a>
+        <a href='https://curve.fi/' rel='noreferrer' target='_blank'>
+          Curve
+        </a>
+        <a target='_blank'>EMP</a>
+        <a href='https://geist.finance/' rel='noreferrer' target='_blank'>
+          Geist
+        </a>
+        <a target='_blank'>GogoCoin</a>
+        <a target='_blank'>Huckleberry</a>
+        <a href='https://jetswap.finance/' rel='noreferrer' target='_blank'>
+          JetSwap
+        </a>
+        <a
+          href='https://kuswap.finance/#/swap'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Kuswap
+        </a>
+        <a href='https://mdex.com/#/' rel='noreferrer' target='_blank'>
+          MDEX
+        </a>
+        <a
+          href='https://magicianmetaverse.com/#/'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Magician
+        </a>
+        <a
+          href='https://marsecosystem.com/home'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Mars
+        </a>
+        <a href='https://meshswap.fi/' rel='noreferrer' target='_blank'>
+          MeshSwap
+        </a>
+        <a
+          href='https://app.mojitoswap.finance/'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Mojito
+        </a>
+        <a href='https://oolongswap.com/#/' rel='noreferrer' target='_blank'>
+          Oolong
+        </a>
+        <a href='https://stellaswap.com/' rel='noreferrer' target='_blank'>
+          PYQ
+        </a>
+        <a href='https://pancakeswap.finance/' rel='noreferrer' target='_blank'>
+          PancakeSwap
+        </a>
+        <a href='https://pangolin.exchange/' rel='noreferrer' target='_blank'>
+          Pangolin
+        </a>
+        <a href='https://polarisfinance.io' rel='noreferrer' target='_blank'>
+          Polaris
+        </a>
+        <a target='_blank'>Quickswap</a>
+        <a href='https://singularitydao.ai/' rel='noreferrer' target='_blank'>
+          SingularityDAO
+        </a>
+        <a href='https://www.sokuswap.org/' rel='noreferrer' target='_blank'>
+          SokuSwap
+        </a>
+        <a href='https://solarbeam.io/' rel='noreferrer' target='_blank'>
+          SolarBeam
+        </a>
+        <a
+          href='https://www.spiritswap.finance/'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Spirit
+        </a>
+        <a href='https://spooky.fi/#/' rel='noreferrer' target='_blank'>
+          SpookySwap
+        </a>
+        <a href='https://stargate.finance/' rel='noreferrer' target='_blank'>
+          Stargate
+        </a>
+        <a href='https://stellaswap.com/' rel='noreferrer' target='_blank'>
+          StellaSwap
+        </a>
+        <a href='https://www.sushi.com/' rel='noreferrer' target='_blank'>
+          Sushi
+        </a>
+        <a target='_blank'>TraderJoe</a>
+        <a target='_blank'>Trisolaris</a>
+        <a href='https://ubeswap.org/' rel='noreferrer' target='_blank'>
+          UbeSwap
+        </a>
+        <a href='https://vvs.finance/' rel='noreferrer' target='_blank'>
+          VVS
+        </a>
+        <a href='https://www.wagyuswap.app/' rel='noreferrer' target='_blank'>
+          Wagyu
+        </a>
+        <a
+          href='https://www.wanswap.finance/#/swap'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Wanswap
+        </a>
+        <a target='_blank'>YUZU</a>
+        <a
+          href='https://app.zookeeper.finance/'
+          rel='noreferrer'
+          target='_blank'
+        >
+          ZooKeeper
+        </a>
       </div>
       <div className='divide' />
       <Modal
@@ -757,7 +916,7 @@ const Home: NextPage = () => {
           setVisible(false);
         }}
       >
-        <InviterComp>
+        <InviterComp className={loading ? 'loading' : ''}>
           <h2>Inviter Id</h2>
           <p>{inviterId}</p>
           <div

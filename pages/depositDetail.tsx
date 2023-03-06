@@ -29,26 +29,11 @@ const Porfit: NextPage = () => {
         arr.push({
           class: 'deposit',
           time: item.createdAt,
-          profit: `$${item.amount}USDT`,
+          deposit: `$${item.amount}USDT`,
         });
       });
       setDataSource(arr);
-      axios({
-        url: `${apiUrl}/api/public/v1/users/income`,
-        method: 'get',
-        params: {wallet: user.accountAddress},
-      }).then((income) => {
-        const array = income?.data?.data || [];
-        array.forEach((item: any) => {
-          arr.push({
-            class: 'deposit',
-            time: item.createdAt,
-            profit: item.amount,
-          });
-        });
-        setLoading(false);
-        setDataSource(arr);
-      });
+      setLoading(false);
     });
   };
   const columns: any[] = [
@@ -85,7 +70,7 @@ const Porfit: NextPage = () => {
             router.back();
           }}
         />
-        <span>Profit</span>
+        <span>Deposit</span>
       </div>
       <PMyTable className={loading ? 'loading' : ''}>
         <div className='header'>

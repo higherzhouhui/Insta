@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction} from 'react';
 import {useRecoilState} from 'recoil';
@@ -6,6 +7,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 
 import type {NextPage} from 'next';
 
+import {apiUrl} from '@/config';
 import {abi, contractAddress} from '@/config/contract';
 import {useContract, useEthersUtils} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
@@ -19,6 +21,7 @@ import {
 } from '@/styles/deposits';
 import {Modal, SvgIcon} from '@/uikit';
 import {copyUrlToClip, IMessageType, showTip} from '@/utils';
+
 import 'swiper/css';
 
 const Deposits: NextPage = () => {
@@ -31,6 +34,10 @@ const Deposits: NextPage = () => {
   const [copyLink, setCopyLink] = useState('');
   const router = useRouter();
   const [deposits, setDeposits] = useState<number>();
+  const [totaldeposits, settotalDeposits] = useState<number>(0);
+  const [totalIncome, settotalIncome] = useState<number>(0);
+  const [totalAddress, settotalAddress] = useState<number>(0);
+  const [teamTotalDeposits, setteamTotalDeposits] = useState<number>(0);
   const [depositError, setDepositError] = useState(false);
   const [chain, setChain] = useState('BEP20');
   const exchangeList = [25, 50, 75, 100];
@@ -46,6 +53,7 @@ const Deposits: NextPage = () => {
     {label: 'ADA', value: 'ADA', img: '/static/image/ada.png'},
     {label: 'DOGE', value: 'DOGE', img: '/static/image/doge.png'},
   ];
+  const [hasApprove, setHasApprove] = useState(false);
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[1]);
   const zm = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'G'];
@@ -92,6 +100,43 @@ const Deposits: NextPage = () => {
         });
       });
     setDataSource(arr);
+
+    let totalDeposit = 0;
+    axios({
+      url: `${apiUrl}/api/public/v1/users/deposit`,
+      method: 'get',
+      params: {wallet: user.accountAddress},
+    }).then((res) => {
+      const array = res?.data?.data || [];
+      array.forEach((item: any) => {
+        totalDeposit += item.amount;
+      });
+      settotalDeposits(totalDeposit);
+    });
+    let totalIncome = 0;
+    axios({
+      url: `${apiUrl}/api/public/v1/users/income`,
+      method: 'get',
+      params: {wallet: user.accountAddress},
+    }).then((res) => {
+      const array = res?.data?.data || [];
+      array.forEach((item: any) => {
+        totalIncome += item.amount;
+      });
+      settotalIncome(totalIncome);
+    });
+
+    axios({
+      url: `${apiUrl}/api/public/v1/users/team`,
+      method: 'get',
+      params: {wallet: user.accountAddress},
+    }).then((res: any) => {
+      if (res?.data?.meta?.status === 200) {
+        const data = res?.data?.data;
+        settotalAddress(data?.invite_num);
+        setteamTotalDeposits(data?.deposits_total);
+      }
+    });
   };
   const columns: any[] = [
     {
@@ -189,7 +234,7 @@ const Deposits: NextPage = () => {
   useEffect(() => {
     initRequest();
     setCopyLink(
-      `${location.host}?inviterId=${
+      `http://${location.host}?inviterId=${
         user?.uuid || '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
       }`
     );
@@ -274,27 +319,31 @@ const Deposits: NextPage = () => {
             handleClickBtn();
           }}
         >
-          {user?.accountAddress ? 'Deposit' : 'Approve'}
+          {hasApprove ? 'Deposit' : 'Approve'}
         </div>
       </div>
       <div className='title'>
         <div className='left'>Summary</div>
-        <div className='right' onClick={() => router.push('/profit')}>
+        {/* <div className='right' onClick={() => router.push('/profit')}>
           Details <SvgIcon color='#999' name='right-icon' />
-        </div>
+        </div> */}
       </div>
       <TotalAddress>
-        <div className='left'>
+        <div className='left' onClick={() => router.push('/depositDetail')}>
           <div className='top'>Cumulative deposits</div>
           <div className='bot'>
-            251354.626<span>USDT</span>
+            {totaldeposits}
+            <span>USDT</span>
           </div>
+          <SvgIcon color='#999' name='right-icon' />
         </div>
-        <div className='left'>
+        <div className='left' onClick={() => router.push('/income')}>
           <div className='top'>Cumulative income</div>
           <div className='bot'>
-            251354.875<span>USDT</span>
+            {totalIncome}
+            <span>USDT</span>
           </div>
+          <SvgIcon color='#999' name='right-icon' />
         </div>
       </TotalAddress>
       <div className='balanceWrapper'>
@@ -303,7 +352,7 @@ const Deposits: NextPage = () => {
             <div className='top'>Balance</div>
             <div className='bot'>$251354.626</div>
           </div>
-          <div className='right'>+2.5%</div>
+          {/* <div className='right'>+2.5%</div> */}
         </div>
         <div className='normalContent'>
           <div className='left'>
@@ -348,12 +397,13 @@ const Deposits: NextPage = () => {
       <TotalAddress>
         <div className='left'>
           <div className='top'>Total address</div>
-          <div className='bot'>845</div>
+          <div className='bot'>{totalAddress}</div>
         </div>
         <div className='left'>
           <div className='top'>Total deposit</div>
           <div className='bot'>
-            166548.875<span>USDT</span>
+            {teamTotalDeposits}
+            <span>USDT</span>
           </div>
         </div>
       </TotalAddress>
@@ -436,7 +486,7 @@ const Deposits: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Surplus: 0.4521623</div>
+            <div className='right'>Balance: 0.4521623</div>
           </div>
           <div className='exchangeContent'>
             <input
@@ -488,7 +538,7 @@ const Deposits: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Surplus: 0</div>
+            <div className='right'>Balance: 0</div>
           </div>
           <div className='exchangeContent'>
             <input

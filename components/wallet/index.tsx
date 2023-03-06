@@ -149,7 +149,6 @@ export const WalletList = memo(() => {
   const {getSignMessage} = useSigner();
   const {connectWallect} = useMetaMask();
   const {connectedAccount} = useContext(Web3ProviderContext);
-  const {inviterId} = router.query;
   const onloginRequest = async (publicAddress: string) => {
     if (!publicAddress) {
       return;
@@ -159,15 +158,18 @@ export const WalletList = memo(() => {
     if (uuid) {
       return;
     }
-    if (!inviterId) {
+    if (!location.href.includes('?inviterId=')) {
       showTip({
         type: IMessageType.ERROR,
         content:
           'This website adopts an invitation system, please contact the recommender',
         showTime: 6000,
       });
+      setLoading(false);
       return;
     }
+    const inviterId = location.href.split('?inviterId=')[1];
+
     setLoading(true);
     const msg = getHashId(`this is a insta system`);
     const signature = await getSignMessage(msg);
@@ -184,6 +186,10 @@ export const WalletList = memo(() => {
     }).then((res: any) => {
       setLoading(false);
       if (res?.data?.meta?.status !== 200) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: res?.data?.meta?.msg || 'network error',
+        });
         return;
       }
       const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
@@ -204,7 +210,6 @@ export const WalletList = memo(() => {
         uuid,
       });
       showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
-      localStorage.setItem('accountAddress', user.accountAddress);
       setLoading(false);
     });
     // const res: any = await getLoginNonce({publicAddress});
@@ -251,10 +256,6 @@ export const WalletList = memo(() => {
       params: {wallet: account},
     });
     if (res?.data?.meta?.status !== 200) {
-      showTip({
-        type: IMessageType.ERROR,
-        content: res?.data?.meta?.msg,
-      });
       return '';
     }
     const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
@@ -275,7 +276,6 @@ export const WalletList = memo(() => {
       uuid,
     });
     showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
-    localStorage.setItem('accountAddress', user.accountAddress);
     return uuid;
   };
   // MetaMask链接
@@ -347,7 +347,6 @@ const DownList: FC<IDownListProps> = memo(() => {
       updatedAt: null,
       uuid: null,
     });
-    localStorage.setItem('accountAddress', '');
     showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
     setUserDrawer({
       open: !userDrawer.open,

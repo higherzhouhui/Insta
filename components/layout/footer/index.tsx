@@ -4,7 +4,6 @@ import {FC, memo, useEffect, useState} from 'react';
 
 import {FooterContainer, FooterTop, FooterBot} from './styles';
 
-import {Auth} from '@/components/auth';
 import {SvgIcon} from '@/uikit';
 
 export const Footer: FC = memo(() => {
@@ -57,9 +56,9 @@ export const Footer: FC = memo(() => {
       <FooterTop>
         <h1>Contact Us</h1>
         <h3>Business Enquiries</h3>
-        <p>hell@autofarm.network</p>
+        <p>hell@insta.network</p>
         <h3>Customer Support</h3>
-        <p>support@autofarm.network</p>
+        <p>support@insta.network</p>
         <h1>Learn More</h1>
         <div className='learnList'>
           {learnList.map((item, index) => {
@@ -79,7 +78,7 @@ export const Footer: FC = memo(() => {
       </FooterTop>
       <FooterBot>
         {navList.map((item, index) => {
-          return index === 0 ? (
+          return (
             <div
               className={`item ${item.active ? 'active' : ''}`}
               key={index}
@@ -90,18 +89,6 @@ export const Footer: FC = memo(() => {
               <SvgIcon name={item.icon} />
               <p>{item.title}</p>
             </div>
-          ) : (
-            <Auth key={index}>
-              <div
-                className={`item ${item.active ? 'active' : ''}`}
-                onClick={() => {
-                  handleRoute(item);
-                }}
-              >
-                <SvgIcon name={item.icon} />
-                <p>{item.title}</p>
-              </div>
-            </Auth>
           );
         })}
       </FooterBot>

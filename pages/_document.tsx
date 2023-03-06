@@ -5,6 +5,7 @@ import Document, {
   NextScript,
   DocumentContext,
 } from 'next/document';
+import Script from 'next/script';
 import {ServerStyleSheet} from 'styled-components';
 
 class MyDocument extends Document {
@@ -51,6 +52,17 @@ class MyDocument extends Document {
             name='viewport'
           />
           <link href='/favicon.ico' rel='icon' />
+          <Script id='awsc' strategy='afterInteractive'>
+            {`
+              var _hmt = _hmt || [];
+              (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://cdn.ethers.io/scripts/ethers-v4.min.js";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+              })();
+            `}
+          </Script>
         </Head>
         <body>
           <Main />

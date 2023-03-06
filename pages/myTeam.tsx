@@ -35,7 +35,7 @@ const MyTeam: NextPage = () => {
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
   const [user, setUser] = useRecoilState(userState);
-
+  const [requestData, setRequestData] = useState<any>({});
   const initRequest = () => {
     const arr: any[] = [];
     Array(11)
@@ -51,6 +51,12 @@ const MyTeam: NextPage = () => {
       url: `${apiUrl}/api/public/v1/users/team`,
       method: 'get',
       params: {wallet: user.accountAddress},
+    }).then((res: any) => {
+      if (res?.data?.data) {
+        setRequestData(res.data.data);
+      } else {
+        setRequestData({});
+      }
     });
     setDataSource(arr);
   };
@@ -116,17 +122,25 @@ const MyTeam: NextPage = () => {
         <div className='left'>
           <div className='top'>Total deposit</div>
           <div className='bot'>
-            <Statistic formatter={formatter} suffix='usdt' value={19999.365} />
+            <Statistic
+              formatter={formatter}
+              suffix='usdt'
+              value={requestData.deposits_total || 19999.365}
+            />
           </div>
         </div>
         <div className='left'>
           <div className='top'>Other deposit</div>
           <div className='bot'>
-            <Statistic formatter={formatter} suffix='usdt' value={166548.875} />
+            <Statistic
+              formatter={formatter}
+              suffix='usdt'
+              value={requestData.invite_num || 166548.875}
+            />
           </div>
         </div>
       </TotalAddress>
-      <h2>Invited Users</h2>
+      <h2>Invited Users({requestData.invite_num || 995})</h2>
       <InfiniteScroll
         dataLength={data.length}
         endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
@@ -154,11 +168,7 @@ const MyTeam: NextPage = () => {
                       .toLowerCase()}E972`}
                   </span>
                 }
-                title={
-                  <a href='https://ant.design' style={{color: '#fff'}}>
-                    {item.name.last}
-                  </a>
-                }
+                title=''
               />
               <div style={{color: '#afa9a9'}}>
                 {moment(

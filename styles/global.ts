@@ -115,4 +115,35 @@ export const GlobalStyle = createGlobalStyle`
             background: #fff;
         }
     }
+    .loading {
+        position: relative;
+        max-height: 100vh;
+        &::after {
+            position: absolute;
+            z-index: 999;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #555;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            transform-origin: center;
+            content: ''
+        }
+    }
+    
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
+	}
 `;

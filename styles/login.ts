@@ -9,7 +9,7 @@ export const LoginContainer = styled.div`
   align-items: center;
   padding: 0 12px;
   h2 {
-    font-size: 20px;
+    font-size: 18px;
     font-family: HarmonyOs-Bold;
     color: #fff;
     line-height: 26px;
@@ -28,7 +28,7 @@ export const LoginContainer = styled.div`
     text-align: center;
     align-items: center;
     line-height: 50px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
   }
   .back {

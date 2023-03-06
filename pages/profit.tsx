@@ -1,8 +1,12 @@
+import axios from 'axios';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
+import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
+import {apiUrl} from '@/config';
+import {userState} from '@/store/user';
 import {ProfitContainer, PMyTable} from '@/styles/profit';
 import {SvgIcon} from '@/uikit';
 
@@ -10,18 +14,42 @@ const Porfit: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
+  const [user, setUser] = useRecoilState(userState);
+
   const initRequest = () => {
     const arr: any[] = [];
-    Array(20)
-      .fill('')
-      .forEach((_item, index) => {
+    setLoading(true);
+    axios({
+      url: `${apiUrl}/api/public/v1/users/deposit`,
+      method: 'get',
+      params: {wallet: user.accountAddress},
+    }).then((res) => {
+      const array = res?.data?.data || [];
+      array.forEach((item: any) => {
         arr.push({
-          class: Math.random() > 0.5 ? 'deposits' : 'income',
-          time: Math.random() > 0.5 ? '02-20 18: 59' : '02-23 12: 29',
-          profit: `$${Math.round(Math.random() * 1000) / 10}USDT`,
+          class: 'deposit',
+          time: item.createdAt,
+          profit: `$${item.amount}USDT`,
         });
       });
-    setDataSource(arr);
+      setDataSource(arr);
+      axios({
+        url: `${apiUrl}/api/public/v1/users/income`,
+        method: 'get',
+        params: {wallet: user.accountAddress},
+      }).then((income) => {
+        const array = income?.data?.data || [];
+        array.forEach((item: any) => {
+          arr.push({
+            class: 'deposit',
+            time: item.createdAt,
+            profit: item.amount,
+          });
+        });
+        setLoading(false);
+        setDataSource(arr);
+      });
+    });
   };
   const columns: any[] = [
     {
@@ -59,7 +87,7 @@ const Porfit: NextPage = () => {
         />
         <span>Profit</span>
       </div>
-      <PMyTable>
+      <PMyTable className={loading ? 'loading' : ''}>
         <div className='header'>
           {columns.map((item, index) => {
             return <div key={index}>{item.title}</div>;

@@ -4,9 +4,10 @@ import {useRecoilState} from 'recoil';
 import {Autoplay} from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
-import 'swiper/css';
 import type {NextPage} from 'next';
 
+import {abi, contractAddress} from '@/config/contract';
+import {useContract, useEthersUtils} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@/styles/deposits';
 import {Modal, SvgIcon} from '@/uikit';
 import {copyUrlToClip, IMessageType, showTip} from '@/utils';
+import 'swiper/css';
 
 const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -31,6 +33,9 @@ const Deposits: NextPage = () => {
   const [depositError, setDepositError] = useState(false);
   const [chain, setChain] = useState('ERC721');
   const exchangeList = [25, 50, 75, 100];
+  const {getContract} = useContract();
+  const {getEtherPrice} = useEthersUtils();
+
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
     {label: 'INT', value: 'INT', img: '/static/image/int.png'},
@@ -148,11 +153,25 @@ const Deposits: NextPage = () => {
     setExchangeisable(false);
   };
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
-  const handleClickBtn = () => {
+  const handleClickBtn = async () => {
+    if (!deposits) {
+      showTip({type: IMessageType.ERROR, content: 'Please Input '});
+      return;
+    }
     if (!user.accountAddress) {
       setUserDrawer({
         open: !userDrawer.open,
       });
+    } else {
+      setLoading(true);
+      try {
+        const contract = await getContract(contractAddress, abi);
+        const price = getEtherPrice(deposits || 0);
+        await contract.deposits(price);
+        setLoading(false);
+      } catch {
+        setLoading(false);
+      }
     }
   };
   useEffect(() => {
@@ -164,7 +183,7 @@ const Deposits: NextPage = () => {
     );
   }, []);
   return (
-    <DepositsContainer>
+    <DepositsContainer className={loading ? 'loading' : ''}>
       <h2>Scanning</h2>
       <div className='header'>
         {columns.map((item, index) => {

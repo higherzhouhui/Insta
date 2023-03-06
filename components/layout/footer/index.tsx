@@ -30,6 +30,9 @@ export const Footer: FC = memo(() => {
     {title: 'Swap', link: '/swap', active: false, icon: 'swap'},
     {title: 'Info', link: '/info', active: false, icon: 'info'},
   ]);
+  const handleRoute = (item: any) => {
+    router.push(item.link);
+  };
   useEffect(() => {
     // eslint-disable-next-line array-callback-return
     navList.map((item: any) => {
@@ -76,22 +79,29 @@ export const Footer: FC = memo(() => {
       </FooterTop>
       <FooterBot>
         {navList.map((item, index) => {
-          return (
-            <Link href={item.link} key={index}>
-              {index === 0 ? (
-                <div className={`item ${item.active ? 'active' : ''}`}>
-                  <SvgIcon name={item.icon} />
-                  <p>{item.title}</p>
-                </div>
-              ) : (
-                <Auth>
-                  <div className={`item ${item.active ? 'active' : ''}`}>
-                    <SvgIcon name={item.icon} />
-                    <p>{item.title}</p>
-                  </div>
-                </Auth>
-              )}
-            </Link>
+          return index === 0 ? (
+            <div
+              className={`item ${item.active ? 'active' : ''}`}
+              key={index}
+              onClick={() => {
+                handleRoute(item);
+              }}
+            >
+              <SvgIcon name={item.icon} />
+              <p>{item.title}</p>
+            </div>
+          ) : (
+            <Auth key={index}>
+              <div
+                className={`item ${item.active ? 'active' : ''}`}
+                onClick={() => {
+                  handleRoute(item);
+                }}
+              >
+                <SvgIcon name={item.icon} />
+                <p>{item.title}</p>
+              </div>
+            </Auth>
           );
         })}
       </FooterBot>

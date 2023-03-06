@@ -155,8 +155,25 @@ export const WalletList = memo(() => {
   const {connectedAccount} = useContext(Web3ProviderContext);
   const {inviterId} = router.query;
   const onloginRequest = async (publicAddress: string) => {
+    if (!publicAddress) {
+      return;
+    }
+    const uuid = await getUserInfo(publicAddress);
+    // 如果当前用户存在，直接登录
+    if (uuid) {
+      return;
+    }
+    if (!inviterId) {
+      showTip({
+        type: IMessageType.ERROR,
+        content:
+          'This website adopts an invitation system, please contact the recommender',
+        showTime: 6000,
+      });
+      return;
+    }
     setLoading(true);
-    const msg = getHashId(`this is a pd1 111`);
+    const msg = getHashId(`this is a insta system`);
     const signature = await getSignMessage(msg);
     setLoading(false);
     if (!signature.status) {
@@ -170,11 +187,7 @@ export const WalletList = memo(() => {
       data: {parent: inviterId, wallet: publicAddress},
     }).then((res: any) => {
       setLoading(false);
-      if (!res?.data?.data) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: res?.data?.meta?.msg || 'Current user is registered!',
-        });
+      if (res?.data?.meta?.status !== 200) {
         return;
       }
       const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
@@ -234,17 +247,42 @@ export const WalletList = memo(() => {
     //   }
     // }
   };
-
+  const getUserInfo = async (account: any) => {
+    const res = await axios({
+      url: `${apiUrl}/api/public/v1/users/info`,
+      method: 'get',
+      params: {wallet: account},
+    });
+    if (res?.data?.meta?.status !== 200) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: res?.data?.meta?.msg,
+      });
+      return '';
+    }
+    const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+      res.data.data;
+    setUser({
+      expiresAt: 15155,
+      portrait: '',
+      token: uuid,
+      username: 'james',
+      userId: id,
+      accountAddress: account,
+      createdAt,
+      id,
+      last_login,
+      path,
+      pid,
+      updatedAt,
+      uuid,
+    });
+    showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+    localStorage.setItem('accountAddress', user.accountAddress);
+    return uuid;
+  };
   // MetaMask链接
   const handleMetaMaskClick = () => {
-    if (!inviterId) {
-      showTip({
-        type: IMessageType.SUCCESS,
-        content:
-          'We adopt an invitation system, please contact the recommender',
-      });
-      return;
-    }
     setLoading(true);
     if (!connectedAccount) {
       connectWallect((account: string | null) => {

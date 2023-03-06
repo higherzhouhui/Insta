@@ -8,6 +8,7 @@ import type {NextPage} from 'next';
 
 import {abi, contractAddress} from '@/config/contract';
 import {useContract, useEthersUtils} from '@/ethers-react';
+import {useSigner} from '@/ethers-react/useSigner';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {
@@ -31,7 +32,7 @@ const Deposits: NextPage = () => {
   const router = useRouter();
   const [deposits, setDeposits] = useState<number>();
   const [depositError, setDepositError] = useState(false);
-  const [chain, setChain] = useState('ERC721');
+  const [chain, setChain] = useState('BEP20');
   const exchangeList = [25, 50, 75, 100];
   const {getContract} = useContract();
   const {getEtherPrice} = useEthersUtils();
@@ -65,6 +66,9 @@ const Deposits: NextPage = () => {
     setFromObj(ctransfar);
     setToObj(cfrom);
   };
+  const {getSignMessage} = useSigner();
+  const {getHashId} = useEthersUtils();
+
   const getName = (length: number) => {
     let str = '';
     Array(length)
@@ -135,7 +139,7 @@ const Deposits: NextPage = () => {
     if (value < 0) {
       value = 0;
     }
-    if (value < 100 || value % 10 !== 0) {
+    if (value < 100 || value % 100 !== 0) {
       setDepositError(true);
     } else {
       setDepositError(false);
@@ -163,6 +167,14 @@ const Deposits: NextPage = () => {
         open: !userDrawer.open,
       });
     } else {
+      const msg = getHashId(`this is a insta system`);
+      getSignMessage(msg);
+      const signature = await getSignMessage(msg);
+      setLoading(false);
+      if (!signature.status) {
+        showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+        return;
+      }
       setLoading(true);
       try {
         const contract = await getContract(contractAddress, abi);
@@ -225,7 +237,7 @@ const Deposits: NextPage = () => {
       <h2>Deposits</h2>
       <div className='approveContainer'>
         <div className='content'>
-          <p>Multiple of 10</p>
+          <p>Multiple of 100</p>
           <div className='inputWrapper'>
             <input
               className='inputDeposit'
@@ -237,19 +249,19 @@ const Deposits: NextPage = () => {
               onChange={onChangeDeposits}
             />
             {depositError && (
-              <div className='error'>Multiple of 10(100-1000)</div>
+              <div className='error'>Multiple of 100(100-1000)</div>
             )}
             <div className='usdtWrapper'>
               <SvgIcon name='usdt' />
               <span>USDT</span>
             </div>
-            <select value={chain} onChange={onChangeChain}>
+            <div className='bep'>BEP20</div>
+            {/* <select value={chain} onChange={onChangeChain}>
               <option value='ERC20'>ERC20</option>
               <option value='ERC720'>ERC720</option>
-              <option value='ERC721'>ERC721</option>
               <option value='ERC1155'>ERC1155</option>
               <option value='ERC777'>ERC777</option>
-            </select>
+            </select> */}
           </div>
         </div>
         <div className='desc'>
@@ -302,10 +314,10 @@ const Deposits: NextPage = () => {
             <div
               className='top'
               onClick={() => {
-                setExchangeisable(true);
+                setWithDrawVisable(true);
               }}
             >
-              Exchange
+              Withdraw
             </div>
           </div>
         </div>
@@ -318,10 +330,10 @@ const Deposits: NextPage = () => {
             <div
               className='top'
               onClick={() => {
-                setWithDrawVisable(true);
+                setExchangeisable(true);
               }}
             >
-              Withdraw
+              Exchange
             </div>
           </div>
         </div>

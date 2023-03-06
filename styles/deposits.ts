@@ -51,7 +51,8 @@ export const DepositsContainer = styled.div`
           color: #999;
           padding: 8px 6px;
           font-size: 14px;
-          width: 150px;
+          width: 180px;
+          align-items: center;
           :focus-visible {
             outline: #060b19;
           }
@@ -67,6 +68,12 @@ export const DepositsContainer = styled.div`
           }
           color: #fff;
           font-weight: bold;
+        }
+        .bep {
+          display: flex;
+          align-items: center;
+          color: #fff;
+          font-size: 14px;
         }
         .error {
           position: absolute;

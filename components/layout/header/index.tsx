@@ -1,4 +1,5 @@
 import {useRequest} from 'ahooks';
+import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
@@ -29,8 +30,10 @@ import {
 } from './styles';
 
 import {Loading, Auth} from '@/components';
+import {apiUrl} from '@/config';
 import {RouterPath} from '@/config/routes';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
+import {useSigner} from '@/ethers-react/useSigner';
 import {getSearchAuthor, getSearchImage, getSearchNft} from '@/services/search';
 import {onLogout} from '@/services/user';
 import {userState} from '@/store/user';
@@ -503,16 +506,69 @@ const Wallet = memo(() => {
   const {getHashId} = useEthersUtils();
   const {connectWallect} = useMetaMask();
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const router = useRouter();
+  const {getSignMessage} = useSigner();
+
+  const {inviterId} = router.query;
 
   const onloginRequest = async (publicAddress: string) => {
-    setUser({
-      expiresAt: 265645,
-      portrait: '',
-      token: '45feafea5f',
-      username: 'james',
-      userId: 'uuid',
-      accountAddress: publicAddress,
+    if (!publicAddress) {
+      return;
+    }
+    const uuid = await getUserInfo(publicAddress);
+    // 如果当前用户存在，直接登录
+    if (uuid) {
+      return;
+    }
+    if (!inviterId) {
+      showTip({
+        type: IMessageType.ERROR,
+        content:
+          'This website adopts an invitation system, please contact the recommender',
+        showTime: 6000,
+      });
+      return;
+    }
+    setLoading(true);
+    const msg = getHashId(`this is a insta system`);
+    const signature = await getSignMessage(msg);
+    setLoading(false);
+    if (!signature.status) {
+      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      return;
+    }
+    setLoading(true);
+    axios({
+      url: `${apiUrl}/api/public/v1/users/register`,
+      method: 'post',
+      data: {parent: inviterId, wallet: publicAddress},
+    }).then((res: any) => {
+      setLoading(false);
+      if (res?.data?.meta?.status !== 200) {
+        return;
+      }
+      const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+        res.data.data;
+      setUser({
+        expiresAt: 15155,
+        portrait: '',
+        token: uuid,
+        username: 'james',
+        userId: id,
+        accountAddress: publicAddress,
+        createdAt,
+        id,
+        last_login,
+        path,
+        pid,
+        updatedAt,
+        uuid,
+      });
+      showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+      localStorage.setItem('accountAddress', user.accountAddress);
+      setLoading(false);
     });
+
     // const res: any = await getLoginNonce({publicAddress});
     // const nonce = res.data.nonce || '';
     // if (res.code === 0) {
@@ -536,7 +592,40 @@ const Wallet = memo(() => {
     //   }
     // }
   };
-
+  const getUserInfo = async (account: any) => {
+    const res = await axios({
+      url: `${apiUrl}/api/public/v1/users/info`,
+      method: 'get',
+      params: {wallet: account},
+    });
+    if (res?.data?.meta?.status !== 200) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: res?.data?.meta?.msg,
+      });
+      return '';
+    }
+    const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+      res.data.data;
+    setUser({
+      expiresAt: 15155,
+      portrait: '',
+      token: uuid,
+      username: 'james',
+      userId: id,
+      accountAddress: account,
+      createdAt,
+      id,
+      last_login,
+      path,
+      pid,
+      updatedAt,
+      uuid,
+    });
+    showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+    localStorage.setItem('accountAddress', user.accountAddress);
+    return uuid;
+  };
   // MetaMask链接
   const handleMetaMaskClick = () => {
     setLoading(true);
@@ -587,7 +676,6 @@ const Wallet = memo(() => {
 Wallet.displayName = 'Wallet';
 
 const User = memo(() => {
-  const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
   const {disconnectWallect} = useMetaMask();
 
@@ -597,7 +685,6 @@ const User = memo(() => {
     //     connectWallect()
     //     return
     // }
-    router.push(url);
   };
 
   // 退出登录

@@ -205,6 +205,7 @@ export const WalletList = memo(() => {
       });
       showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
       localStorage.setItem('accountAddress', user.accountAddress);
+      setLoading(false);
     });
     // const res: any = await getLoginNonce({publicAddress});
     // const {redirectUrl} = router.query;

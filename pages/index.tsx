@@ -68,6 +68,11 @@ const Home: NextPage = () => {
     if (inviterId && !user.uuid) {
       setVisible(true);
     }
+    // axios({
+    //   url: 'http://www.pixso.site/summary.json',
+    //   method: 'get',
+    //   responseType: 'json',
+    // });
   }, [inviterId, user.uuid]);
 
   const logoList = [
@@ -136,7 +141,9 @@ const Home: NextPage = () => {
           Browse Vaults
           <SvgIcon color='#fff' name='right-icon' />
         </div>
-        <div className='btn btnRight'>Learn More</div>
+        <div className='btn btnRight' onClick={() => router.push('/learnMore')}>
+          Learn More
+        </div>
       </div>
       <h3>Total Value Locked</h3>
       <h2>$30,976,140.71</h2>

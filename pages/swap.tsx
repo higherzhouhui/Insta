@@ -107,6 +107,7 @@ const Swap: NextPage = () => {
         const almostMoney = getEtherPrice(transFarMoney || 0) || 0;
         await thinPancakeContract.swapExactETHForTokens(
           getEtherPrice(money || 0),
+          0,
           [WBNBADDRESS, USDTADDRESS],
           account,
           Math.floor(new Date().getTime() / 1000) + 60

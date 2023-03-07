@@ -3,10 +3,18 @@ import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
+import {approveAbi, approveContractAddress} from '@/config/approveContract';
+import {USDTADDRESS, WBNBADDRESS} from '@/config/contractAddress';
+import {
+  thinPancakeContractAddress,
+  thinPancakeAbi,
+} from '@/config/thinPancakeContract';
+import {useContract, useEthersUtils} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {MoneyContainer, SwapContainer} from '@/styles/swap';
 import {SvgIcon} from '@/uikit';
+import {getAccount, IMessageType, showTip} from '@/utils';
 
 const Swap: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -15,10 +23,12 @@ const Swap: NextPage = () => {
   const [currentTab, setCurrentTab] = useState(tabList[1]);
   const [gasPrice, setgasPrice] = useState<number>();
   const [slippage, setslippage] = useState<number>();
-  const [money, setMoney] = useState('');
-  const [transFarMoney, settransFarMoney] = useState('');
+  const [money, setMoney] = useState<number>();
+  const [transFarMoney, settransFarMoney] = useState<number>();
+  const {getContract} = useContract();
+  const {getEtherPrice, getNormalPrice} = useEthersUtils();
   const exchangeOptionList = [
-    {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
+    {label: 'USDT', value: 'USDT', img: '/static/image/img6.webp'},
     {label: 'INT', value: 'INT', img: '/static/image/int.png'},
     {label: 'LTC', value: 'LTC', img: '/static/image/ltc.png'},
     {label: 'LINK', value: 'LINK', img: '/static/image/link.png'},
@@ -30,11 +40,89 @@ const Swap: NextPage = () => {
   const [toObj, setToObj] = useState(exchangeOptionList[4]);
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const [user, _setUser] = useRecoilState(userState);
-  const handleClickBtn = () => {
-    if (!user.accountAddress) {
-      setUserDrawer({
-        open: !userDrawer.open,
-      });
+  const handleClickBtn = async () => {
+    let account = user.accountAddress;
+    if (!account) {
+      account = await getAccount();
+    }
+    if (!money) {
+      showTip({type: IMessageType.WARN, content: 'Please Enter'});
+      return;
+    }
+    // USDT TO BNB
+    if (fromObj.value === 'USDT') {
+      try {
+        setLoading(true);
+        // eslint-disable-next-line @typescript-eslint/await-thenable
+        const contract = await getContract(approveContractAddress, approveAbi);
+        const edu = await contract.allowance(
+          account,
+          thinPancakeContractAddress
+        );
+        // 获取授权额度，如果未授权则先执行授权
+        if (edu && getNormalPrice(edu._hex) === '0.0') {
+          const price = getEtherPrice(99999999999);
+          const approoveCon = await contract.approve(
+            thinPancakeContractAddress,
+            price
+          );
+        }
+
+        // eslint-disable-next-line @typescript-eslint/await-thenable
+        const thinPancakeContract = await getContract(
+          thinPancakeContractAddress,
+          thinPancakeAbi
+        );
+        // 正式链上替换
+        const almostMoney = getEtherPrice(transFarMoney || 0) || 0;
+        await thinPancakeContract.swapExactTokensForETH(
+          getEtherPrice(money || 0),
+          0,
+          [USDTADDRESS, WBNBADDRESS],
+          account,
+          Math.floor(new Date().getTime() / 1000) + 60
+        );
+        setLoading(false);
+        showTip({
+          type: IMessageType.ERROR,
+          content: 'Operation succeeded!',
+        });
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+        setLoading(false);
+      }
+    } else {
+      // BNB TO USDT
+      try {
+        setLoading(true);
+        // eslint-disable-next-line @typescript-eslint/await-thenable
+        const thinPancakeContract = await getContract(
+          thinPancakeContractAddress,
+          thinPancakeAbi
+        );
+        // 正式链上替换
+        const almostMoney = getEtherPrice(transFarMoney || 0) || 0;
+        await thinPancakeContract.swapExactETHForTokens(
+          getEtherPrice(money || 0),
+          [WBNBADDRESS, USDTADDRESS],
+          account,
+          Math.floor(new Date().getTime() / 1000) + 60
+        );
+        setLoading(false);
+        showTip({
+          type: IMessageType.ERROR,
+          content: 'Operation succeeded!',
+        });
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+        setLoading(false);
+      }
     }
   };
   const transfarFrom2To = () => {
@@ -42,9 +130,30 @@ const Swap: NextPage = () => {
     const ctransfar = JSON.parse(JSON.stringify(toObj));
     setFromObj(ctransfar);
     setToObj(cfrom);
+    if (money) {
+      const huilv = (transFarMoney || 0) / (money || 0);
+      const cmoney = money;
+      settransFarMoney(cmoney / huilv);
+    }
   };
-  const handleChangeMoney = (e: {target: {value: SetStateAction<string>}}) => {
-    setMoney(e.target.value);
+  const handleChangeMoney = async (e: {
+    target: {value: SetStateAction<string>};
+  }) => {
+    const value = e.target.value as any as number;
+    setMoney(value);
+    if (!value) {
+      settransFarMoney(0);
+      return;
+    }
+    let transMoney = 0;
+    if (fromObj.value === 'USDT') {
+      const result = await exchangeRate(value, true);
+      transMoney = getNormalPrice(result[1]) as any as number;
+    } else {
+      const result = await exchangeRate(value, false);
+      transMoney = getNormalPrice(result[1]) as any as number;
+    }
+    settransFarMoney(transMoney);
   };
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
@@ -57,9 +166,34 @@ const Swap: NextPage = () => {
       setToObj({...list[0]});
     }
   };
-  useEffect(() => {}, [currentTab]);
+
+  const exchangeRate = async (amount: number, usdt2Bnb: boolean) => {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const contract = await getContract(
+      thinPancakeContractAddress,
+      thinPancakeAbi
+    );
+    let exchangeNum = [];
+    const price = getEtherPrice(amount);
+
+    if (usdt2Bnb) {
+      exchangeNum = await contract.getAmountsOut(price, [
+        USDTADDRESS,
+        WBNBADDRESS,
+      ]);
+    } else {
+      exchangeNum = await contract.getAmountsOut(price, [
+        WBNBADDRESS,
+        USDTADDRESS,
+      ]);
+    }
+    console.log(exchangeNum);
+    return exchangeNum;
+  };
+
+  useEffect(() => {}, []);
   return (
-    <SwapContainer>
+    <SwapContainer className={loading ? 'loading' : ''}>
       <div className='tabList'>
         {tabList.map((item, index) => {
           return (
@@ -154,7 +288,7 @@ const Swap: NextPage = () => {
               <div className='top'>
                 <input
                   placeholder='0.0'
-                  type='text'
+                  type='number'
                   value={money}
                   onChange={handleChangeMoney}
                 />
@@ -222,7 +356,7 @@ const Swap: NextPage = () => {
             handleClickBtn();
           }}
         >
-          {user.accountAddress ? 'confirm' : 'Connect Wallet'}
+          {user.accountAddress ? 'Confirm' : 'Connect Wallet'}
         </div>
       </div>
     </SwapContainer>

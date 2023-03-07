@@ -206,7 +206,7 @@ export const DepositsContainer = styled.div`
     > div {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       color: #6b7280;
       height: 36px;
       font-size: 16px;
@@ -369,7 +369,7 @@ export const MyTable = styled.div`
     > div {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       color: #6b7280;
       height: 36px;
       font-size: 16px;
@@ -382,10 +382,11 @@ export const MyTable = styled.div`
     > div {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       color: #abb5c7;
       font-size: 12px;
       line-height: 32px;
+      word-break: break-all;
     }
     .avtive {
       color: #5297fe;

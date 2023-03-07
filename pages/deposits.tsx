@@ -9,11 +9,9 @@ import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
-import {abi, contractAddress} from '@/config/contract';
+import {abi, contractAddress} from '@/config/depositContract';
 import {useContract, useEthersUtils} from '@/ethers-react';
-import {useSigner} from '@/ethers-react/useSigner';
 import {userState} from '@/store/user';
-import {userDrawerState} from '@/store/userDrawer';
 import {
   DepositsContainer,
   MyTable,
@@ -43,7 +41,7 @@ const Deposits: NextPage = () => {
   const [chain, setChain] = useState('BEP20');
   const exchangeList = [25, 50, 75, 100];
   const {getContract} = useContract();
-  const {getEtherPrice} = useEthersUtils();
+  const {getEtherPrice, getNormalPrice} = useEthersUtils();
 
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
@@ -75,8 +73,6 @@ const Deposits: NextPage = () => {
     setFromObj(ctransfar);
     setToObj(cfrom);
   };
-  const {getSignMessage} = useSigner();
-  const {getHashId} = useEthersUtils();
 
   const getName = (length: number) => {
     let str = '';
@@ -202,72 +198,75 @@ const Deposits: NextPage = () => {
   const handleExchange = () => {
     setExchangeisable(false);
   };
-  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const handleClickBtn = async () => {
-    checkIsApprove();
+    if (!hasApprove) {
+      await checkIsApprove();
+    }
     if (!deposits) {
-      showTip({type: IMessageType.ERROR, content: 'Please Input '});
+      showTip({type: IMessageType.ERROR, content: 'Please Input'});
       return;
     }
-    if (!user.accountAddress) {
-      setUserDrawer({
-        open: !userDrawer.open,
-      });
-    } else {
-      const msg = getHashId(`this is a insta system`);
-      getSignMessage(msg);
-      const signature = await getSignMessage(msg);
+    setLoading(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/await-thenable
+      const contract = await getContract(contractAddress, abi);
+      const price = getEtherPrice(deposits || 0);
+      await contract.deposits(price);
       setLoading(false);
-      if (!signature.status) {
-        showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-        return;
-      }
-      setLoading(true);
-      try {
-        const contract = await getContract(contractAddress, abi);
-        const price = getEtherPrice(deposits || 0);
-        await contract.deposits(price);
-        setLoading(false);
-      } catch {
-        setLoading(false);
-      }
+      showTip({
+        type: IMessageType.ERROR,
+        content: 'Operation succeeded!',
+      });
+    } catch (error: any) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: error?.data?.message || error?.message,
+      });
+      setLoading(false);
     }
   };
   const checkIsApprove = async () => {
-    const msg = getHashId(`approve insta`);
-    getSignMessage(msg);
-    const signature = await getSignMessage(msg);
-    setLoading(false);
-    if (!signature.status) {
-      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-      return;
-    }
+    setLoading(true);
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const contract = await getContract(approveContractAddress, approveAbi);
     const account = await getAccount();
     if (account) {
       try {
-        const edu = await contract.allowance(
-          '0x846CaaAfC29E588bFEB662A83D73ed54FF11649B',
-          account
-        );
+        const edu = await contract.allowance(account, contractAddress);
         console.log(edu);
         const price = getEtherPrice(99999999999);
-        const approoveCon = await contract.approve(account, price);
+        const approoveCon = await contract.approve(contractAddress, price);
         console.log(approoveCon);
         setHasApprove(true);
-      } catch {
+        setLoading(false);
+      } catch (error: any) {
         showTip({
           type: IMessageType.ERROR,
-          content: 'please switch to Binance Smart Chain Testnet!',
+          content: error?.data?.message || error?.message,
         });
+        setLoading(false);
       }
     } else {
       showTip({type: IMessageType.ERROR, content: 'address error'});
+      setLoading(false);
+    }
+  };
+
+  const checkHasAllowance = async () => {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const contract = await getContract(approveContractAddress, approveAbi);
+    const account = await getAccount();
+    if (account) {
+      const edu = await contract.allowance(account, contractAddress);
+      if (edu && getNormalPrice(edu._hex) !== '0.0') {
+        setHasApprove(true);
+      }
     }
   };
 
   useEffect(() => {
     initRequest();
+    checkHasAllowance();
     setCopyLink(
       `http://${location.host}?inviterId=${
         user?.uuid || '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
@@ -321,8 +320,6 @@ const Deposits: NextPage = () => {
           <div className='inputWrapper'>
             <input
               className='inputDeposit'
-              max={1000}
-              min={100}
               placeholder='Please Enter'
               type='number'
               value={deposits}
@@ -336,12 +333,6 @@ const Deposits: NextPage = () => {
               <span>USDT</span>
             </div>
             <div className='bep'>BEP20</div>
-            {/* <select value={chain} onChange={onChangeChain}>
-              <option value='ERC20'>ERC20</option>
-              <option value='ERC720'>ERC720</option>
-              <option value='ERC1155'>ERC1155</option>
-              <option value='ERC777'>ERC777</option>
-            </select> */}
           </div>
         </div>
         <div className='desc'>

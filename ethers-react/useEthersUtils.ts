@@ -14,6 +14,10 @@ export const useEthersUtils = () => {
     return utils.parseUnits(price.toString(), 'ether');
   };
 
+  // price to number
+  const getNormalPrice = (price: ethers.BigNumberish) => {
+    return utils.formatEther(price);
+  };
   // get network
   const getNetwork = async (provider: ethers.providers.Web3Provider) => {
     const res = await provider.getNetwork();
@@ -34,5 +38,6 @@ export const useEthersUtils = () => {
     getHashId,
     getEtherPrice,
     getNetwork,
+    getNormalPrice,
   };
 };

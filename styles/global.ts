@@ -113,32 +113,44 @@ export const GlobalStyle = createGlobalStyle`
     #nprogress {
         .bar {
             background: #fff;
+            height: 4px;
         }
     }
     .loading {
-        position: fixed;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        &::after {
-            position: absolute;
-            z-index: 999;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #555;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            margin-left: -10px;
-            margin-top: -10px;
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            animation: spin 1s linear infinite;
-            transform-origin: center;
-            content: ''
-        }
-    }
+		position: relative;
+		max-height: 100vh;
+		&::before {
+			position: fixed;
+			width: 100px;
+			height: 100px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -45%);
+			background: #333;
+			content: "loading...";
+			color: #fff;
+			text-align: center;
+			box-sizing: border-box;
+			padding-top: 70px;
+			z-index: 999;
+			border-radius: 20px;
+		}
+		&::after {
+			position: fixed;
+			z-index: 999;
+			width: 20px;
+			height: 20px;
+			border: 2px solid #555;
+			border-top: 2px solid #f3f3f3;
+			border-radius: 50%;
+			top: 50%;
+			left: 50%;
+			margin-left: -10px;
+			margin-top: -10px;
+			content: "";
+			animation: spin 1s linear infinite;
+		}
+	}
     
 	@keyframes spin {
 		0% {

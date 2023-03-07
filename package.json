@@ -1,5 +1,5 @@
 {
-	"name": "capsid-web",
+	"name": "insta",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -14,7 +14,7 @@
 		"start:dev": "APP_ENV=development node server.js",
 		"start:test": "APP_ENV=test node server.js",
 		"start:prod": "APP_ENV=production node server.js",
-		"pm2": "pm2 start npm --name 'pd1-web' -- start",
+		"pm2": "pm2 start npm --name 'insta' -- start",
 		"static-run": "next export && serve out",
 		"lint": "next lint",
 		"build:win": "set APP_ENV=production && next build"

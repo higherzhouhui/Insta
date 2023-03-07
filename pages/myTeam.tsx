@@ -91,7 +91,7 @@ const MyTeam: NextPage = () => {
             <Statistic
               formatter={formatter}
               suffix='usdt'
-              value={requestData.other_deposits_total || 0}
+              value={requestData.other_deposits || 0}
             />
           </div>
         </div>

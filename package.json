@@ -6,7 +6,7 @@
 		"dev": "node server.js",
 		"dev:test": "APP_ENV=test node server.js",
 		"dev:prod": "APP_ENV=production node server.js",
-		"build": "set APP_ENV=production && next build",
+		"build": "APP_ENV=production next build",
 		"build:dev": "APP_ENV=development next build",
 		"build:test": "APP_ENV=test next build",
 		"build:prod": "APP_ENV=production next build",

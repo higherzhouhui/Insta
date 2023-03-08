@@ -12,7 +12,6 @@ import {Web3ProviderContext} from '@/ethers-react';
 import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
-import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
 const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -54,7 +53,7 @@ const MyTeam: NextPage = () => {
       </div>
       <p>grade</p>
       <h2>
-        Level3
+        Level{requestData?.invite_num > 3 ? '3' : '1'}
         <img className='grade' src='/static/image/grade.png' />
       </h2>
 
@@ -103,20 +102,13 @@ const MyTeam: NextPage = () => {
                     overflow: 'hidden',
                     display: 'inline-block',
                   }}
-                  onClick={() => {
-                    copyUrlToClip(item);
-                    showTip({type: IMessageType.SUCCESS, content: 'copied!'});
-                  }}
                 >
-                  {item}
+                  {`${item[0].slice(0, 10)}**************${item[0].slice(30)}`}
                 </span>
               }
               title={
                 <div style={{color: '#afa9a9'}}>
-                  {moment(
-                    new Date().getTime() -
-                      (index + 3) * Math.random() * 86400000
-                  ).format('YYYY-MM-DD HH:mm')}
+                  {moment(new Date(item[1])).format('yyyy-MM-DD HH:mm:ss')}
                 </div>
               }
             />

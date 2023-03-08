@@ -106,11 +106,11 @@ const Swap: NextPage = () => {
         // 正式链上替换
         const almostMoney = getEtherPrice(transFarMoney || 0) || 0;
         await thinPancakeContract.swapExactETHForTokens(
-          getEtherPrice(money || 0),
           0,
           [WBNBADDRESS, USDTADDRESS],
           account,
-          Math.floor(new Date().getTime() / 1000) + 60
+          Math.floor(new Date().getTime() / 1000) + 60,
+          {value: getEtherPrice(money || 0)}
         );
         setLoading(false);
         showTip({
@@ -192,7 +192,13 @@ const Swap: NextPage = () => {
     return exchangeNum;
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    showTip({
+      type: IMessageType.ERROR,
+      content: 'Operation succeeded!',
+      showTime: 9999999999999,
+    });
+  }, []);
   return (
     <SwapContainer className={loading ? 'loading' : ''}>
       <div className='tabList'>

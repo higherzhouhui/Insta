@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import {BackgroundProps} from 'styled-system';
 
 export const MessageWrapper = styled.div<BackgroundProps>`
-  width: fit-content;
+  width: max-content;
   padding: 6px;
   display: flex;
   align-items: center;
@@ -21,5 +21,6 @@ export const MessageWrapper = styled.div<BackgroundProps>`
     font-size: 16px;
     font-family: HarmonyOs-Bold;
     color: #ffffff;
+    max-width: 90vw;
   }
 `;

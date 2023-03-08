@@ -7,6 +7,7 @@ import type {NextPage} from 'next';
 
 // eslint-disable-next-line import/order
 import {apiUrl} from '@/config';
+import {staticHomeData} from '@/config/staticData';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {HomeContainer, InviterComp} from '@/styles/home';
@@ -617,7 +618,7 @@ const Home: NextPage = () => {
       </div>
       <h1>Top Vaults</h1>
       <h2>Newest</h2>
-      {[...Array(5)].map((item, index) => {
+      {staticHomeData.newest.map((item, index) => {
         return (
           <div className='product' key={index}>
             <div className='left'>
@@ -635,23 +636,23 @@ const Home: NextPage = () => {
               </div>
               <div />
               <div className='title'>
-                <div className='top'>
-                  {titleList[Math.round(Math.random() * 10)]}
-                </div>
+                <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
                 <div className='bottom'>
-                  {descList[Math.round(Math.random() * 10)]}
+                  {`${item.token0Symbol || 'WBNB'}-${
+                    item.token1Symbol || 'BiSwap'
+                  }`}
                 </div>
               </div>
             </div>
             <div className='right'>
-              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );
       })}
 
       <h2>Highest APYS</h2>
-      {[...Array(5)].map((item, index) => {
+      {staticHomeData.topAPYs.map((item, index) => {
         return (
           <div className='product' key={index}>
             <div className='left'>
@@ -669,22 +670,22 @@ const Home: NextPage = () => {
               </div>
               <div />
               <div className='title'>
-                <div className='top'>
-                  {titleList[Math.round(Math.random() * 10)]}
-                </div>
+                <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
                 <div className='bottom'>
-                  {descList[Math.round(Math.random() * 10)]}
+                  {`${item.token0Symbol || 'WBNB'}-${
+                    item.token1Symbol || 'BiSwap'
+                  }`}
                 </div>
               </div>
             </div>
             <div className='right'>
-              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );
       })}
       <h2>Hottest(last 7 days)</h2>
-      {[...Array(5)].map((item, index) => {
+      {staticHomeData.hottest.map((item, index) => {
         return (
           <div className='product' key={index}>
             <div className='left'>
@@ -702,22 +703,22 @@ const Home: NextPage = () => {
               </div>
               <div />
               <div className='title'>
-                <div className='top'>
-                  {titleList[Math.round(Math.random() * 10)]}
-                </div>
+                <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
                 <div className='bottom'>
-                  {descList[Math.round(Math.random() * 10)]}
+                  {`${item.token0Symbol || 'WBNB'}-${
+                    item.token1Symbol || 'BiSwap'
+                  }`}
                 </div>
               </div>
             </div>
             <div className='right'>
-              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );
       })}
       <h2>Stablecoins</h2>
-      {[...Array(5)].map((item, index) => {
+      {staticHomeData.topStablecoins.map((item, index) => {
         return (
           <div className='product' key={index}>
             <div className='left'>
@@ -735,16 +736,16 @@ const Home: NextPage = () => {
               </div>
               <div />
               <div className='title'>
-                <div className='top'>
-                  {titleList[Math.round(Math.random() * 10)]}
-                </div>
+                <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
                 <div className='bottom'>
-                  {descList[Math.round(Math.random() * 10)]}
+                  {`${item.token0Symbol || 'WBNB'}-${
+                    item.token1Symbol || 'BiSwap'
+                  }`}
                 </div>
               </div>
             </div>
             <div className='right'>
-              {Math.round(newestObj.number + Math.random() * 900) / 100}% APY
+              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );

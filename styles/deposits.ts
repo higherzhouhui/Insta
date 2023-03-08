@@ -367,7 +367,7 @@ export const MyTable = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     > div {
-      display: flex;
+      display: block;
       align-items: center;
       justify-content: center;
       color: #6b7280;
@@ -380,13 +380,17 @@ export const MyTable = styled.div`
     grid-template-columns: repeat(4, 1fr);
     border-top: 1px solid #2a334d;
     > div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block;
       color: #abb5c7;
       font-size: 12px;
       line-height: 32px;
       word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      a {
+        color: #5297fe;
+      }
     }
     .avtive {
       color: #5297fe;

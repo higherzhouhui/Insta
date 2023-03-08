@@ -22,6 +22,7 @@ import {Modal, SvgIcon} from '@/uikit';
 import {copyUrlToClip, getAccount, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
+import {staticRollUpData} from '@/config/staticData';
 
 const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -297,14 +298,19 @@ const Deposits: NextPage = () => {
           return (
             <SwiperSlide key={index}>
               <MyTable>
-                {dataSource
+                {staticRollUpData
                   .slice(index * 4, (index + 1) * 4)
-                  .map((citem: any, cindex: any) => {
+                  .map((citem, cindex: any) => {
                     return (
                       <div className='content' key={cindex}>
-                        {Object.keys(citem).map((ckey) => {
-                          return <div key={ckey}>{citem[ckey]}</div>;
-                        })}
+                        <div>{citem.chain}</div>
+                        <div>
+                          <a href={citem.url} rel='noreferrer' target='_blank'>
+                            {citem.projectName || citem.project || 'LiDo'}
+                          </a>
+                        </div>
+                        <div>{`$${citem.tvlUsd}b`}</div>
+                        <div>{`${citem.apy}%`}</div>
                       </div>
                     );
                   })}

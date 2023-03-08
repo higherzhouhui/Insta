@@ -1,5 +1,5 @@
 import {ethers} from 'ethers';
-import {useState, useEffect, SetStateAction, useContext} from 'react';
+import {useState, SetStateAction, useContext, useEffect} from 'react';
 
 import type {NextPage} from 'next';
 
@@ -50,19 +50,6 @@ const Swap: NextPage = () => {
     if (fromObj.value === 'USDT') {
       try {
         setLoading(true);
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const res = await provider.getNetwork();
-        if (res.chainId !== USECHAINID) {
-          try {
-            await getNetwork(provider);
-          } catch (error: any) {
-            showTip({
-              type: IMessageType.ERROR,
-              content: error?.data?.message || error?.message,
-            });
-          }
-          return;
-        }
         // eslint-disable-next-line @typescript-eslint/await-thenable
         const contract = await getContract(approveContractAddress, approveAbi);
         const edu = await contract.allowance(
@@ -202,13 +189,25 @@ const Swap: NextPage = () => {
     return exchangeNum;
   };
 
+  const shiftNetWork = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const res = await provider.getNetwork();
+    if (res.chainId !== USECHAINID) {
+      try {
+        await getNetwork(provider);
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+      }
+    }
+  };
+
   useEffect(() => {
-    showTip({
-      type: IMessageType.ERROR,
-      content: 'Operation succeeded!',
-      showTime: 9999999999999,
-    });
+    shiftNetWork();
   }, []);
+
   return (
     <SwapContainer className={loading ? 'loading' : ''}>
       <div className='tabList'>

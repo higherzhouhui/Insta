@@ -6,7 +6,7 @@ import {AddFundContainer} from './styles';
 
 import {Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
-import {Modal, Button} from '@/uikit';
+import {Modal} from '@/uikit';
 import {copyUrlToClip, showTip, IMessageType} from '@/utils';
 
 type IProps = {
@@ -39,14 +39,14 @@ export const AddFundModal: FC<IProps> = memo(({show, onClose}) => {
         </p>
         <div className='input-box'>
           <div className='address-box'>{connectedAccount}</div>
-          <Button
-            height={44}
-            variant='primary'
-            width={132}
-            onClick={handleCopyClick}
+          <div
+            className='copy'
+            onClick={() => {
+              handleCopyClick();
+            }}
           >
             Copy
-          </Button>
+          </div>
         </div>
         <p className='tip'>
           Only send ETH or any other ERC-20 token to this address.

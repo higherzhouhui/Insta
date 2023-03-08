@@ -56,5 +56,15 @@ export const AddFundContainer = styled.div`
       padding: 0 6px;
       margin-bottom: 12px;
     }
+    .copy {
+      width: 120px;
+      height: 40px;
+      background: rgb(119, 108, 255);
+      color: #fff;
+      font-size: 14px;
+      line-height: 40px;
+      text-align: center;
+      border-radius: 8px;
+    }
   }
 `;

@@ -269,8 +269,12 @@ const Deposits: NextPage = () => {
   useEffect(() => {
     initRequest();
     checkHasAllowance();
-    setCopyLink(`http://${location.host}?inviterId=${user?.uuid || ''}`);
-  }, []);
+    let link = `http://${location.host}`;
+    if (user.uuid && connectedAccount) {
+      link = `http://${location.host}?inviterId=${user?.uuid || ''}`;
+    }
+    setCopyLink(link);
+  }, [connectedAccount]);
   return (
     <DepositsContainer className={loading ? 'loading' : ''}>
       <h2>Scanning</h2>

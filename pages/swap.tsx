@@ -1,17 +1,15 @@
-import {useState, useEffect, SetStateAction} from 'react';
-import {useRecoilState} from 'recoil';
+import {ethers} from 'ethers';
+import {useState, useEffect, SetStateAction, useContext} from 'react';
 
 import type {NextPage} from 'next';
 
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
-import {USDTADDRESS, WBNBADDRESS} from '@/config/contractAddress';
+import {USDTADDRESS, USECHAINID, WBNBADDRESS} from '@/config/contractAddress';
 import {
   thinPancakeContractAddress,
   thinPancakeAbi,
 } from '@/config/thinPancakeContract';
-import {useContract, useEthersUtils} from '@/ethers-react';
-import {userState} from '@/store/user';
-import {userDrawerState} from '@/store/userDrawer';
+import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {MoneyContainer, SwapContainer} from '@/styles/swap';
 import {SvgIcon} from '@/uikit';
 import {getAccount, IMessageType, showTip} from '@/utils';
@@ -26,7 +24,7 @@ const Swap: NextPage = () => {
   const [money, setMoney] = useState<number>();
   const [transFarMoney, settransFarMoney] = useState<number>();
   const {getContract} = useContract();
-  const {getEtherPrice, getNormalPrice} = useEthersUtils();
+  const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/img6.webp'},
     {label: 'INT', value: 'INT', img: '/static/image/int.png'},
@@ -38,10 +36,9 @@ const Swap: NextPage = () => {
   ];
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[4]);
-  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
-  const [user, _setUser] = useRecoilState(userState);
+  const {connectedAccount} = useContext(Web3ProviderContext);
   const handleClickBtn = async () => {
-    let account = user.accountAddress;
+    let account = connectedAccount;
     if (!account) {
       account = await getAccount();
     }
@@ -53,6 +50,19 @@ const Swap: NextPage = () => {
     if (fromObj.value === 'USDT') {
       try {
         setLoading(true);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const res = await provider.getNetwork();
+        if (res.chainId !== USECHAINID) {
+          try {
+            await getNetwork(provider);
+          } catch (error: any) {
+            showTip({
+              type: IMessageType.ERROR,
+              content: error?.data?.message || error?.message,
+            });
+          }
+          return;
+        }
         // eslint-disable-next-line @typescript-eslint/await-thenable
         const contract = await getContract(approveContractAddress, approveAbi);
         const edu = await contract.allowance(
@@ -363,7 +373,7 @@ const Swap: NextPage = () => {
             handleClickBtn();
           }}
         >
-          {user.accountAddress ? 'Confirm' : 'Connect Wallet'}
+          {connectedAccount ? 'Confirm' : 'Connect Wallet'}
         </div>
       </div>
     </SwapContainer>

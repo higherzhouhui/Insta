@@ -18,7 +18,7 @@ export const AddFundContainer = styled.div`
     height: 22px;
   }
   h2 {
-    font-size: 18px;
+    font-size: 16px;
     font-family: HarmonyOs-Bold;
     color: #000000;
   }
@@ -48,7 +48,7 @@ export const AddFundContainer = styled.div`
       border-radius: 8px;
       opacity: 1;
       border: 1px solid #d2d2d2;
-      font-size: 14px;
+      font-size: 12px;
       font-family: HarmonyOs-Medium;
       color: #989898;
       text-align: center;

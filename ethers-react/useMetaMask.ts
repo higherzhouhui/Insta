@@ -95,7 +95,9 @@ export const useMetaMask = () => {
       // throw new Error("No ethereum object.");
     }
   };
-
+  const setAccount = (account: string | null) => {
+    setConnectedAccount(account);
+  };
   // connect wallect
   const connectWallect = async (
     callback?: (account: string | null) => void
@@ -152,6 +154,7 @@ export const useMetaMask = () => {
     isConnected,
     connectedAccount,
     connectedChainId,
+    setAccount,
     switchWalletNetwork,
     checkIfWalletIsInstalled,
     checkIfWalletIsConnected,

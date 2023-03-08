@@ -2,7 +2,7 @@ import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
-import {memo, useEffect} from 'react';
+import {memo, useContext, useEffect} from 'react';
 import {useRecoilState} from 'recoil';
 
 import {CommonLayout} from './CommonLayout';
@@ -11,6 +11,7 @@ import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
 import {apiUrl} from '@/config';
+import {useMetaMask, Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {getAccount, progressInit} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
@@ -19,7 +20,8 @@ const Header = dynamic(import('./header'), {ssr: false});
 export const Layout = memo(({children}) => {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
-
+  const {setAccount} = useMetaMask();
+  const {connectedAccount} = useContext(Web3ProviderContext);
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -35,6 +37,9 @@ export const Layout = memo(({children}) => {
     progressInit(router);
   }, []);
   const judgeIsLogin = async () => {
+    if (connectedAccount) {
+      return;
+    }
     const currentAccount = await getAccount();
     if (!currentAccount) {
       setUser({
@@ -54,6 +59,7 @@ export const Layout = memo(({children}) => {
       });
       return;
     }
+    setAccount(currentAccount);
     axios({
       url: `${apiUrl}/api/public/v1/users/info`,
       method: 'get',

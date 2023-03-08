@@ -323,12 +323,6 @@ const DownList: FC<IDownListProps> = memo(() => {
   const {disconnectWallect} = useMetaMask();
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
 
-  // useEffect(() => {
-  //     if (user.token && !connectedAccount) {
-  //         handleLogoutClick()
-  //     }
-  // }, [connectedAccount])
-
   // 退出登录
   const handleLogoutClick = async () => {
     localStorage.removeItem('x-token');

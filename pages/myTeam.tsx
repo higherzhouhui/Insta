@@ -2,46 +2,30 @@ import {Statistic, List, Avatar} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import CountUp from 'react-countup';
-import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
-import {userState} from '@/store/user';
+import {Web3ProviderContext} from '@/ethers-react';
 import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
 import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
-interface DataType {
-  gender: string;
-  name: {
-    title: string;
-    first: string;
-    last: string;
-  };
-  email: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
-  nat: string;
-}
 const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [dataSource, setDataSource] = useState<any>([]);
-  const [user, setUser] = useRecoilState(userState);
+  const {connectedAccount} = useContext(Web3ProviderContext);
+
   const [requestData, setRequestData] = useState<any>({});
   const initRequest = () => {
     setLoading(true);
     axios({
       url: `${apiUrl}/api/public/v1/users/team`,
       method: 'get',
-      params: {wallet: user.accountAddress},
+      params: {wallet: connectedAccount},
     }).then((res: any) => {
       setLoading(false);
       if (res?.data?.meta?.status === 200) {

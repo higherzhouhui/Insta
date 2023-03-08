@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {useRouter} from 'next/router';
-import {useState, useEffect, SetStateAction} from 'react';
+import {useState, useEffect, SetStateAction, useContext} from 'react';
 import {useRecoilState} from 'recoil';
 import {Autoplay} from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -9,9 +9,10 @@ import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
+import {USECHAINID} from '@/config/contractAddress';
 import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
-import {useContract, useEthersUtils} from '@/ethers-react';
+import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {
   DepositsContainer,
@@ -20,9 +21,10 @@ import {
   WithDrawContainer,
 } from '@/styles/deposits';
 import {Modal, SvgIcon} from '@/uikit';
-import {copyUrlToClip, getAccount, IMessageType, showTip} from '@/utils';
+import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
+import {ethers} from 'ethers';
 
 const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -39,10 +41,10 @@ const Deposits: NextPage = () => {
   const [totalAddress, settotalAddress] = useState<number>(0);
   const [teamTotalDeposits, setteamTotalDeposits] = useState<number>(0);
   const [depositError, setDepositError] = useState(false);
-  const [chain, setChain] = useState('BEP20');
   const exchangeList = [25, 50, 75, 100];
   const {getContract} = useContract();
-  const {getEtherPrice, getNormalPrice} = useEthersUtils();
+  const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
+  const {connectedAccount} = useContext(Web3ProviderContext);
 
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
@@ -56,7 +58,6 @@ const Deposits: NextPage = () => {
   const [hasApprove, setHasApprove] = useState(false);
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[1]);
-  const zm = ['A', 'B', 'C', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'G'];
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
     const list = exchangeOptionList.filter((item) => {
@@ -75,35 +76,12 @@ const Deposits: NextPage = () => {
     setToObj(cfrom);
   };
 
-  const getName = (length: number) => {
-    let str = '';
-    Array(length)
-      .fill('')
-      .forEach((_item) => {
-        str += zm[Math.round(Math.random() * 10)];
-      });
-    return str;
-  };
-  const [dataSource, setDataSource] = useState<any>([]);
   const initRequest = () => {
-    const arr: any[] = [];
-    Array(12)
-      .fill('')
-      .forEach((_item, index) => {
-        arr.push({
-          pool: getName(6),
-          project: getName(10),
-          tvl: `$${Math.round(Math.random() * 100) / 10}b`,
-          apy: `${Math.round(Math.random() * 190) / 100}%`,
-        });
-      });
-    setDataSource(arr);
-
     let totalDeposit = 0;
     axios({
       url: `${apiUrl}/api/public/v1/users/deposit`,
       method: 'get',
-      params: {wallet: user.accountAddress},
+      params: {wallet: connectedAccount},
     }).then((res) => {
       const array = res?.data?.data || [];
       array.forEach((item: any) => {
@@ -115,7 +93,7 @@ const Deposits: NextPage = () => {
     axios({
       url: `${apiUrl}/api/public/v1/users/income`,
       method: 'get',
-      params: {wallet: user.accountAddress},
+      params: {wallet: connectedAccount},
     }).then((res) => {
       const array = res?.data?.data || [];
       array.forEach((item: any) => {
@@ -127,7 +105,7 @@ const Deposits: NextPage = () => {
     axios({
       url: `${apiUrl}/api/public/v1/users/team`,
       method: 'get',
-      params: {wallet: user.accountAddress},
+      params: {wallet: connectedAccount},
     }).then((res: any) => {
       if (res?.data?.meta?.status === 200) {
         const data = res?.data?.data;
@@ -171,9 +149,7 @@ const Deposits: NextPage = () => {
       sorter: true,
     },
   ];
-  const onChangeChain = (e: {target: {value: SetStateAction<string>}}) => {
-    setChain(e.target.value);
-  };
+
   const onChangeDeposits = (e: {target: {value: SetStateAction<string>}}) => {
     let value = e.target.value as any;
     if (value > 1000) {
@@ -228,11 +204,23 @@ const Deposits: NextPage = () => {
   };
   const checkIsApprove = async () => {
     setLoading(true);
-    // eslint-disable-next-line @typescript-eslint/await-thenable
-    const contract = await getContract(approveContractAddress, approveAbi);
-    const account = await getAccount();
-    if (account) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const res = await provider.getNetwork();
+    if (res.chainId !== USECHAINID) {
       try {
+        await getNetwork(provider);
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+      }
+      return;
+    }
+    const account = connectedAccount;
+    if (!account) {
+      try {
+        const contract = await getContract(approveContractAddress, approveAbi);
         const edu = await contract.allowance(account, contractAddress);
         console.log(edu);
         const price = getEtherPrice(99999999999);
@@ -255,8 +243,21 @@ const Deposits: NextPage = () => {
 
   const checkHasAllowance = async () => {
     // eslint-disable-next-line @typescript-eslint/await-thenable
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const res = await provider.getNetwork();
+    if (res.chainId !== USECHAINID) {
+      try {
+        await getNetwork(provider);
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+      }
+      return;
+    }
     const contract = await getContract(approveContractAddress, approveAbi);
-    const account = await getAccount();
+    const account = connectedAccount;
     if (account) {
       const edu = await contract.allowance(account, contractAddress);
       if (edu && getNormalPrice(edu._hex) !== '0.0') {
@@ -264,15 +265,11 @@ const Deposits: NextPage = () => {
       }
     }
   };
-
+  // '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
   useEffect(() => {
     initRequest();
     checkHasAllowance();
-    setCopyLink(
-      `http://${location.host}?inviterId=${
-        user?.uuid || '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
-      }`
-    );
+    setCopyLink(`http://${location.host}?inviterId=${user?.uuid || ''}`);
   }, []);
   return (
     <DepositsContainer className={loading ? 'loading' : ''}>

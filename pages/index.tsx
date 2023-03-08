@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {useRouter} from 'next/router';
-import {useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
@@ -8,8 +8,8 @@ import type {NextPage} from 'next';
 // eslint-disable-next-line import/order
 import {apiUrl} from '@/config';
 import {staticHomeData} from '@/config/staticData';
+import {Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
-import {userDrawerState} from '@/store/userDrawer';
 import {HomeContainer, InviterComp} from '@/styles/home';
 import {Modal, SvgIcon} from '@/uikit';
 import {getAccount, IMessageType, showTip} from '@/utils';
@@ -19,14 +19,15 @@ import 'swiper/css';
 const Home: NextPage = () => {
   const homeRef: any = useRef(null);
   const [visible, setVisible] = useState(false);
-  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
+  const {connectedAccount} = useContext(Web3ProviderContext);
+
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const {inviterId} = router.query;
   const [loading, setLoading] = useState(false);
   const handleClickBtn = async () => {
     setLoading(true);
-    let accountAddress = user.accountAddress;
+    let accountAddress = connectedAccount;
     if (!accountAddress) {
       // eslint-disable-next-line require-atomic-updates
       accountAddress = await getAccount();
@@ -65,16 +66,31 @@ const Home: NextPage = () => {
     });
     setVisible(false);
   };
-  useEffect(() => {
-    if (inviterId && !user.uuid) {
-      setVisible(true);
+
+  const judgeIsRegister = async (inviterId: any) => {
+    if (inviterId) {
+      if (connectedAccount) {
+        setVisible(false);
+        const res = await axios({
+          url: `${apiUrl}/api/public/v1/users/info`,
+          method: 'get',
+          params: {wallet: connectedAccount},
+        });
+        console.log(res?.data?.meta?.status, 'status');
+        if (res?.data?.meta?.status === 200) {
+          setVisible(false);
+        } else {
+          setVisible(true);
+        }
+      } else {
+        setVisible(true);
+      }
     }
-    // axios({
-    //   url: 'http://www.pixso.site/summary.json',
-    //   method: 'get',
-    //   responseType: 'json',
-    // });
-  }, [inviterId, user.uuid]);
+  };
+
+  useEffect(() => {
+    judgeIsRegister(inviterId);
+  }, [inviterId, connectedAccount]);
 
   const logoList = [
     '/static/image/img1.webp',

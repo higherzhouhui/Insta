@@ -1,7 +1,9 @@
 import {ethers} from 'ethers';
 import {NextRouter} from 'next/router';
 import NProgress from 'nprogress';
+
 import 'nprogress/nprogress.css';
+import {showTip} from './event';
 /**
  * 防抖
  */
@@ -59,13 +61,18 @@ export const progressInit = (router: NextRouter) => {
 };
 
 export const getAccount = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  let currentAccount = '';
   try {
-    const accounts = await provider.send('eth_requestAccounts', []);
-    currentAccount = accounts[0];
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    let currentAccount = '';
+    try {
+      const accounts = await provider.send('eth_requestAccounts', []);
+      currentAccount = accounts[0];
+    } catch {
+      currentAccount = '';
+    }
+    return currentAccount;
   } catch {
-    currentAccount = '';
+    showTip({content: 'Please Install MetaMask'});
+    return '';
   }
-  return currentAccount;
 };

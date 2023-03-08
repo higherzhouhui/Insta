@@ -2,6 +2,8 @@ import {ethers, utils} from 'ethers';
 
 import {useMetaMask} from './useMetaMask';
 
+import {USECHAINID} from '@/config/contractAddress';
+
 export const useEthersUtils = () => {
   const {switchWalletNetwork} = useMetaMask();
   // get hash id
@@ -23,13 +25,13 @@ export const useEthersUtils = () => {
     const res = await provider.getNetwork();
     const NODE_ENV = process.env.NODE_ENV;
     if (NODE_ENV && NODE_ENV === 'production') {
-      if (res.chainId !== 97) {
-        switchWalletNetwork('bnbt');
+      if (res.chainId !== USECHAINID) {
+        switchWalletNetwork(`0x${Number(USECHAINID).toString(16)}`);
       }
     }
     if (NODE_ENV && NODE_ENV !== 'production') {
-      if (res.chainId !== 97) {
-        switchWalletNetwork('bnbt');
+      if (res.chainId !== USECHAINID) {
+        switchWalletNetwork(`0x${Number(USECHAINID).toString(16)}`);
       }
     }
   };

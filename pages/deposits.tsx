@@ -10,6 +10,7 @@ import type {NextPage} from 'next';
 import {apiUrl} from '@/config';
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
 import {abi, contractAddress} from '@/config/depositContract';
+import {staticRollUpData} from '@/config/staticData';
 import {useContract, useEthersUtils} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {
@@ -22,7 +23,6 @@ import {Modal, SvgIcon} from '@/uikit';
 import {copyUrlToClip, getAccount, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
-import {staticRollUpData} from '@/config/staticData';
 
 const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);

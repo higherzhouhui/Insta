@@ -13,6 +13,7 @@ import {approveAbi, approveContractAddress} from '@/config/approveContract';
 import {USECHAINID} from '@/config/contractAddress';
 import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
+import {withDrawAbi, withDrawContractAddress} from '@/config/withDrawContract';
 import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {
@@ -44,7 +45,7 @@ const Deposits: NextPage = () => {
   const exchangeList = [25, 50, 75, 100];
   const {getContract} = useContract();
   const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
-  const {connectedAccount} = useContext(Web3ProviderContext);
+  const {connectedAccount, balance} = useContext(Web3ProviderContext);
 
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
@@ -169,8 +170,59 @@ const Deposits: NextPage = () => {
     copyUrlToClip(url);
     showTip({type: IMessageType.SUCCESS, content: 'copied'});
   };
-  const handleWithdraw = () => {
-    setWithDrawVisable(false);
+  const handleWithdraw = async () => {
+    setLoading(true);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const res = await provider.getNetwork();
+    if (res.chainId !== USECHAINID) {
+      try {
+        await getNetwork(provider);
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+      }
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const result: any = await axios({
+      url: `${apiUrl}/api/public/v1/users/withdraw`,
+      method: 'get',
+      params: {wallet: connectedAccount, amount: withDrawNumber},
+    });
+    setLoading(false);
+    if (result?.data?.meta?.status === 200) {
+      const {amount, r, s, v, token, timestamp, orderid, total} =
+        result.data.data;
+      setLoading(true);
+      console.log('amount:', getEtherPrice(0.0001));
+      try {
+        // eslint-disable-next-line prettier/prettier
+      const contract = await getContract(withDrawContractAddress, withDrawAbi);
+        await contract.withdraw(
+          token,
+          total,
+          getEtherPrice(0.0001),
+          orderid,
+          timestamp,
+          r,
+          s,
+          v
+        );
+        setLoading(false);
+        showTip({type: IMessageType.SUCCESS, content: 'Operation succeeded!'});
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+        setLoading(false);
+      }
+    } else {
+      showTip({type: IMessageType.ERROR, content: result?.data?.meta?.msg});
+    }
   };
   const handleExchange = () => {
     setExchangeisable(false);
@@ -383,7 +435,7 @@ const Deposits: NextPage = () => {
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>Balance</div>
-            <div className='bot'>$251354.626</div>
+            <div className='bot'>${balance}</div>
           </div>
           {/* <div className='right'>+2.5%</div> */}
         </div>
@@ -396,6 +448,7 @@ const Deposits: NextPage = () => {
             <div
               className='top'
               onClick={() => {
+                setWithDrawNumber();
                 setWithDrawVisable(true);
               }}
             >
@@ -406,7 +459,7 @@ const Deposits: NextPage = () => {
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>INT</div>
-            <div className='bot'>9548.332</div>
+            <div className='bot'>0</div>
           </div>
           <div className='right'>
             <div
@@ -469,7 +522,7 @@ const Deposits: NextPage = () => {
           setWithDrawVisable(false);
         }}
       >
-        <WithDrawContainer>
+        <WithDrawContainer className={loading ? 'loading' : ''}>
           <h2>Withdraw</h2>
           <input
             placeholder='Please Enter'

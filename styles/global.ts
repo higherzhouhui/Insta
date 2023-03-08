@@ -2,7 +2,7 @@ import {createGlobalStyle} from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
     font-display: auto;
-    @font-face {
+    /* @font-face {
         font-family: 'HarmonyOs-Black';
         src: url('/static/font/HarmonyOS_Sans_Black.ttf');
     }
@@ -26,7 +26,7 @@ export const GlobalStyle = createGlobalStyle`
     @font-face {
         font-family: 'HarmonyOs-Thin';
         src: url('/static/font/HarmonyOS_Sans_Thin.ttf');
-    }
+    } */
 
     body, div, dl, dt, dd, ul, li, h1, h2, h3, h4, h5, h6, input, p, form, a, textarea, header{
         margin: 0;

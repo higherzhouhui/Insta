@@ -269,7 +269,7 @@ const Deposits: NextPage = () => {
   useEffect(() => {
     initRequest();
     checkHasAllowance();
-    let link = `http://${location.host}`;
+    let link = '';
     if (user.uuid && connectedAccount) {
       link = `http://${location.host}?inviterId=${user?.uuid || ''}`;
     }
@@ -440,22 +440,27 @@ const Deposits: NextPage = () => {
           </div>
         </div>
       </TotalAddress>
-      <div className='title'>
-        <div className='left'>Share Link</div>
-      </div>
-      <div className='normalContent'>
-        <div className='network'>{copyLink}</div>
-        <div className='right'>
-          <div
-            className='top'
-            onClick={() => {
-              copyToClip(copyLink);
-            }}
-          >
-            Copy
+      {copyLink && (
+        <>
+          <div className='title'>
+            <div className='left'>Share Link</div>
           </div>
-        </div>
-      </div>
+          <div className='normalContent'>
+            <div className='network'>{copyLink}</div>
+            <div className='right'>
+              <div
+                className='top'
+                onClick={() => {
+                  copyToClip(copyLink);
+                }}
+              >
+                Copy
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <Modal
         height='auto'
         visible={withDrawvisable}

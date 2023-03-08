@@ -637,15 +637,11 @@ const Home: NextPage = () => {
               <div />
               <div className='title'>
                 <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
-                <div className='bottom'>
-                  {`${item.token0Symbol || 'WBNB'}-${
-                    item.token1Symbol || 'BiSwap'
-                  }`}
-                </div>
+                <div className='bottom'>{item.farmName}</div>
               </div>
             </div>
             <div className='right'>
-              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
+              {(Math.round((item.APY_total || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );
@@ -671,15 +667,11 @@ const Home: NextPage = () => {
               <div />
               <div className='title'>
                 <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
-                <div className='bottom'>
-                  {`${item.token0Symbol || 'WBNB'}-${
-                    item.token1Symbol || 'BiSwap'
-                  }`}
-                </div>
+                <div className='bottom'>{item.farmName}</div>
               </div>
             </div>
             <div className='right'>
-              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
+              {(Math.round((item.APY_total || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );
@@ -704,15 +696,11 @@ const Home: NextPage = () => {
               <div />
               <div className='title'>
                 <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
-                <div className='bottom'>
-                  {`${item.token0Symbol || 'WBNB'}-${
-                    item.token1Symbol || 'BiSwap'
-                  }`}
-                </div>
+                <div className='bottom'>{item.farmName}</div>
               </div>
             </div>
             <div className='right'>
-              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
+              {(Math.round((item.APY_total || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );
@@ -737,15 +725,11 @@ const Home: NextPage = () => {
               <div />
               <div className='title'>
                 <div className='top'>{item.wantName || 'WBNB-GAL LP'}</div>
-                <div className='bottom'>
-                  {`${item.token0Symbol || 'WBNB'}-${
-                    item.token1Symbol || 'BiSwap'
-                  }`}
-                </div>
+                <div className='bottom'>{item.farmName}</div>
               </div>
             </div>
             <div className='right'>
-              {(Math.round((item.APY || 0) * 100) / 100).toFixed(2)}% APY
+              {(Math.round((item.APY_total || 0) * 100) / 100).toFixed(2)}% APY
             </div>
           </div>
         );

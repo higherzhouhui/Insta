@@ -527,7 +527,7 @@ const Deposits: NextPage = () => {
           <input
             placeholder='Please Enter'
             type='text'
-            value={withDrawNumber}
+            value={withDrawNumber || ''}
             onChange={(e: any) => {
               setWithDrawNumber(e.target.value);
             }}

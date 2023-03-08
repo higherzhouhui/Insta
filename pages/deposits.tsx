@@ -31,7 +31,7 @@ const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [withDrawvisable, setWithDrawVisable] = useState(false);
   const [exchangeisable, setExchangeisable] = useState(false);
-  const [withDrawNumber, setWithDrawNumber] = useState<number>();
+  const [withDrawNumber, setWithDrawNumber] = useState<number | null>();
   const [exchangeNumber, setExchangeNumber] = useState<number>();
   const [user, setUser] = useRecoilState(userState);
   const [copyLink, setCopyLink] = useState('');
@@ -448,7 +448,7 @@ const Deposits: NextPage = () => {
             <div
               className='top'
               onClick={() => {
-                setWithDrawNumber();
+                setWithDrawNumber(null);
                 setWithDrawVisable(true);
               }}
             >

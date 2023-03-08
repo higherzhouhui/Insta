@@ -5,7 +5,7 @@ import {SocialConnectionContainer} from './styles';
 
 import {webUrl} from '@/config';
 import {getTwitterAuthUrl, getTwitterUserInfo} from '@/services/twitter';
-import {Button, SvgIcon} from '@/uikit';
+import {SvgIcon} from '@/uikit';
 
 type SocialConnectionProps = {
   onChange: (user: GlobalTwitter.User | null) => void;
@@ -73,32 +73,6 @@ export const TwitterConnect: FC<SocialConnectionProps> = memo(
             />
           </div>
           <span>{(user && user?.name) || 'Twitter'}</span>
-        </div>
-        <div className='right'>
-          {user && user?.id && user.name && (
-            <Button
-              borderRadius={8}
-              height={32}
-              type='button'
-              variant='delete'
-              width={89}
-              onClick={handleDisConnectTwitterClick}
-            >
-              Delete
-            </Button>
-          )}
-          {!user?.id && (
-            <Button
-              borderRadius={8}
-              height={32}
-              type={isSubmit ? 'submit' : 'button'}
-              variant='primary'
-              width={89}
-              onClick={handleConnectTwitterClick}
-            >
-              Connect
-            </Button>
-          )}
         </div>
       </SocialConnectionContainer>
     );

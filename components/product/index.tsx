@@ -5,7 +5,6 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import {Auth} from '../auth';
-import {FavoriteHeart} from '../favoriteHeart';
 import {ShareComp} from '../share';
 import {
   CollectContainer,
@@ -92,15 +91,6 @@ export const Product: FC<ProductProps> = memo(({product}) => {
               </span>
               <span className='authorName'>{product?.author || 'PD-1'} </span>
             </div>
-            <div className='rightSide'>
-              <div style={{float: 'right'}}>
-                <FavoriteHeart
-                  action={product.isLike ? 1 : 2}
-                  amount={product.totalLike}
-                  worksId={product.id}
-                />
-              </div>
-            </div>
           </div>
         </>
       ) : (
@@ -110,9 +100,6 @@ export const Product: FC<ProductProps> = memo(({product}) => {
             <div className='leftSide'>
               <Skeleton className='authorPic' />
               <Skeleton className='authorName' />
-            </div>
-            <div className='rightSide'>
-              <FavoriteHeart action={2} amount={77} worksId='1' />
             </div>
           </div>
         </>
@@ -287,11 +274,6 @@ export const TagProduct: FC<ProductProps> = memo(({product}) => {
               />
             </div>
             <div className='make-thing'>
-              <FavoriteHeart
-                action={product.isLike ? 1 : 2}
-                color='#FFF'
-                worksId={product.id}
-              />
               <div className='make-icon'>
                 <Auth>
                   <SvgIcon

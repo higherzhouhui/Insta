@@ -1,9 +1,8 @@
 import {FC, memo} from 'react';
 
 import {InputContainer} from './style';
-import {InputProps} from './types';
 
-const Input: FC<InputProps> = memo((props) => {
+const Input: FC = memo((props) => {
   return <InputContainer {...(props as any)} />;
 });
 

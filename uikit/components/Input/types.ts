@@ -1,4 +1,4 @@
-import {ChangeEvent, ElementType, ReactNode} from 'react';
+import {ChangeEvent, ReactNode} from 'react';
 import {
   BackgroundColorProps,
   BackgroundImageProps,
@@ -8,8 +8,6 @@ import {
   LayoutProps,
   SpaceProps,
 } from 'styled-system';
-
-import {PolymorphicComponentProps} from '../Button/types';
 
 export interface BaseInputProps
   extends LayoutProps,
@@ -54,10 +52,3 @@ export interface BaseIconInputProps extends BaseInputProps {
 export type BaseTextAreaProps = BaseInputProps;
 
 export interface BaseIconProps extends LayoutProps, BackgroundImageProps {}
-
-export type InputProps<P extends ElementType = 'input'> =
-  PolymorphicComponentProps<P, BaseInputProps>;
-export type IconInputProps<P extends ElementType = 'input'> =
-  PolymorphicComponentProps<P, BaseIconInputProps>;
-export type TextAreaProps<P extends ElementType = 'textarea'> =
-  PolymorphicComponentProps<P, BaseTextAreaProps>;

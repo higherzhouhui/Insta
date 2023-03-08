@@ -2,9 +2,9 @@ import {FC, memo, useState} from 'react';
 import ReactSelect from 'react-select';
 
 import {SelectContainer} from './style';
-import {MultiSelectProps, SelectOptionProps} from './types';
+import {SelectOptionProps} from './types';
 
-const MultiSelect: FC<MultiSelectProps> = memo(
+const MultiSelect: FC<any> = memo(
   ({options, onAddOption, onSearch, onChange, ...props}) => {
     const [selectedOption, setSelectedOption] = useState<SelectOptionProps[]>(
       []
@@ -24,7 +24,7 @@ const MultiSelect: FC<MultiSelectProps> = memo(
       // 回车
       if (e.key === 'Enter' && e.keyCode === 13) {
         let flag = false;
-        options?.forEach((item) => {
+        options?.forEach((item: any) => {
           if (item.label === inputValue) {
             flag = true;
           }
@@ -40,7 +40,7 @@ const MultiSelect: FC<MultiSelectProps> = memo(
     return (
       <SelectContainer isMulti>
         <ReactSelect
-          {...(props as any)}
+          {...props}
           isMulti
           defaultValue={selectedOption}
           inputValue={inputValue}

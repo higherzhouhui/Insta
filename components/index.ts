@@ -5,7 +5,6 @@ export * from './card';
 export * from './product';
 export * from './dropdown';
 export * from './comment';
-export * from './favoriteHeart';
 export * from './loading';
 export * from './list';
 export * from './share';

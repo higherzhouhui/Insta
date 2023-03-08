@@ -1,4 +1,3 @@
-import {ElementType} from 'react';
 import {
   OptionsOrGroups,
   GroupBase,
@@ -14,8 +13,6 @@ import {
   LayoutProps,
   SpaceProps,
 } from 'styled-system';
-
-import {PolymorphicComponentProps} from '../Button/types';
 
 export interface SelectOptionProps {
   label: string;
@@ -68,8 +65,3 @@ export interface BaseMultiSelectSearchBoxProps
   options?: SelectOptionProps[];
   onChange: (value: SelectOptionProps[]) => void;
 }
-
-export type SelectProps<P extends ElementType = 'select'> =
-  PolymorphicComponentProps<P, BaseSelectProps>;
-export type MultiSelectProps<P extends ElementType = 'select'> =
-  PolymorphicComponentProps<P, BaseMultiSelectProps>;

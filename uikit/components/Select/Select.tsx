@@ -2,9 +2,8 @@ import {FC, memo} from 'react';
 import ReactSelect from 'react-select';
 
 import {SelectContainer} from './style';
-import {SelectProps} from './types';
 
-const Select: FC<SelectProps> = memo(
+const Select: FC<any> = memo(
   ({
     options,
     placeholder,
@@ -16,7 +15,7 @@ const Select: FC<SelectProps> = memo(
       value && onChange(value);
     };
     return (
-      <SelectContainer {...(props as any)}>
+      <SelectContainer {...props}>
         <ReactSelect
           defaultValue={defaultValue}
           options={options}

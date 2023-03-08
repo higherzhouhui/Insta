@@ -197,14 +197,14 @@ const Deposits: NextPage = () => {
       const {amount, r, s, v, token, timestamp, orderid, total} =
         result.data.data;
       setLoading(true);
-      console.log('amount:', getEtherPrice(0.0001));
+      console.log('amount:', getEtherPrice(withDrawNumber || 0));
       try {
         // eslint-disable-next-line prettier/prettier
       const contract = await getContract(withDrawContractAddress, withDrawAbi);
         await contract.withdraw(
           token,
           total,
-          getEtherPrice(0.0001),
+          getEtherPrice(withDrawNumber || 0),
           orderid,
           timestamp,
           r,

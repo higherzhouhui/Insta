@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {ethers} from 'ethers';
 import {useRouter} from 'next/router';
 import {useContext, useEffect, useRef, useState} from 'react';
 import {useRecoilState} from 'recoil';
@@ -15,7 +16,6 @@ import {Modal, SvgIcon} from '@/uikit';
 import {IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
-import {ethers} from 'ethers';
 
 const Home: NextPage = () => {
   const homeRef: any = useRef(null);

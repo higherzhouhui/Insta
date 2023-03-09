@@ -12,7 +12,7 @@ import {
 import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {MoneyContainer, SwapContainer} from '@/styles/swap';
 import {SvgIcon} from '@/uikit';
-import {getAccount, IMessageType, showTip} from '@/utils';
+import {IMessageType, showTip} from '@/utils';
 
 const Swap: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -37,6 +37,22 @@ const Swap: NextPage = () => {
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[4]);
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const getAccount = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      let currentAccount = '';
+      try {
+        const accounts = await provider.send('eth_requestAccounts', []);
+        currentAccount = accounts[0];
+      } catch {
+        currentAccount = '';
+      }
+      return currentAccount;
+    } catch {
+      showTip({content: 'Please Install MetaMask'});
+      return '';
+    }
+  };
   const handleClickBtn = async () => {
     let account = connectedAccount;
     if (!account) {

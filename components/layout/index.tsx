@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {ethers} from 'ethers';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
@@ -13,7 +14,7 @@ import {Footer} from '@/components';
 import {apiUrl} from '@/config';
 import {useMetaMask, Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
-import {getAccount, progressInit} from '@/utils';
+import {progressInit, showTip} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
 const Header = dynamic(import('./header'), {ssr: false});
 
@@ -33,6 +34,23 @@ export const Layout = memo(({children}) => {
     '/tos',
     '/policy',
   ];
+  const getAccount = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      let currentAccount = '';
+      try {
+        const accounts = await provider.send('eth_requestAccounts', []);
+        currentAccount = accounts[0];
+      } catch {
+        currentAccount = '';
+      }
+      return currentAccount;
+    } catch {
+      showTip({content: 'Please Install MetaMask'});
+      return '';
+    }
+  };
+
   useEffect(() => {
     progressInit(router);
   }, []);

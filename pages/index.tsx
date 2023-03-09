@@ -12,9 +12,10 @@ import {Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp} from '@/styles/home';
 import {Modal, SvgIcon} from '@/uikit';
-import {getAccount, IMessageType, showTip} from '@/utils';
+import {IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
+import {ethers} from 'ethers';
 
 const Home: NextPage = () => {
   const homeRef: any = useRef(null);
@@ -950,5 +951,22 @@ const Home: NextPage = () => {
 };
 
 Home.displayName = 'Home';
+
+const getAccount = async () => {
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    let currentAccount = '';
+    try {
+      const accounts = await provider.send('eth_requestAccounts', []);
+      currentAccount = accounts[0];
+    } catch {
+      currentAccount = '';
+    }
+    return currentAccount;
+  } catch {
+    showTip({content: 'Please Install MetaMask'});
+    return '';
+  }
+};
 
 export default Home;

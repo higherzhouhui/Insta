@@ -14,11 +14,13 @@ const Providers: React.FC<ProvidersProps> = ({children}) => {
   return (
     <ThemeProvider theme={lightTheme}>
       <LanguageProvider>
-        <Web3ContextProvider>
-          <SkeletonTheme baseColor='#ebf0f6' highlightColor='#ffffff'>
-            <RecoilRoot>{children}</RecoilRoot>
-          </SkeletonTheme>
-        </Web3ContextProvider>
+        <RecoilRoot>
+          <Web3ContextProvider>
+            <SkeletonTheme baseColor='#ebf0f6' highlightColor='#ffffff'>
+              {children}
+            </SkeletonTheme>
+          </Web3ContextProvider>
+        </RecoilRoot>
       </LanguageProvider>
     </ThemeProvider>
   );

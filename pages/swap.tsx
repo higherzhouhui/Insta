@@ -25,6 +25,7 @@ const Swap: NextPage = () => {
   const [transFarMoney, settransFarMoney] = useState<number>();
   const {getContract} = useContract();
   const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
+  const [inputLoading, setInputLoading] = useState(false);
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/img6.webp'},
     {label: 'INT', value: 'INT', img: '/static/image/int.png'},
@@ -153,12 +154,16 @@ const Swap: NextPage = () => {
   const handleChangeMoney = async (e: {
     target: {value: SetStateAction<string>};
   }) => {
-    const value = e.target.value as any as number;
+    const value = e.target.value as any;
     setMoney(value);
-    if (!value) {
+    if (isNaN(value) || value * 1 === 0) {
       settransFarMoney(0);
       return;
     }
+    if (inputLoading) {
+      return;
+    }
+    setInputLoading(true);
     let transMoney = 0;
     if (fromObj.value === 'USDT') {
       const result = await exchangeRate(value, true);
@@ -168,6 +173,7 @@ const Swap: NextPage = () => {
       transMoney = getNormalPrice(result[1]) as any as number;
     }
     settransFarMoney(transMoney);
+    setInputLoading(false);
   };
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
@@ -181,7 +187,7 @@ const Swap: NextPage = () => {
     }
   };
 
-  const exchangeRate = async (amount: number, usdt2Bnb: boolean) => {
+  const exchangeRate = async (amount: number | string, usdt2Bnb: boolean) => {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     const contract = await getContract(
       thinPancakeContractAddress,
@@ -201,7 +207,6 @@ const Swap: NextPage = () => {
         USDTADDRESS,
       ]);
     }
-    console.log(exchangeNum);
     return exchangeNum;
   };
 
@@ -319,6 +324,7 @@ const Swap: NextPage = () => {
             <div className='left'>
               <div className='top'>
                 <input
+                  disabled={loading}
                   placeholder='0.0'
                   type='number'
                   value={money}

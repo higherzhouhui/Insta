@@ -95,11 +95,15 @@ const Deposits: NextPage = () => {
       method: 'get',
       params: {wallet: connectedAccount},
     }).then((res) => {
-      const array = res?.data?.data || [];
-      array.forEach((item: any) => {
-        totalDeposit += item.amount;
-      });
-      settotalDeposits(totalDeposit);
+      if (res?.data?.meta?.status === 200) {
+        const array = res?.data?.data || [];
+        array.forEach((item: any) => {
+          totalDeposit += item.amount;
+        });
+        settotalDeposits(totalDeposit);
+      } else {
+        showTip({content: res?.data?.meta?.msg});
+      }
     });
     let totalIncome = 0;
     axios({
@@ -135,13 +139,13 @@ const Deposits: NextPage = () => {
         const {USDT, int, int_price} = res.data.data;
         setBalance({
           balance: USDT + parseFloat(int) * parseFloat(int_price),
-          USDT,
+          USDT: USDT || 0,
           int: parseFloat(int),
           usdt2Int: parseFloat(int_price),
         });
         setFromObj({
           ...fromObj,
-          balance: USDT,
+          balance: USDT || 0,
         });
         setToObj({
           ...toObj,
@@ -571,14 +575,14 @@ const Deposits: NextPage = () => {
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>Balance</div>
-            <div className='bot'>${balance?.balance}</div>
+            <div className='bot'>${balance?.balance || 0}</div>
           </div>
           {/* <div className='right'>+2.5%</div> */}
         </div>
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>USDT</div>
-            <div className='bot'>{balance?.USDT}</div>
+            <div className='bot'>{balance?.USDT || 0}</div>
           </div>
           <div className='right'>
             <div
@@ -595,7 +599,7 @@ const Deposits: NextPage = () => {
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>INT</div>
-            <div className='bot'>{balance?.int}</div>
+            <div className='bot'>{balance?.int || 0}</div>
           </div>
           <div className='right'>
             <div

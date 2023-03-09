@@ -1,7 +1,10 @@
 import React, {createContext, ReactNode} from 'react';
+import {useRecoilState} from 'recoil';
 
 import {useMetaMask} from './useMetaMask';
 import {useWeb3} from './useWeb3';
+
+import {userState} from '@/store/user';
 export type Props = {
   children: ReactNode;
 };
@@ -28,11 +31,12 @@ export const Web3ProviderContext = createContext<ContextValue>(
 export const Web3ContextProvider = ({children}: Props) => {
   const {connectedAccount} = useMetaMask();
   const {balance} = useWeb3();
+  const [user, setUser] = useRecoilState(userState);
   // const { mintNFT, buyNFT, nfts, myNfts, isLoading } = useNFT(NFTAddress, NFTABI, NFTMarketAddress, NFTMarketABI);
   return (
     <Web3ProviderContext.Provider
       value={{
-        connectedAccount,
+        connectedAccount: connectedAccount || user.accountAddress,
         balance,
         // mintNFT,
         // buyNFT,

@@ -10,6 +10,7 @@ import {apiUrl} from '@/config';
 import {userState} from '@/store/user';
 import {ProfitContainer, PMyTable} from '@/styles/profit';
 import {SvgIcon} from '@/uikit';
+import {showTip} from '@/utils';
 
 const Porfit: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,9 @@ const Porfit: NextPage = () => {
       method: 'get',
       params: {wallet: user.accountAddress},
     }).then((res) => {
+      if (res?.data?.meta?.status !== 200) {
+        showTip({content: res?.data?.meta?.msg});
+      }
       const array = res?.data?.data || [];
       array.forEach((item: any) => {
         arr.push({

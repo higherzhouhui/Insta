@@ -12,6 +12,7 @@ import {Web3ProviderContext} from '@/ethers-react';
 import {TotalAddress} from '@/styles/deposits';
 import {MyTeamContainer} from '@/styles/myTeam';
 import {SvgIcon} from '@/uikit';
+import {showTip} from '@/utils';
 
 const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,9 @@ const MyTeam: NextPage = () => {
       method: 'get',
       params: {wallet: connectedAccount},
     }).then((res: any) => {
+      if (res?.data?.meta?.status !== 200) {
+        showTip({content: res?.data?.meta?.msg});
+      }
       setLoading(false);
       if (res?.data?.meta?.status === 200) {
         setRequestData(res.data.data);

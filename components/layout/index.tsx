@@ -3,7 +3,7 @@ import {ethers} from 'ethers';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
-import {memo, useContext, useEffect} from 'react';
+import {memo, useEffect} from 'react';
 import {useRecoilState} from 'recoil';
 
 import {CommonLayout} from './CommonLayout';
@@ -12,7 +12,8 @@ import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
 import {apiUrl} from '@/config';
-import {useMetaMask, Web3ProviderContext} from '@/ethers-react';
+import {useMetaMask} from '@/ethers-react';
+import {useSigner} from '@/ethers-react/useSigner';
 import {userState} from '@/store/user';
 import {IMessageType, progressInit, showTip} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
@@ -21,8 +22,9 @@ const Header = dynamic(import('./header'), {ssr: false});
 export const Layout = memo(({children}) => {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
-  const {setAccount} = useMetaMask();
-  const {connectedAccount} = useContext(Web3ProviderContext);
+  const {setAccount, connectedAccount} = useMetaMask();
+  const {getSignMessage} = useSigner();
+
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -42,15 +44,19 @@ export const Layout = memo(({children}) => {
       try {
         const accounts = await provider.send('eth_requestAccounts', []);
         currentAccount = accounts[0];
+        return currentAccount;
       } catch (error: any) {
         showTip({
           type: IMessageType.ERROR,
           content: error?.data?.message || error?.message,
         });
+        return '';
       }
-      return currentAccount;
-    } catch {
-      showTip({content: 'Please Install MetaMask'});
+    } catch (error: any) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: error?.data?.message || error?.message,
+      });
       return '';
     }
   };
@@ -59,9 +65,6 @@ export const Layout = memo(({children}) => {
     progressInit(router);
   }, []);
   const judgeIsLogin = async () => {
-    if (connectedAccount) {
-      return;
-    }
     const currentAccount = await getAccount();
     if (!currentAccount) {
       setUser({
@@ -79,16 +82,29 @@ export const Layout = memo(({children}) => {
         updatedAt: null,
         uuid: null,
       });
-      return;
     }
-    setAccount(currentAccount);
     axios({
       url: `${apiUrl}/api/public/v1/users/info`,
       method: 'get',
       params: {wallet: currentAccount},
     }).then((res: any) => {
       if (res?.data?.meta?.status !== 200) {
-        setUser({...user, accountAddress: currentAccount});
+        setUser({
+          expiresAt: null,
+          portrait: null,
+          token: null,
+          username: null,
+          userId: null,
+          accountAddress: currentAccount,
+          createdAt: null,
+          id: null,
+          last_login: null,
+          path: null,
+          pid: null,
+          updatedAt: null,
+          uuid: null,
+        });
+        setAccount(currentAccount);
         return;
       }
       const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
@@ -108,6 +124,7 @@ export const Layout = memo(({children}) => {
         updatedAt,
         uuid,
       });
+      setAccount(currentAccount);
     });
   };
   useEffect(() => {

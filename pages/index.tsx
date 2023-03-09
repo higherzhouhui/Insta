@@ -77,7 +77,6 @@ const Home: NextPage = () => {
           method: 'get',
           params: {wallet: connectedAccount},
         });
-        console.log(res?.data?.meta?.status, 'status');
         if (res?.data?.meta?.status === 200) {
           setVisible(false);
         } else {
@@ -920,7 +919,7 @@ const Home: NextPage = () => {
       <Modal
         height='auto'
         visible={visible}
-        width='80%'
+        width='90%'
         onClose={() => {
           setVisible(false);
         }}

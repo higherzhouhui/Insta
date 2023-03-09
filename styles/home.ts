@@ -151,7 +151,7 @@ export const HomeContainer = styled.div`
 
 export const InviterComp = styled.div`
   position: relative;
-  padding: 18px 12px;
+  padding: 18px 10px;
   h2 {
     color: #fff;
     font-size: 16px;
@@ -162,12 +162,12 @@ export const InviterComp = styled.div`
     font-size: 12px;
     width: 100%;
     border-radius: 8px;
-    padding: 4px;
+    padding: 6px 3px;
     margin: 20px 0;
     line-height: 21px;
   }
   .confirm {
-    padding: 4px 8px;
+    padding: 6px 8px;
     background: #776cff;
     color: #fff;
     width: fit-content;

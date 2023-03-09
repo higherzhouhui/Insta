@@ -20,7 +20,7 @@ export const ShareComp: FC<ShareProps> = memo(({href}) => {
     }
     if (type === 'COPY') {
       copyUrlToClip(url);
-      showTip({type: IMessageType.SUCCESS, content: 'Link copied!'});
+      showTip({type: IMessageType.SUCCESS, content: 'Link Copied!'});
     }
     if (type === 'SHARE_FACEBOOK') {
       shareToFacebook(url);

@@ -14,7 +14,12 @@ import {USECHAINID} from '@/config/contractAddress';
 import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
 import {withDrawAbi, withDrawContractAddress} from '@/config/withDrawContract';
-import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
+import {
+  useContract,
+  useEthersUtils,
+  useMetaMask,
+  Web3ProviderContext,
+} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {
   DepositsContainer,
@@ -23,7 +28,7 @@ import {
   WithDrawContainer,
 } from '@/styles/deposits';
 import {Modal, SvgIcon} from '@/uikit';
-import {copyUrlToClip, IMessageType, showTip} from '@/utils';
+import {copyUrlToClip, getAccount, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
 
@@ -46,6 +51,7 @@ const Deposits: NextPage = () => {
   const {getContract} = useContract();
   const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
   const {connectedAccount, balance} = useContext(Web3ProviderContext);
+  const {setAccount} = useMetaMask();
 
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
@@ -168,7 +174,7 @@ const Deposits: NextPage = () => {
   };
   const copyToClip = (url: string) => {
     copyUrlToClip(url);
-    showTip({type: IMessageType.SUCCESS, content: 'copied'});
+    showTip({type: IMessageType.SUCCESS, content: 'Copied'});
   };
   const handleWithdraw = async () => {
     setLoading(true);
@@ -194,7 +200,7 @@ const Deposits: NextPage = () => {
     });
     setLoading(false);
     if (result?.data?.meta?.status === 200) {
-      const {amount, r, s, v, token, timestamp, orderid, total} =
+      const {amount, r, s, v, token, timestamp, orderId, total} =
         result.data.data;
       setLoading(true);
       console.log('amount:', getEtherPrice(withDrawNumber || 0));
@@ -203,9 +209,9 @@ const Deposits: NextPage = () => {
       const contract = await getContract(withDrawContractAddress, withDrawAbi);
         await contract.withdraw(
           token,
-          total,
-          getEtherPrice(withDrawNumber || 0),
-          orderid,
+          total.toString(),
+          amount.toString(),
+          orderId,
           timestamp,
           r,
           s,
@@ -270,7 +276,7 @@ const Deposits: NextPage = () => {
       return;
     }
     const account = connectedAccount;
-    if (!account) {
+    if (account) {
       try {
         const contract = await getContract(approveContractAddress, approveAbi);
         const edu = await contract.allowance(account, contractAddress);
@@ -288,8 +294,17 @@ const Deposits: NextPage = () => {
         setLoading(false);
       }
     } else {
-      showTip({type: IMessageType.ERROR, content: 'address error'});
-      setLoading(false);
+      try {
+        const account = await getAccount();
+        setAccount(account);
+        showTip({type: IMessageType.ERROR, content: 'Please Retry!'});
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+        setLoading(false);
+      }
     }
   };
 
@@ -526,7 +541,7 @@ const Deposits: NextPage = () => {
           <h2>Withdraw</h2>
           <input
             placeholder='Please Enter'
-            type='text'
+            type='number'
             value={withDrawNumber || ''}
             onChange={(e: any) => {
               setWithDrawNumber(e.target.value);

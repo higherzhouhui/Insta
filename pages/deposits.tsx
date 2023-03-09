@@ -272,11 +272,26 @@ const Deposits: NextPage = () => {
         }).then((res) => {
           setLoading(false);
           if (res?.data?.meta?.status === 200) {
+            const {USDT, int, int_price} = res.data.data;
+            setBalance({
+              balance: USDT + parseFloat(int) * parseFloat(int_price),
+              USDT,
+              int: parseFloat(int),
+              usdt2Int: parseFloat(int_price),
+            });
             showTip({
               type: IMessageType.SUCCESS,
               content: 'Operation succeeded!',
             });
             setExchangeisable(false);
+            setFromObj({
+              ...fromObj,
+              balance: USDT,
+            });
+            setToObj({
+              ...toObj,
+              balance: parseFloat(int),
+            });
           } else {
             showTip({
               type: IMessageType.SUCCESS,
@@ -292,9 +307,24 @@ const Deposits: NextPage = () => {
         }).then((res) => {
           setLoading(false);
           if (res?.data?.meta?.status === 200) {
+            const {USDT, int, int_price} = res.data.data;
+            setBalance({
+              balance: USDT + parseFloat(int) * parseFloat(int_price),
+              USDT,
+              int: parseFloat(int),
+              usdt2Int: parseFloat(int_price),
+            });
             showTip({
               type: IMessageType.SUCCESS,
               content: 'Operation succeeded!',
+            });
+            setFromObj({
+              ...fromObj,
+              balance: parseFloat(int),
+            });
+            setToObj({
+              ...toObj,
+              balance: USDT,
             });
             setExchangeisable(false);
           } else {

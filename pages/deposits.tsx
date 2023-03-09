@@ -28,7 +28,7 @@ import {
   WithDrawContainer,
 } from '@/styles/deposits';
 import {Modal, SvgIcon} from '@/uikit';
-import {copyUrlToClip, getAccount, IMessageType, showTip} from '@/utils';
+import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
 
@@ -50,21 +50,22 @@ const Deposits: NextPage = () => {
   const exchangeList = [25, 50, 75, 100];
   const {getContract} = useContract();
   const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
-  const {connectedAccount, balance} = useContext(Web3ProviderContext);
+  const {connectedAccount} = useContext(Web3ProviderContext);
   const {setAccount} = useMetaMask();
 
   const exchangeOptionList = [
-    {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png'},
-    {label: 'INT', value: 'INT', img: '/static/image/int.png'},
-    {label: 'LTC', value: 'LTC', img: '/static/image/ltc.png'},
-    {label: 'LINK', value: 'LINK', img: '/static/image/link.png'},
-    {label: 'BNB', value: 'BNB', img: '/static/image/bnb.png'},
-    {label: 'ADA', value: 'ADA', img: '/static/image/ada.png'},
-    {label: 'DOGE', value: 'DOGE', img: '/static/image/doge.png'},
+    {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png', balance: 0},
+    {label: 'INT', value: 'INT', img: '/static/image/int.png', balance: 0},
+    {label: 'LTC', value: 'LTC', img: '/static/image/ltc.png', balance: 0},
+    {label: 'LINK', value: 'LINK', img: '/static/image/link.png', balance: 0},
+    {label: 'BNB', value: 'BNB', img: '/static/image/bnb.png', balance: 0},
+    {label: 'ADA', value: 'ADA', img: '/static/image/ada.png', balance: 0},
+    {label: 'DOGE', value: 'DOGE', img: '/static/image/doge.png', balance: 0},
   ];
   const [hasApprove, setHasApprove] = useState(false);
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[1]);
+  const [balance, setBalance] = useState<any>({});
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
     const list = exchangeOptionList.filter((item) => {
@@ -84,6 +85,10 @@ const Deposits: NextPage = () => {
   };
 
   const initRequest = () => {
+    if (!connectedAccount) {
+      return;
+    }
+    setLoading(true);
     let totalDeposit = 0;
     axios({
       url: `${apiUrl}/api/public/v1/users/deposit`,
@@ -118,6 +123,32 @@ const Deposits: NextPage = () => {
         const data = res?.data?.data;
         settotalAddress(data?.invite_num);
         setteamTotalDeposits(data?.deposits_total);
+      }
+    });
+    axios({
+      url: `${apiUrl}/api/public/v1/users/balance`,
+      method: 'get',
+      params: {wallet: connectedAccount},
+    }).then((res: any) => {
+      setLoading(false);
+      if (res?.data?.meta?.status === 200) {
+        const {USDT, int, int_price} = res.data.data;
+        setBalance({
+          balance: USDT + parseFloat(int) * parseFloat(int_price),
+          USDT,
+          int: parseFloat(int),
+          usdt2Int: parseFloat(int_price),
+        });
+        setFromObj({
+          ...fromObj,
+          balance: USDT,
+        });
+        setToObj({
+          ...toObj,
+          balance: parseFloat(int),
+        });
+      } else {
+        setBalance({});
       }
     });
   };
@@ -231,7 +262,56 @@ const Deposits: NextPage = () => {
     }
   };
   const handleExchange = () => {
-    setExchangeisable(false);
+    setLoading(true);
+    try {
+      if (fromObj.value === 'USDT') {
+        axios({
+          url: `${apiUrl}/api/public/v1/users/u2i`,
+          method: 'get',
+          params: {wallet: connectedAccount, amount: exchangeNumber},
+        }).then((res) => {
+          setLoading(false);
+          if (res?.data?.meta?.status === 200) {
+            showTip({
+              type: IMessageType.SUCCESS,
+              content: 'Operation succeeded!',
+            });
+            setExchangeisable(false);
+          } else {
+            showTip({
+              type: IMessageType.SUCCESS,
+              content: res?.data?.meta?.msg,
+            });
+          }
+        });
+      } else {
+        axios({
+          url: `${apiUrl}/api/public/v1/users/i2u`,
+          method: 'get',
+          params: {wallet: connectedAccount, amount: exchangeNumber},
+        }).then((res) => {
+          setLoading(false);
+          if (res?.data?.meta?.status === 200) {
+            showTip({
+              type: IMessageType.SUCCESS,
+              content: 'Operation succeeded!',
+            });
+            setExchangeisable(false);
+          } else {
+            showTip({
+              type: IMessageType.SUCCESS,
+              content: res?.data?.meta?.msg,
+            });
+          }
+        });
+      }
+    } catch (error: any) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: error?.data?.message || error?.message,
+      });
+      setLoading(false);
+    }
   };
   const handleClickBtn = async () => {
     if (!hasApprove) {
@@ -295,9 +375,7 @@ const Deposits: NextPage = () => {
       }
     } else {
       try {
-        const account = await getAccount();
-        setAccount(account);
-        showTip({type: IMessageType.ERROR, content: 'Please Retry!'});
+        showTip({type: IMessageType.ERROR, content: 'Wallet Address Error!'});
       } catch (error: any) {
         showTip({
           type: IMessageType.ERROR,
@@ -332,6 +410,19 @@ const Deposits: NextPage = () => {
       }
     }
   };
+  const almostPrice = () => {
+    if (fromObj.value === 'USDT') {
+      return (
+        Math.round((exchangeNumber || 0) * balance?.usdt2Int * 1000000) /
+        1000000
+      );
+    }
+    return (
+      Math.round(((exchangeNumber || 0) / balance?.usdt2Int) * 1000000) /
+      1000000
+    );
+  };
+
   // '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
   useEffect(() => {
     initRequest();
@@ -450,14 +541,14 @@ const Deposits: NextPage = () => {
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>Balance</div>
-            <div className='bot'>${balance}</div>
+            <div className='bot'>${balance?.balance}</div>
           </div>
           {/* <div className='right'>+2.5%</div> */}
         </div>
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>USDT</div>
-            <div className='bot'>234.35</div>
+            <div className='bot'>{balance?.USDT}</div>
           </div>
           <div className='right'>
             <div
@@ -474,12 +565,13 @@ const Deposits: NextPage = () => {
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>INT</div>
-            <div className='bot'>0</div>
+            <div className='bot'>{balance?.int}</div>
           </div>
           <div className='right'>
             <div
               className='top'
               onClick={() => {
+                setExchangeNumber(0);
                 setExchangeisable(true);
               }}
             >
@@ -578,6 +670,7 @@ const Deposits: NextPage = () => {
             <div className='left'>
               <img src={fromObj.img} />
               <select
+                disabled
                 value={fromObj.value}
                 onChange={(e) => {
                   onchangeFrom(e, 'from');
@@ -592,7 +685,7 @@ const Deposits: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Balance: 0.4521623</div>
+            <div className='right'>Balance: {fromObj.balance}</div>
           </div>
           <div className='exchangeContent'>
             <input
@@ -609,7 +702,7 @@ const Deposits: NextPage = () => {
                   <div
                     key={index}
                     onClick={() => {
-                      setExchangeNumber(0.4521623 * item * 0.01);
+                      setExchangeNumber(item * fromObj.balance * 0.01);
                     }}
                   >
                     {item}%
@@ -630,6 +723,7 @@ const Deposits: NextPage = () => {
             <div className='left'>
               <img src={toObj.img} />
               <select
+                disabled
                 value={toObj.value}
                 onChange={(e) => {
                   onchangeFrom(e, 'to');
@@ -644,13 +738,13 @@ const Deposits: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Balance: 0</div>
+            <div className='right'>Balance: {toObj.balance}</div>
           </div>
           <div className='exchangeContent'>
             <input
               placeholder='Please Enter'
               type='text'
-              value={(exchangeNumber || 0) * 0.4}
+              value={almostPrice()}
             />
           </div>
           <div
@@ -665,7 +759,7 @@ const Deposits: NextPage = () => {
             className='close'
             src='/static/image/close.png'
             onClick={() => {
-              handleExchange();
+              setExchangeisable(false);
             }}
           />
         </WithDrawContainer>

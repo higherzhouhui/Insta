@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
 import {useRecoilState} from 'recoil';
@@ -28,8 +29,8 @@ const Porfit: NextPage = () => {
       array.forEach((item: any) => {
         arr.push({
           class: 'income',
-          time: item.createdAt,
-          income: item.amount,
+          time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm:ss'),
+          deposit: `$${item.amount}USDT`,
         });
       });
       setLoading(false);

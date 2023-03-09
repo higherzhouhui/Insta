@@ -171,6 +171,7 @@ export const DepositsContainer = styled.div`
       color: #fff;
       padding: 8px 6px;
       border-radius: 6px;
+      word-break: break-all;
     }
     .right {
       color: #33c497;

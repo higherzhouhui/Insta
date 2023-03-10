@@ -14,12 +14,7 @@ import {USECHAINID} from '@/config/contractAddress';
 import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
 import {withDrawAbi, withDrawContractAddress} from '@/config/withDrawContract';
-import {
-  useContract,
-  useEthersUtils,
-  useMetaMask,
-  Web3ProviderContext,
-} from '@/ethers-react';
+import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {
   DepositsContainer,
@@ -36,8 +31,8 @@ const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [withDrawvisable, setWithDrawVisable] = useState(false);
   const [exchangeisable, setExchangeisable] = useState(false);
-  const [withDrawNumber, setWithDrawNumber] = useState<number | null>();
-  const [exchangeNumber, setExchangeNumber] = useState<number>();
+  const [withDrawNumber, setWithDrawNumber] = useState<number | string>();
+  const [exchangeNumber, setExchangeNumber] = useState<number | string>('');
   const [user, setUser] = useRecoilState(userState);
   const [copyLink, setCopyLink] = useState('');
   const router = useRouter();
@@ -51,7 +46,6 @@ const Deposits: NextPage = () => {
   const {getContract} = useContract();
   const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
   const {connectedAccount} = useContext(Web3ProviderContext);
-  const {setAccount} = useMetaMask();
 
   const exchangeOptionList = [
     {label: 'USDT', value: 'USDT', img: '/static/image/usdt.png', balance: 0},
@@ -238,7 +232,6 @@ const Deposits: NextPage = () => {
       const {amount, r, s, v, token, timestamp, orderId, total} =
         result.data.data;
       setLoading(true);
-      console.log('amount:', getEtherPrice(withDrawNumber || 0));
       try {
         // eslint-disable-next-line prettier/prettier
       const contract = await getContract(withDrawContractAddress, withDrawAbi);
@@ -445,15 +438,21 @@ const Deposits: NextPage = () => {
     }
   };
   const almostPrice = () => {
+    if (isNaN(exchangeNumber as any) || !exchangeNumber) {
+      return '';
+    }
     if (fromObj.value === 'USDT') {
       return (
-        Math.round((exchangeNumber || 0) * balance?.usdt2Int * 1000000) /
-        1000000
+        Math.round(
+          (((exchangeNumber as any as number) || 0) / balance?.usdt2Int) *
+            1000000
+        ) / 1000000
       );
     }
     return (
-      Math.round(((exchangeNumber || 0) / balance?.usdt2Int) * 1000000) /
-      1000000
+      Math.round(
+        ((exchangeNumber as any as number) || 0) * balance?.usdt2Int * 1000000
+      ) / 1000000
     );
   };
 
@@ -577,7 +576,9 @@ const Deposits: NextPage = () => {
             <div className='top'>Balance</div>
             <div className='bot'>${balance?.balance || 0}</div>
           </div>
-          {/* <div className='right'>+2.5%</div> */}
+          <div className='detail' onClick={() => router.push('/balance')}>
+            Details <SvgIcon color='#999' name='right-icon' />
+          </div>
         </div>
         <div className='normalContent'>
           <div className='left'>
@@ -588,7 +589,7 @@ const Deposits: NextPage = () => {
             <div
               className='top'
               onClick={() => {
-                setWithDrawNumber(null);
+                setWithDrawNumber('');
                 setWithDrawVisable(true);
               }}
             >
@@ -605,7 +606,7 @@ const Deposits: NextPage = () => {
             <div
               className='top'
               onClick={() => {
-                setExchangeNumber(0);
+                setExchangeNumber('');
                 setExchangeisable(true);
               }}
             >
@@ -775,11 +776,7 @@ const Deposits: NextPage = () => {
             <div className='right'>Balance: {toObj.balance}</div>
           </div>
           <div className='exchangeContent'>
-            <input
-              placeholder='Please Enter'
-              type='text'
-              value={almostPrice()}
-            />
+            <input placeholder='' type='text' value={almostPrice()} />
           </div>
           <div
             className='submit'

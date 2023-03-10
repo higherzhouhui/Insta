@@ -4,7 +4,7 @@ export const DepositsContainer = styled.div`
   width: 100%;
   background: rgb(6, 25, 11);
   height: 100%;
-  padding: 20px 0;
+  padding-bottom: 20px;
   h1 {
     color: #fff;
     font-size: 24px;
@@ -140,6 +140,17 @@ export const DepositsContainer = styled.div`
     border-radius: 8px;
     padding: 12px 10px;
     margin: 12px 0;
+    .detail {
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      svg {
+        width: 16px;
+        height: 16px;
+        fill: #6b7280;
+        margin-left: 6px;
+      }
+    }
   }
   .normalContent {
     display: flex;

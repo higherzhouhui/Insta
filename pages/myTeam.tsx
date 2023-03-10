@@ -56,10 +56,13 @@ const MyTeam: NextPage = () => {
         <span>My Team</span>
       </div>
       <p>grade</p>
-      <h2>
-        Level{requestData?.invite_num > 3 ? '3' : '1'}
+      <div className='level'>
+        <div className='left'>
+          <span>Level:</span>
+          {requestData?.level}
+        </div>
         <img className='grade' src='/static/image/grade.png' />
-      </h2>
+      </div>
 
       <TotalAddress>
         <div className='left'>
@@ -83,7 +86,7 @@ const MyTeam: NextPage = () => {
           </div>
         </div>
       </TotalAddress>
-      <h2>Invited Users({requestData.invite_num || 0})</h2>
+      <div className='level'>Invited Users({requestData.invite_num || 0})</div>
       <List
         dataSource={requestData?.wallets}
         loading={loading}

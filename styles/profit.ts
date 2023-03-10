@@ -33,11 +33,11 @@ export const PMyTable = styled.div`
   padding: 8px 4px;
   .header {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 2fr 1fr;
     > div {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       color: #6b7280;
       height: 36px;
       font-size: 16px;
@@ -45,12 +45,12 @@ export const PMyTable = styled.div`
   }
   .content {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 2fr 1fr;
     border-top: 1px solid #2a334d;
     > div {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       color: #abb5c7;
       font-size: 12px;
       line-height: 32px;

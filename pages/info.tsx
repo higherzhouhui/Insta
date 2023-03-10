@@ -1,12 +1,56 @@
+import axios from 'axios';
 import * as echarts from 'echarts';
-import {useEffect} from 'react';
+import moment from 'moment';
+import {useContext, useEffect} from 'react';
 
 import type {NextPage} from 'next';
 
+import {apiUrl} from '@/config';
+import {Web3ProviderContext} from '@/ethers-react/Web3ContextProvider';
 import {InfoContainer} from '@/styles/info';
+import {showTip} from '@/utils';
 
 const Info: NextPage = () => {
-  useEffect(() => {
+  const staticData = [
+    {title: 'BNB', desc: '$22.66M(72.42%)'},
+    {title: 'Cronos', desc: '$12.66M(34.92%)'},
+    {title: 'Polygon', desc: '$1.726M(1.24%)'},
+    {title: 'HECO', desc: '$5.36M(12.3%)'},
+    {title: 'Avalance', desc: '$8.13M(9.1%)'},
+    {title: 'Fantom', desc: '$0.66M(5.21%)'},
+    {title: 'OKC', desc: '$22.66M(76.32%)'},
+    {title: 'Verlas', desc: '$98.16M(7.12%)'},
+    {title: 'Celo', desc: '$77.63M(9.2%)'},
+    {title: 'Oasis', desc: '$69.36M(8.9%)'},
+    {title: 'Aurora', desc: '$43.76M(31.95%)'},
+    {title: 'Boba', desc: '$21.63M(5.5%)'},
+    {title: 'KCC', desc: '$16.11M(3.277)'},
+    {title: 'Gnosis', desc: '$46.1M(6.92%)'},
+    {title: 'Wanchain', desc: '$2.5M(8.52%)'},
+    {title: 'Evmos', desc: '$1.08M(5.02%)'},
+  ];
+  const {connectedAccount} = useContext(Web3ProviderContext);
+  const initRequestData = () => {
+    axios({
+      url: `${apiUrl}/api/public/v1/users/trend`,
+      method: 'get',
+      params: {wallet: connectedAccount},
+    }).then((res) => {
+      if (res?.data?.meta?.status !== 200) {
+        showTip({content: res?.data?.meta?.msg});
+      }
+      const data = res?.data?.data || [];
+      const xdata: string[] = [];
+      const ydata: string[] = [];
+      data.forEach((item: any) => {
+        xdata.push(moment(new Date(item.createdAt)).format('MM-DD'));
+        ydata.push(item.price);
+      });
+      initLineChart(xdata, ydata);
+    });
+  };
+
+  const initLineChart = (xdata: string[], ydata: string[]) => {
     const chartDom = document.getElementById('main');
     const myChart = echarts.init(chartDom as any);
     const option = {
@@ -18,20 +62,24 @@ const Info: NextPage = () => {
       },
       xAxis: {
         type: 'category',
-        data: ['03-01', '03-02', '03-03', '03-04', '03-05', '03-06', '03-07'],
+        data: xdata,
       },
       yAxis: {
         type: 'value',
       },
       series: [
         {
-          data: [100, 300, 700, 1800, 3900, 7200, 10562],
+          data: ydata,
           type: 'line',
           smooth: true,
         },
       ],
     };
     option && myChart.setOption(option);
+  };
+
+  useEffect(() => {
+    initRequestData();
   }, []);
   return (
     <InfoContainer>
@@ -45,7 +93,21 @@ const Info: NextPage = () => {
         <div className='right'>$12.58</div>
       </div>
       <div id='main' />
-      <img alt='info' className='infoimage' src='/static/image/info.png' />
+      <div className='tvlContainer'>
+        <h1>TVL</h1>
+        <h2>$31.72M</h2>
+
+        <div className='chainData'>
+          {staticData.map((item, index) => {
+            return (
+              <div className='left' key={index}>
+                <div className='title'>{item.title}</div>
+                <div className='desc'>{item.desc}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </InfoContainer>
   );
 };

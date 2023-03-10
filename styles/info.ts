@@ -35,4 +35,34 @@ export const InfoContainer = styled.div`
     height: 300px;
     margin: 12px 0;
   }
+  .tvlContainer {
+    h1 {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      margin: 12px 0;
+    }
+    .chainData {
+      width: 100%;
+      .left {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+        width: 50%;
+        margin: 8px 0;
+        float: left;
+        padding-right: 6px;
+        .title {
+          font-size: 13px;
+          font-weight: 500;
+          opacity: 0.8;
+        }
+        .desc {
+          font-size: 12px;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
 `;

@@ -12,7 +12,7 @@ import {ProfitContainer, PMyTable} from '@/styles/profit';
 import {SvgIcon} from '@/uikit';
 import {showTip} from '@/utils';
 
-const DepositDetail: NextPage = () => {
+const Balance: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
@@ -22,23 +22,23 @@ const DepositDetail: NextPage = () => {
     const arr: any[] = [];
     setLoading(true);
     axios({
-      url: `${apiUrl}/api/public/v1/users/deposit`,
+      url: `${apiUrl}/api/public/v1/users/income`,
       method: 'get',
       params: {wallet: connectedAccount},
-    }).then((res) => {
-      if (res?.data?.meta?.status !== 200) {
-        showTip({content: res?.data?.meta?.msg});
+    }).then((balance) => {
+      if (balance?.data?.meta?.status !== 200) {
+        showTip({content: balance?.data?.meta?.msg});
       }
-      const array = res?.data?.data || [];
+      const array = balance?.data?.data || [];
       array.forEach((item: any) => {
         arr.push({
-          class: item.is_experience === 1 ? 'experience' : 'deposit',
+          class: item.type_name,
           time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm:ss'),
           deposit: `$${item.amount}USDT`,
         });
       });
-      setDataSource(arr);
       setLoading(false);
+      setDataSource(arr);
     });
   };
   const columns: any[] = [
@@ -75,7 +75,7 @@ const DepositDetail: NextPage = () => {
             router.back();
           }}
         />
-        <span>Deposit</span>
+        <span>Balance</span>
       </div>
       <PMyTable className={loading ? 'loading' : ''}>
         <div className='header'>
@@ -100,6 +100,6 @@ const DepositDetail: NextPage = () => {
   );
 };
 
-DepositDetail.displayName = 'DepositDetail';
+Balance.displayName = 'Balance';
 
-export default DepositDetail;
+export default Balance;

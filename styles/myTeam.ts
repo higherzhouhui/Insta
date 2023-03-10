@@ -26,18 +26,27 @@ export const MyTeamContainer = styled.div`
   }
   p {
     padding-top: 42px;
-    color: #999;
+    color: #eee;
     font-size: 14px;
     line-height: 21px;
+    font-weight: bold;
   }
-  h2 {
-    color: #fff;
-    font-weight: 500;
-    font-size: 15px;
+  .level {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin: 12px 0;
+    color: #fff;
+    font-weight: 500;
+    font-size: 15px;
+    .left {
+      color: #fff;
+      font-weight: 500;
+      font-size: 15px;
+      span {
+        margin-right: 6px;
+      }
+    }
     .grade {
       width: 30px;
       height: 30px;

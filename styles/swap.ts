@@ -15,9 +15,10 @@ export const SwapContainer = styled.div`
     background: #060b19;
     border: none;
     color: #999;
-    padding: 8px 6px;
+    padding-left: 6px;
+    height: 32px;
     font-size: 14px;
-    width: 150px;
+    width: 100%;
     :focus-visible {
       outline: #060b19;
     }
@@ -119,6 +120,7 @@ export const MoneyContainer = styled.div`
   justify-content: space-between;
   color: #6b7280;
   .left {
+    flex: 1;
     .bot {
       margin-top: 6px;
       padding-left: 6px;
@@ -126,7 +128,6 @@ export const MoneyContainer = styled.div`
   }
   .right {
     border-radius: 6px;
-    width: 80px;
     padding: 5px;
     background: #181e30;
     display: flex;

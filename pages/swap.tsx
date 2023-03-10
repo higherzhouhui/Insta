@@ -325,7 +325,7 @@ const Swap: NextPage = () => {
               <div className='top'>
                 <input
                   disabled={loading}
-                  placeholder='0.0'
+                  placeholder='Please Enter'
                   type='number'
                   value={money}
                   onChange={handleChangeMoney}

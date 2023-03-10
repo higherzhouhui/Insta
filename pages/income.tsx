@@ -1,22 +1,22 @@
+import {Empty} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect} from 'react';
-import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
-import {userState} from '@/store/user';
+import {Web3ProviderContext} from '@/ethers-react';
 import {ProfitContainer, PMyTable} from '@/styles/profit';
 import {SvgIcon} from '@/uikit';
 import {showTip} from '@/utils';
 
-const Porfit: NextPage = () => {
+const Income: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
-  const [user, setUser] = useRecoilState(userState);
+  const {connectedAccount} = useContext(Web3ProviderContext);
 
   const initRequest = () => {
     const arr: any[] = [];
@@ -24,7 +24,7 @@ const Porfit: NextPage = () => {
     axios({
       url: `${apiUrl}/api/public/v1/users/income`,
       method: 'get',
-      params: {wallet: user.accountAddress},
+      params: {wallet: connectedAccount},
     }).then((income) => {
       if (income?.data?.meta?.status !== 200) {
         showTip({content: income?.data?.meta?.msg});
@@ -32,7 +32,7 @@ const Porfit: NextPage = () => {
       const array = income?.data?.data || [];
       array.forEach((item: any) => {
         arr.push({
-          class: 'income',
+          class: item.type_name,
           time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm:ss'),
           deposit: `$${item.amount}USDT`,
         });
@@ -92,11 +92,17 @@ const Porfit: NextPage = () => {
             </div>
           );
         })}
+        {!loading && dataSource.length === 0 && (
+          <Empty description={<span style={{color: '#eee'}}>No Data</span>} />
+        )}
       </PMyTable>
     </ProfitContainer>
   );
 };
 
-Porfit.displayName = 'Porfit';
+Income.displayName = 'Income';
 
-export default Porfit;
+export default Income;
+function useContext(Web3ProviderContext: any): {connectedAccount: any} {
+  throw new Error('Function not implemented.');
+}

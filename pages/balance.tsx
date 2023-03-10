@@ -32,7 +32,7 @@ const Balance: NextPage = () => {
       const array = balance?.data?.data || [];
       array.forEach((item: any) => {
         arr.push({
-          class: item.type_name,
+          class: item.type,
           time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm:ss'),
           deposit: `$${item.amount}USDT`,
         });

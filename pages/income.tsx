@@ -2,7 +2,7 @@ import {Empty} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 
 import type {NextPage} from 'next';
 
@@ -32,7 +32,7 @@ const Income: NextPage = () => {
       const array = income?.data?.data || [];
       array.forEach((item: any) => {
         arr.push({
-          class: item.type_name,
+          class: item.type,
           time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm:ss'),
           deposit: `$${item.amount}USDT`,
         });
@@ -103,6 +103,3 @@ const Income: NextPage = () => {
 Income.displayName = 'Income';
 
 export default Income;
-function useContext(Web3ProviderContext: any): {connectedAccount: any} {
-  throw new Error('Function not implemented.');
-}

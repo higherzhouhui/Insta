@@ -249,7 +249,7 @@ export const TotalAddress = styled.div`
       text-align: center;
       color: #33c497;
       span {
-        font-size: 12px;
+        font-size: 14px;
         margin-left: 4px;
         color: #33c497;
       }

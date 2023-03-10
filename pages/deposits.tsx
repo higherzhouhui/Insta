@@ -95,6 +95,7 @@ const Deposits: NextPage = () => {
           totalDeposit += item.amount;
         });
         settotalDeposits(totalDeposit);
+        setCopyLink(`http://${location.host}?inviterId=${connectedAccount}`);
       } else {
         showTip({content: res?.data?.meta?.msg});
       }

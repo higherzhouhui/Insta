@@ -128,7 +128,14 @@ export const Layout = memo(({children}) => {
     });
   };
   useEffect(() => {
-    judgeIsLogin();
+    if (
+      router.pathname === '/' ||
+      router.pathname === '/deposits' ||
+      router.pathname === '/info' ||
+      router.pathname === '/swap'
+    ) {
+      judgeIsLogin();
+    }
   }, [router.pathname]);
   return (
     <>

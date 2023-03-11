@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react';
 
+import {showTip} from '@/utils';
+
 export const useMetaMask = () => {
   // is installed wallet
   const [isInstalledWallet, setIsInstalledWallet] = useState<boolean>(false);
@@ -33,10 +35,18 @@ export const useMetaMask = () => {
 
   // check network is normal
   const switchWalletNetwork = async (chainId: string) => {
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{chainId}],
-    });
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{chainId}],
+      });
+    } catch (error: any) {
+      showTip({
+        content:
+          'Please manually switch the network to Binance Smart Chain Testnet',
+        showTime: 8000,
+      });
+    }
   };
 
   // monitor accounts change

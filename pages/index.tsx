@@ -9,7 +9,7 @@ import type {NextPage} from 'next';
 // eslint-disable-next-line import/order
 import {apiUrl} from '@/config';
 import {staticHomeData} from '@/config/staticData';
-import {Web3ProviderContext} from '@/ethers-react';
+import {useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp} from '@/styles/home';
 import {Modal, SvgIcon} from '@/uikit';
@@ -21,6 +21,7 @@ const Home: NextPage = () => {
   const homeRef: any = useRef(null);
   const [visible, setVisible] = useState(false);
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const {getNetwork} = useEthersUtils();
 
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
@@ -87,6 +88,15 @@ const Home: NextPage = () => {
       }
     }
   };
+
+  const shiftNetWork = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await getNetwork(provider);
+  };
+
+  useEffect(() => {
+    shiftNetWork();
+  }, []);
 
   useEffect(() => {
     judgeIsRegister(inviterId);

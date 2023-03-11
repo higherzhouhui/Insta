@@ -1,7 +1,6 @@
 import axios from 'axios';
-import {ethers} from 'ethers';
 import {useRouter} from 'next/router';
-import {useState, useEffect, SetStateAction, useContext} from 'react';
+import {useState, useEffect, SetStateAction, useContext, useRef} from 'react';
 import {useRecoilState} from 'recoil';
 import {Autoplay} from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -10,7 +9,6 @@ import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
-import {USECHAINID} from '@/config/contractAddress';
 import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
 import {withDrawAbi, withDrawContractAddress} from '@/config/withDrawContract';
@@ -26,6 +24,7 @@ import {Modal, SvgIcon} from '@/uikit';
 import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
+import {ethers} from 'ethers';
 
 const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);
@@ -60,6 +59,9 @@ const Deposits: NextPage = () => {
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[1]);
   const [balance, setBalance] = useState<any>({});
+  const approveRef = useRef<any>();
+  const depositRef = useRef<any>();
+
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
     const list = exchangeOptionList.filter((item) => {
@@ -208,21 +210,6 @@ const Deposits: NextPage = () => {
   };
   const handleWithdraw = async () => {
     setLoading(true);
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const res = await provider.getNetwork();
-    if (res.chainId !== USECHAINID) {
-      try {
-        await getNetwork(provider);
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
-      }
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
     const result: any = await axios({
       url: `${apiUrl}/api/public/v1/users/withdraw`,
       method: 'get',
@@ -351,13 +338,12 @@ const Deposits: NextPage = () => {
     }
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/await-thenable
       const contract = await getContract(contractAddress, abi);
       const price = getEtherPrice(deposits || 0);
       await contract.deposits(price);
       setLoading(false);
       showTip({
-        type: IMessageType.ERROR,
+        type: IMessageType.SUCCESS,
         content: 'Operation succeeded!',
       });
     } catch (error: any) {
@@ -370,72 +356,30 @@ const Deposits: NextPage = () => {
   };
   const checkIsApprove = async () => {
     setLoading(true);
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const res = await provider.getNetwork();
-    if (res.chainId !== USECHAINID) {
-      try {
-        await getNetwork(provider);
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
-      }
-      return;
-    }
-    const account = connectedAccount;
-    if (account) {
-      try {
-        const contract = await getContract(approveContractAddress, approveAbi);
-        const edu = await contract.allowance(account, contractAddress);
-        console.log(edu);
-        const price = getEtherPrice(99999999999);
-        const approoveCon = await contract.approve(contractAddress, price);
-        console.log(approoveCon);
-        setHasApprove(true);
-        setLoading(false);
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
-        setLoading(false);
-      }
-    } else {
-      try {
-        showTip({type: IMessageType.ERROR, content: 'Wallet Address Error!'});
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
-        setLoading(false);
-      }
+    try {
+      const price = getEtherPrice(99999999999);
+      await approveRef.current.approve(contractAddress, price);
+      setHasApprove(true);
+      setLoading(false);
+    } catch (error: any) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: error?.data?.message || error?.message,
+      });
+      setLoading(false);
+      setHasApprove(false);
     }
   };
 
   const checkHasAllowance = async () => {
-    // eslint-disable-next-line @typescript-eslint/await-thenable
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const res = await provider.getNetwork();
-    if (res.chainId !== USECHAINID) {
-      try {
-        await getNetwork(provider);
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
-      }
-      return;
-    }
-    const contract = await getContract(approveContractAddress, approveAbi);
+    await shiftNetWork();
+    approveRef.current = await getContract(approveContractAddress, approveAbi);
     const account = connectedAccount;
-    if (account) {
-      const edu = await contract.allowance(account, contractAddress);
-      if (edu && getNormalPrice(edu._hex) !== '0.0') {
-        setHasApprove(true);
-      }
+    const edu = await approveRef.current.allowance(account, contractAddress);
+    if (edu && getNormalPrice(edu._hex) !== '0.0') {
+      setHasApprove(true);
+    } else {
+      setHasApprove(false);
     }
   };
   const almostPrice = () => {
@@ -456,7 +400,10 @@ const Deposits: NextPage = () => {
       ) / 1000000
     );
   };
-
+  const shiftNetWork = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await getNetwork(provider);
+  };
   // '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
   useEffect(() => {
     initRequest();
@@ -535,7 +482,7 @@ const Deposits: NextPage = () => {
           </div>
         </div>
         <div className='desc'>
-          <div className='left'>Invest Days:120D</div>
+          <div className='left'>Expected return:300%</div>
           <div className='left'>Daily Yield:0.5%-2%</div>
         </div>
         <div

@@ -409,7 +409,7 @@ const Deposits: NextPage = () => {
     initRequest();
     checkHasAllowance();
     let link = '';
-    if (connectedAccount) {
+    if (user.uuid && connectedAccount) {
       link = `${location.protocol}//${location.host}?inviterId=${connectedAccount}`;
     }
     setCopyLink(link);

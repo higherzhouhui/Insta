@@ -10,7 +10,6 @@ export const useContract = () => {
     contactAbi: ContractInterface
   ) => {
     const signer = await getSigner();
-    // const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(contactAddress, contactAbi, signer);
 
     return contract;

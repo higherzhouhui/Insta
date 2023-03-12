@@ -21,7 +21,9 @@ export const useEthersUtils = () => {
     return utils.formatEther(price);
   };
   // get network
-  const getNetwork = async (provider: ethers.providers.Web3Provider) => {
+  const getNetwork = async (
+    provider: ethers.providers.Web3Provider | ethers.providers.JsonRpcProvider
+  ) => {
     const res = await provider.getNetwork();
     const NODE_ENV = process.env.NODE_ENV;
     if (NODE_ENV && NODE_ENV === 'production') {

@@ -6,6 +6,7 @@ export const useSigner = () => {
   const {getNetwork} = useEthersUtils();
   const getSigner = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // const provider = new ethers.providers.JsonRpcProvider(RPCPROVIDERURL);
     await getNetwork(provider);
 
     const signer: Signer = provider.getSigner();

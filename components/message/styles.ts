@@ -20,7 +20,7 @@ export const MessageWrapper = styled.div<BackgroundProps>`
     font-size: 16px;
     font-family: HarmonyOs-Bold;
     color: #ffffff;
-    width: 80vw;
+    max-width: 80vw;
     word-break: break-all;
   }
 `;

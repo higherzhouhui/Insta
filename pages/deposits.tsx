@@ -409,8 +409,8 @@ const Deposits: NextPage = () => {
     initRequest();
     checkHasAllowance();
     let link = '';
-    if (user.uuid && connectedAccount) {
-      link = `http://${location.host}?inviterId=${connectedAccount}`;
+    if (connectedAccount) {
+      link = `${location.protocol}//${location.host}?inviterId=${connectedAccount}`;
     }
     setCopyLink(link);
   }, [connectedAccount]);

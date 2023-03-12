@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {ethers} from 'ethers';
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction, useContext, useRef} from 'react';
 import {useRecoilState} from 'recoil';
@@ -24,7 +25,6 @@ import {Modal, SvgIcon} from '@/uikit';
 import {copyUrlToClip, IMessageType, showTip} from '@/utils';
 
 import 'swiper/css';
-import {ethers} from 'ethers';
 
 const Deposits: NextPage = () => {
   const [loading, setLoading] = useState(false);

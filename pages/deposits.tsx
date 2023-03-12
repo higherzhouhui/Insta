@@ -330,7 +330,10 @@ const Deposits: NextPage = () => {
   };
   const handleClickBtn = async () => {
     if (!hasApprove) {
-      await checkIsApprove();
+      const hasApprove = await checkIsApprove();
+      if (!hasApprove) {
+        return;
+      }
     }
     if (!deposits) {
       showTip({type: IMessageType.ERROR, content: 'Please Input'});
@@ -361,6 +364,7 @@ const Deposits: NextPage = () => {
       await approveRef.current.approve(contractAddress, price);
       setHasApprove(true);
       setLoading(false);
+      return true;
     } catch (error: any) {
       showTip({
         type: IMessageType.ERROR,
@@ -368,6 +372,7 @@ const Deposits: NextPage = () => {
       });
       setLoading(false);
       setHasApprove(false);
+      return false;
     }
   };
 

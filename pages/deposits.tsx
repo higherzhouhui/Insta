@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {ethers} from 'ethers';
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction, useContext, useRef} from 'react';
 import {useRecoilState} from 'recoil';
@@ -330,7 +329,7 @@ const Deposits: NextPage = () => {
   };
   const handleClickBtn = async () => {
     if (!hasApprove) {
-      const hasApprove = await checkIsApprove();
+      await checkIsApprove();
       if (!hasApprove) {
         return;
       }
@@ -377,13 +376,23 @@ const Deposits: NextPage = () => {
   };
 
   const checkHasAllowance = async () => {
-    await shiftNetWork();
-    approveRef.current = await getContract(approveContractAddress, approveAbi);
-    const account = connectedAccount;
-    const edu = await approveRef.current.allowance(account, contractAddress);
-    if (edu && getNormalPrice(edu._hex) !== '0.0') {
-      setHasApprove(true);
-    } else {
+    try {
+      approveRef.current = await getContract(
+        approveContractAddress,
+        approveAbi
+      );
+      const account = connectedAccount;
+      const edu = await approveRef.current.allowance(account, contractAddress);
+      if (edu && getNormalPrice(edu._hex) !== '0.0') {
+        setHasApprove(true);
+      } else {
+        setHasApprove(false);
+      }
+    } catch (error: any) {
+      showTip({
+        type: IMessageType.ERROR,
+        content: error?.data?.message || error?.message,
+      });
       setHasApprove(false);
     }
   };
@@ -404,10 +413,6 @@ const Deposits: NextPage = () => {
         ((exchangeNumber as any as number) || 0) * balance?.usdt2Int * 1000000
       ) / 1000000
     );
-  };
-  const shiftNetWork = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await getNetwork(provider);
   };
   // '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
   useEffect(() => {

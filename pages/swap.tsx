@@ -1,10 +1,10 @@
 import {ethers} from 'ethers';
-import {useState, SetStateAction, useContext, useEffect} from 'react';
+import {useState, SetStateAction, useContext} from 'react';
 
 import type {NextPage} from 'next';
 
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
-import {USDTADDRESS, USECHAINID, WBNBADDRESS} from '@/config/contractAddress';
+import {USDTADDRESS, WBNBADDRESS} from '@/config/contractAddress';
 import {
   thinPancakeContractAddress,
   thinPancakeAbi,
@@ -209,25 +209,6 @@ const Swap: NextPage = () => {
     }
     return exchangeNum;
   };
-
-  const shiftNetWork = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const res = await provider.getNetwork();
-    if (res.chainId !== USECHAINID) {
-      try {
-        await getNetwork(provider);
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    shiftNetWork();
-  }, []);
 
   return (
     <SwapContainer className={loading ? 'loading' : ''}>

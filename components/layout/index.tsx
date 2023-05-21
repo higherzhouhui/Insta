@@ -87,45 +87,49 @@ export const Layout = memo(({children}) => {
       url: `${apiUrl}/api/public/v1/users/info`,
       method: 'get',
       params: {wallet: currentAccount},
-    }).then((res: any) => {
-      if (res?.data?.meta?.status !== 200) {
+    })
+      .then((res: any) => {
+        if (res?.data?.meta?.status !== 200) {
+          setUser({
+            expiresAt: null,
+            portrait: null,
+            token: null,
+            username: null,
+            userId: null,
+            accountAddress: currentAccount,
+            createdAt: null,
+            id: null,
+            last_login: null,
+            path: null,
+            pid: null,
+            updatedAt: null,
+            uuid: null,
+          });
+          setAccount(currentAccount);
+          return;
+        }
+        const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
+          res.data.data;
         setUser({
-          expiresAt: null,
-          portrait: null,
-          token: null,
-          username: null,
-          userId: null,
+          expiresAt: 154154125154,
+          portrait: '',
+          token: uuid,
+          username: 'james',
+          userId: id,
           accountAddress: currentAccount,
-          createdAt: null,
-          id: null,
-          last_login: null,
-          path: null,
-          pid: null,
-          updatedAt: null,
-          uuid: null,
+          createdAt,
+          id,
+          last_login,
+          path,
+          pid,
+          updatedAt,
+          uuid,
         });
         setAccount(currentAccount);
-        return;
-      }
-      const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
-        res.data.data;
-      setUser({
-        expiresAt: 154154125154,
-        portrait: '',
-        token: uuid,
-        username: 'james',
-        userId: id,
-        accountAddress: currentAccount,
-        createdAt,
-        id,
-        last_login,
-        path,
-        pid,
-        updatedAt,
-        uuid,
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      setAccount(currentAccount);
-    });
   };
   useEffect(() => {
     if (

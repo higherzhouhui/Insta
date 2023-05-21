@@ -1,8 +1,9 @@
+import {Dropdown, Menu} from 'antd';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {FC, useState, memo, useContext} from 'react';
+import {FC, useState, memo, useContext, useMemo} from 'react';
 import {useRecoilState} from 'recoil';
 
 import {
@@ -18,6 +19,7 @@ import {Loading} from '@/components';
 import {apiUrl} from '@/config';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
+import {useTranslation} from '@/hooks';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
@@ -26,6 +28,35 @@ import {showTip, IMessageType} from '@/utils';
 export const Header: FC = memo(() => {
   const [_userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const {t} = useTranslation();
+  const {locale, asPath} = useRouter();
+
+  const LanguagesMenu = useMemo(() => {
+    return (
+      <Menu
+        items={[
+          {
+            key: 'en',
+            label: (
+              <Link href={`/en${asPath}`} locale='en'>
+                Engilsh
+              </Link>
+            ),
+            disabled: locale === 'en',
+          },
+          {
+            key: 'zh',
+            label: (
+              <Link href={asPath} locale='zh'>
+                中文
+              </Link>
+            ),
+            disabled: locale === 'zh',
+          },
+        ]}
+      />
+    );
+  }, [asPath, locale]);
 
   return (
     <HeaderContainer>
@@ -37,6 +68,21 @@ export const Header: FC = memo(() => {
         </Link>
       </HeaderLogoContainer>
       <HeaderOptionContainer>
+        <Dropdown
+          overlay={LanguagesMenu}
+          placement='bottom'
+          trigger={['hover']}
+        >
+          <div
+            className='dropDown'
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            {locale === 'en' ? 'English' : '中文'}
+            {t('app.title')}
+          </div>
+        </Dropdown>
         <WalletContainer
           onClick={() => {
             setUserDrawer({

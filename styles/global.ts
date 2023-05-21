@@ -161,4 +161,7 @@ export const GlobalStyle = createGlobalStyle`
 			transform: rotate(360deg);
 		}
 	}
+    .dropDown {
+        color: #fff;
+    }
 `;

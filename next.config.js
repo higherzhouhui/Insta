@@ -2,6 +2,10 @@
 
 const nextConfig = {
   reactStrictMode: true,
+  i18n: {
+    defaultLocale: 'en', // 默认语言
+    locales: ['en', 'zh'], // 语言变量
+  },
   images: {
     domains: [
       'scpic.chinaz.net',

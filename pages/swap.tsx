@@ -75,7 +75,9 @@ const Swap: NextPage = () => {
         );
         // 获取授权额度，如果未授权则先执行授权
         if (edu && getNormalPrice(edu._hex) === '0.0') {
-          const price = getEtherPrice(99999999999);
+          const price =
+            '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
           const approoveCon = await contract.approve(
             thinPancakeContractAddress,
             price

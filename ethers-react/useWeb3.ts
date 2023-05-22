@@ -10,8 +10,15 @@ export const useWeb3 = () => {
 
   // get provider
   const getProvider = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    setProvider(provider);
+    return new Promise((resolve, reject) => {
+      const timer = setInterval(async () => {
+        if (window.ethereum) {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          setProvider(provider);
+          clearInterval(timer);
+        }
+      }, 100);
+    });
   };
 
   // get balance

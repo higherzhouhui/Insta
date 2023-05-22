@@ -14,9 +14,7 @@ import {userState} from '@/store/user';
 import {HomeContainer, InviterComp} from '@/styles/home';
 import {Modal, SvgIcon} from '@/uikit';
 import {IMessageType, showTip} from '@/utils';
-
 import 'swiper/css';
-
 const Home: NextPage = () => {
   const homeRef: any = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -90,16 +88,22 @@ const Home: NextPage = () => {
   };
 
   const shiftNetWork = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await getNetwork(provider);
+    return new Promise((resolve, reject) => {
+      const timer = setInterval(async () => {
+        if (window.ethereum) {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          await getNetwork(provider);
+          clearInterval(timer);
+        }
+      }, 100);
+    });
   };
 
   useEffect(() => {
     shiftNetWork();
-  }, []);
-
-  useEffect(() => {
-    judgeIsRegister(inviterId);
+    setTimeout(()=>{
+      judgeIsRegister(inviterId);
+    }, 500)
   }, [inviterId, connectedAccount]);
 
   const logoList = [

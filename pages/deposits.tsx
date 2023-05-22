@@ -338,6 +338,15 @@ const Deposits: NextPage = () => {
       showTip({type: IMessageType.ERROR, content: 'Please Input'});
       return;
     }
+
+    // if (deposits < 100 || deposits > 1000 || deposits % 100 !== 0) {
+    //   showTip({
+    //     type: IMessageType.ERROR,
+    //     content: 'Amount Error!',
+    //   });
+    //   return;
+    // }
+
     setLoading(true);
     try {
       const contract = await getContract(contractAddress, abi);
@@ -359,7 +368,8 @@ const Deposits: NextPage = () => {
   const checkIsApprove = async () => {
     setLoading(true);
     try {
-      const price = getEtherPrice(99999999999);
+      const price =
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935';
       await approveRef.current.approve(contractAddress, price);
       setHasApprove(true);
       setLoading(false);

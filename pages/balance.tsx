@@ -22,7 +22,7 @@ const Balance: NextPage = () => {
     const arr: any[] = [];
     setLoading(true);
     axios({
-      url: `${apiUrl}/api/public/v1/users/income`,
+      url: `${apiUrl}/api/public/v1/users/balance_detail`,
       method: 'get',
       params: {wallet: connectedAccount},
     }).then((balance) => {
@@ -30,11 +30,28 @@ const Balance: NextPage = () => {
         showTip({content: balance?.data?.meta?.msg});
       }
       const array = balance?.data?.data || [];
+      const typeNames = [
+        'My Income',
+        'My Income',
+        'Invitation Bonus',
+        'Promotion Reward',
+        '', // 平级奖励
+        'Withdraw',
+        'Exchange-INT',
+        'Exchange-INT',
+        'Exchange-USDT',
+        'Exchange-USDT',
+        'CommunityReward',
+        'GlobalReward',
+      ];
       array.forEach((item: any) => {
         arr.push({
-          class: item.type,
-          time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm:ss'),
-          deposit: `$${item.amount}USDT`,
+          class: typeNames[item.type],
+          time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm'),
+          deposit:
+            (item.amount > 0 ? '+' : '') +
+            parseFloat(item.amount) +
+            (item.type * 1 === 8 || item.type * 1 === 9 ? ' INT' : ' USDT'),
         });
       });
       setLoading(false);

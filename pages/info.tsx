@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as echarts from 'echarts';
 import moment from 'moment';
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 
 import type {NextPage} from 'next';
 
@@ -9,6 +9,7 @@ import {apiUrl} from '@/config';
 import {Web3ProviderContext} from '@/ethers-react/Web3ContextProvider';
 import {InfoContainer} from '@/styles/info';
 import {showTip} from '@/utils';
+import {Any} from "@react-spring/types";
 
 const Info: NextPage = () => {
   const staticData = [
@@ -30,6 +31,10 @@ const Info: NextPage = () => {
     {title: 'Evmos', desc: '$1.08M(5.02%)'},
   ];
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const [finalPrice, setFinalPrice] = useState<number>(0);
+  const [increase, setIncrease] = useState(null);
+
+
   const initRequestData = () => {
     axios({
       url: `${apiUrl}/api/public/v1/users/trend`,
@@ -46,9 +51,26 @@ const Info: NextPage = () => {
         xdata.push(moment(new Date(item.createdAt)).format('MM-DD'));
         ydata.push(item.price);
       });
+      setFinalPrice(data[data.length - 1].price);
       initLineChart(xdata, ydata);
     });
   };
+
+  const initIncrease = () => {
+    axios({
+      url: `${apiUrl}/api/public/v1/users/increase`,
+      method: 'get',
+      params: {},
+    }).then((res) => {
+      if (res?.data?.meta?.status !== 200) {
+        showTip({content: res?.data?.meta?.msg});
+      }
+      const data = res?.data?.data || [];
+      // setIncrease({
+      //   'today': parseFloat(data.today)
+      // });
+    });
+  }
 
   const initLineChart = (xdata: string[], ydata: string[]) => {
     const chartDom = document.getElementById('main');
@@ -86,11 +108,11 @@ const Info: NextPage = () => {
       <h2>INT TOKEN</h2>
       <div className='baseInfo'>
         <div className='left'>
-          <h3>Today's increase: 2.0%</h3>
-          <h3>Weekly increase: 3.2%</h3>
-          <h3>Monthly increase: 6%</h3>
+          <h3>Today's increase: 5%</h3>
+          <h3>Weekly increase: 63.22%</h3>
+          <h3>Monthly increase: 788.48%</h3>
         </div>
-        <div className='right'>$12.58</div>
+        <div className='right'>${finalPrice}</div>
       </div>
       <div id='main' />
       <div className='tvlContainer'>

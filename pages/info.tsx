@@ -9,7 +9,6 @@ import {apiUrl} from '@/config';
 import {Web3ProviderContext} from '@/ethers-react/Web3ContextProvider';
 import {InfoContainer} from '@/styles/info';
 import {showTip} from '@/utils';
-import {Any} from "@react-spring/types";
 
 const Info: NextPage = () => {
   const staticData = [
@@ -33,7 +32,6 @@ const Info: NextPage = () => {
   const {connectedAccount} = useContext(Web3ProviderContext);
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [increase, setIncrease] = useState(null);
-
 
   const initRequestData = () => {
     axios({
@@ -70,7 +68,7 @@ const Info: NextPage = () => {
       //   'today': parseFloat(data.today)
       // });
     });
-  }
+  };
 
   const initLineChart = (xdata: string[], ydata: string[]) => {
     const chartDom = document.getElementById('main');

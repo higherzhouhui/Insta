@@ -5,14 +5,14 @@ import {useCallback} from 'react';
 import En from '@/locales/en'; // 英文语言包，也就是上面的en.jsx
 import Zh from '@/locales/zh'; // 中文语言包，也就是上面的zh.jsx
 
-const LanguageMap = {
+const LanguageMap: any = {
   en: En,
   zh: Zh,
 };
 
 export const useTranslation = () => {
   const router = useRouter();
-  const lang: any = localStorage.getItem('lang') || 'en';
+  const lang: string = localStorage.getItem('lang') || 'en';
   const jsonFun = useCallback(
     (key, params = {}) => {
       // 获取当前的语言包里面key所对应的value值

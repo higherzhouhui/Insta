@@ -101,9 +101,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     shiftNetWork();
-    setTimeout(()=>{
+    setTimeout(() => {
       judgeIsRegister(inviterId);
-    }, 500)
+    }, 500);
   }, [inviterId, connectedAccount]);
 
   const logoList = [

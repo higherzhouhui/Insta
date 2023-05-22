@@ -30,7 +30,13 @@ export const Header: FC = memo(() => {
   const {connectedAccount} = useContext(Web3ProviderContext);
   const {t} = useTranslation();
   const {locale, asPath} = useRouter();
-
+  const [currentLang, setCurrentLang] = useState(
+    localStorage.getItem('lang') || 'en'
+  );
+  const shiftLanguage = (lang: string) => {
+    setCurrentLang(lang);
+    localStorage.setItem('lang', lang);
+  };
   const LanguagesMenu = useMemo(() => {
     return (
       <Menu
@@ -38,25 +44,33 @@ export const Header: FC = memo(() => {
           {
             key: 'en',
             label: (
-              <Link href={`/en${asPath}`} locale='en'>
+              <div
+                onClick={() => {
+                  shiftLanguage('en');
+                }}
+              >
                 Engilsh
-              </Link>
+              </div>
             ),
-            disabled: locale === 'en',
+            disabled: currentLang === 'en',
           },
           {
             key: 'zh',
             label: (
-              <Link href={asPath} locale='zh'>
+              <div
+                onClick={() => {
+                  shiftLanguage('zh');
+                }}
+              >
                 中文
-              </Link>
+              </div>
             ),
-            disabled: locale === 'zh',
+            disabled: currentLang === 'zh',
           },
         ]}
       />
     );
-  }, [asPath, locale]);
+  }, [currentLang]);
 
   return (
     <HeaderContainer>
@@ -79,7 +93,7 @@ export const Header: FC = memo(() => {
               e.preventDefault();
             }}
           >
-            {locale === 'en' ? 'English' : '中文'}
+            {currentLang === 'en' ? 'English' : '中文'}
             {t('app.title')}
           </div>
         </Dropdown>

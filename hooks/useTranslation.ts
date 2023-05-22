@@ -12,10 +12,11 @@ const LanguageMap = {
 
 export const useTranslation = () => {
   const router = useRouter();
+  const lang: any = localStorage.getItem('lang') || 'en';
   const jsonFun = useCallback(
     (key, params = {}) => {
       // 获取当前的语言包里面key所对应的value值
-      let value = LanguageMap[router.locale][key];
+      let value: any = LanguageMap[lang][key];
       /*
 		如果传key进来，或者没有找到value，就直接返回key就好了，
 		页面上就显示key，方便找到漏翻译的字段	
@@ -36,7 +37,7 @@ export const useTranslation = () => {
       });
       return value;
     },
-    [router.locale]
+    [lang]
   );
   return {
     t: jsonFun,

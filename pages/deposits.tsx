@@ -7,6 +7,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 
 import type {NextPage} from 'next';
 
+import {TrendIntroduce} from '@/components';
 import {apiUrl} from '@/config';
 import {approveAbi, approveContractAddress} from '@/config/approveContract';
 import {abi, contractAddress} from '@/config/depositContract';
@@ -60,7 +61,7 @@ const Deposits: NextPage = () => {
   const [balance, setBalance] = useState<any>({});
   const approveRef = useRef<any>();
   const depositRef = useRef<any>();
-
+  const [isOpenAutomic, setOpenAutomic] = useState(true);
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
     const list = exchangeOptionList.filter((item) => {
@@ -85,72 +86,132 @@ const Deposits: NextPage = () => {
     }
     setLoading(true);
     let totalDeposit = 0;
+    // Promise.all([
+    //   axios({
+    //     url: `${apiUrl}/api/public/v1/users/deposit`,
+    //     method: 'get',
+    //     params: {wallet: connectedAccount},
+    //   }),
+    //   axios({
+    //     url: `${apiUrl}/api/public/v1/users/income`,
+    //     method: 'get',
+    //     params: {wallet: connectedAccount},
+    //   }),
+    //   axios({
+    //     url: `${apiUrl}/api/public/v1/users/team`,
+    //     method: 'get',
+    //     params: {wallet: connectedAccount},
+    //   }),
+    //   axios({
+    //     url: `${apiUrl}/api/public/v1/users/balance`,
+    //     method: 'get',
+    //     params: {wallet: connectedAccount},
+    //   }),
+    // ])
+    //   .then((results: any) => {
+    //     const res = results[0];
+    //     if (res?.data?.meta?.status === 200) {
+    //       const array = res?.data?.data || [];
+    //       array.forEach((item: any) => {
+    //         totalDeposit += item.amount;
+    //       });
+    //       settotalDeposits(totalDeposit);
+    //       setCopyLink(`http://${location.host}?inviterId=${connectedAccount}`);
+    //     } else {
+    //       showTip({content: res?.data?.meta?.msg});
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     setLoading(false);
+    //   });
+
     axios({
       url: `${apiUrl}/api/public/v1/users/deposit`,
       method: 'get',
       params: {wallet: connectedAccount},
-    }).then((res) => {
-      if (res?.data?.meta?.status === 200) {
-        const array = res?.data?.data || [];
-        array.forEach((item: any) => {
-          totalDeposit += item.amount;
-        });
-        settotalDeposits(totalDeposit);
-        setCopyLink(`http://${location.host}?inviterId=${connectedAccount}`);
-      } else {
-        showTip({content: res?.data?.meta?.msg});
-      }
-    });
+    })
+      .then((res) => {
+        if (res?.data?.meta?.status === 200) {
+          const array = res?.data?.data || [];
+          array.forEach((item: any) => {
+            totalDeposit += item.amount;
+          });
+          settotalDeposits(totalDeposit);
+          setCopyLink(`http://${location.host}?inviterId=${connectedAccount}`);
+        } else {
+          showTip({content: res?.data?.meta?.msg});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
     let totalIncome = 0;
     axios({
       url: `${apiUrl}/api/public/v1/users/income`,
       method: 'get',
       params: {wallet: connectedAccount},
-    }).then((res) => {
-      const array = res?.data?.data || [];
-      array.forEach((item: any) => {
-        totalIncome += item.amount;
+    })
+      .then((res) => {
+        const array = res?.data?.data || [];
+        array.forEach((item: any) => {
+          totalIncome += item.amount;
+        });
+        settotalIncome(totalIncome);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
       });
-      settotalIncome(totalIncome);
-    });
 
     axios({
       url: `${apiUrl}/api/public/v1/users/team`,
       method: 'get',
       params: {wallet: connectedAccount},
-    }).then((res: any) => {
-      if (res?.data?.meta?.status === 200) {
-        const data = res?.data?.data;
-        settotalAddress(data?.invite_num);
-        setteamTotalDeposits(data?.deposits_total);
-      }
-    });
+    })
+      .then((res: any) => {
+        if (res?.data?.meta?.status === 200) {
+          const data = res?.data?.data;
+          settotalAddress(data?.invite_num);
+          setteamTotalDeposits(data?.deposits_total);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
     axios({
       url: `${apiUrl}/api/public/v1/users/balance`,
       method: 'get',
       params: {wallet: connectedAccount},
-    }).then((res: any) => {
-      setLoading(false);
-      if (res?.data?.meta?.status === 200) {
-        const {USDT, int, int_price} = res.data.data;
-        setBalance({
-          balance: USDT + parseFloat(int) * parseFloat(int_price),
-          USDT: USDT || 0,
-          int: parseFloat(int),
-          usdt2Int: parseFloat(int_price),
-        });
-        setFromObj({
-          ...fromObj,
-          balance: USDT || 0,
-        });
-        setToObj({
-          ...toObj,
-          balance: parseFloat(int),
-        });
-      } else {
-        setBalance({});
-      }
-    });
+    })
+      .then((res: any) => {
+        setLoading(false);
+        if (res?.data?.meta?.status === 200) {
+          const {USDT, int, int_price} = res.data.data;
+          setBalance({
+            balance: USDT + parseFloat(int) * parseFloat(int_price),
+            USDT: USDT || 0,
+            int: parseFloat(int),
+            usdt2Int: parseFloat(int_price),
+          });
+          setFromObj({
+            ...fromObj,
+            balance: USDT || 0,
+          });
+          setToObj({
+            ...toObj,
+            balance: parseFloat(int),
+          });
+        } else {
+          setBalance({});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
   const columns: any[] = [
     {
@@ -424,6 +485,9 @@ const Deposits: NextPage = () => {
       ) / 1000000
     );
   };
+  const handleSwitch = () => {
+    setOpenAutomic(!isOpenAutomic);
+  };
   // '7206a100-bbc2-11ed-ab9f-c7ad60dc9119'
   useEffect(() => {
     initRequest();
@@ -501,10 +565,13 @@ const Deposits: NextPage = () => {
             <div className='bep'>BEP20</div>
           </div>
         </div>
-        <div className='desc'>
+        <div>
+          <TrendIntroduce handleSwitch={handleSwitch} isOpen={isOpenAutomic} />
+        </div>
+        {/* <div className='desc'>
           <div className='left'>Expected return:300%</div>
           <div className='left'>Daily Yield:0.5%-2%</div>
-        </div>
+        </div> */}
         <div
           className='approveBtn'
           onClick={() => {

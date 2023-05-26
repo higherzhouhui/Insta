@@ -51,7 +51,7 @@ export const DepositsContainer = styled.div`
           color: #999;
           padding: 8px 6px;
           font-size: 14px;
-          width: 180px;
+          width: 190px;
           align-items: center;
           :focus-visible {
             outline: #060b19;
@@ -64,16 +64,18 @@ export const DepositsContainer = styled.div`
           svg {
             width: 20px;
             height: 20px;
-            margin-right: 6px;
+            margin-right: 2px;
           }
           color: #fff;
           font-weight: bold;
+          font-size: 14px;
         }
         .bep {
           display: flex;
           align-items: center;
-          color: #fff;
-          font-size: 14px;
+          color: #ffca2c;
+          font-size: 20px;
+          transform: scale(0.5);
         }
         .error {
           position: absolute;

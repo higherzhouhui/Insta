@@ -29,6 +29,16 @@ export const HeaderOptionContainer = styled.div`
     font-size: 14px;
     color: #776cff;
   }
+  .dropDown {
+    padding: 4px 0;
+    border: 1px solid #adabc7;
+    color: #adabc7;
+    font-size: 14px;
+    margin-right: 12px;
+    width: 70px;
+    text-align: center;
+    border-radius: 6px;
+  }
 `;
 export const HeadeSearchContainer = styled.div`
   flex: 1;

@@ -1,6 +1,5 @@
 // useTranslation.js
-import {useRouter} from 'next/router';
-import {useCallback} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 import En from '@/locales/en'; // 英文语言包，也就是上面的en.jsx
 import Zh from '@/locales/zh'; // 中文语言包，也就是上面的zh.jsx
@@ -11,8 +10,11 @@ const LanguageMap: any = {
 };
 
 export const useTranslation = () => {
-  const router = useRouter();
-  const lang: string = localStorage.getItem('lang') || 'en';
+  const [lang, setLang] = useState('en');
+  useEffect(() => {
+    const lang: string = localStorage.getItem('lang') || 'en';
+    setLang(lang);
+  }, []);
   const jsonFun = useCallback(
     (key, params = {}) => {
       // 获取当前的语言包里面key所对应的value值

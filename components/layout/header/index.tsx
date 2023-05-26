@@ -62,7 +62,7 @@ export const Header: FC = memo(() => {
                   shiftLanguage('zh');
                 }}
               >
-                中文
+                繁體中文
               </div>
             ),
             disabled: currentLang === 'zh',
@@ -93,8 +93,7 @@ export const Header: FC = memo(() => {
               e.preventDefault();
             }}
           >
-            {currentLang === 'en' ? 'English' : '中文'}
-            {t('app.title')}
+            {currentLang === 'en' ? 'English' : '繁體中文'}
           </div>
         </Dropdown>
         <WalletContainer

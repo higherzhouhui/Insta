@@ -119,50 +119,7 @@ const Home: NextPage = () => {
     '/static/image/img7.webp',
     '/static/image/img10.webp',
   ];
-  const titleList = [
-    'WBNB-AUTO',
-    'BUSD-AUTO LP',
-    'WBNB-CAKE LP',
-    'WBNB-BUSD LP',
-    'ADA-WBNB LP',
-    'wbnb-xvs LP',
-    'ETH-WBNB LP',
-    'ADA-WBNB LP',
-    'TUSD-BUSD LP',
-    'TRX-BUSD LP',
-    'AXX-BUSD LP',
-  ];
-  const descList = [
-    'PancakeSwap',
-    'Auto',
-    'MDEX',
-    'BNB-PancakeSwap',
-    'Polygon-MeshSwap',
-    'Polygon-Sushi',
-    'Cronos-Crona',
-    'Polygon-MeshSwap',
-    'Polygon-Sushi',
-    'Polygon-Sushi',
-    'Polygon-Quickswap',
-  ];
-  const newestObj = {
-    img1: '/static/image/img1.webp',
-    img2: '/static/image/img2.webp',
-    title: 'WBNB-GAL LP',
-    desc: 'BNB-PancakeSwap',
-    number: 5.11,
-  };
-  const [newestList, setNewestList] = useState();
-  const ourPartners = [
-    'Google',
-    'Baidu',
-    'Alibaba',
-    'Tengxun',
-    'Inter',
-    'RedMi',
-    'Huawei',
-    'Oppera',
-  ];
+
   return (
     <HomeContainer ref={homeRef}>
       <h1>The best cross‑chain Yield Aggregator across DeFi</h1>

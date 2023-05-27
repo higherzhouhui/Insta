@@ -25,38 +25,43 @@ const Income: NextPage = () => {
       url: `${apiUrl}/api/public/v1/users/income`,
       method: 'get',
       params: {wallet: connectedAccount},
-    }).then((income) => {
-      if (income?.data?.meta?.status !== 200) {
-        showTip({content: income?.data?.meta?.msg});
-      }
-      const array = income?.data?.data || [];
-      const typeNames = [
-        'My Income',
-        'My Income',
-        'Invitation Bonus',
-        'Promotion Reward',
-        '', // 平级奖励
-        'Withdraw',
-        'Exchange-INT',
-        'Exchange-INT',
-        'Exchange-USDT',
-        'Exchange-USDT',
-        'CommunityReward',
-        'GlobalReward',
-      ];
-      array.forEach((item: any) => {
-        arr.push({
-          class: typeNames[item.type],
-          time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm'),
-          deposit:
-            (item.amount > 0 ? '+' : '') +
-            parseFloat(item.amount) +
-            (item.type * 1 === 8 || item.type * 1 === 9 ? ' INT' : ' USDT'),
+    })
+      .then((income) => {
+        if (income?.data?.meta?.status !== 200) {
+          showTip({content: income?.data?.meta?.msg});
+        }
+        const array = income?.data?.data || [];
+        const typeNames = [
+          'My Income',
+          'My Income',
+          'Invitation Bonus',
+          'Promotion Reward',
+          '', // 平级奖励
+          'Withdraw',
+          'Exchange-INT',
+          'Exchange-INT',
+          'Exchange-USDT',
+          'Exchange-USDT',
+          'CommunityReward',
+          'GlobalReward',
+        ];
+        array.forEach((item: any) => {
+          arr.push({
+            class: typeNames[item.type],
+            time: moment(new Date(item.createdAt)).format('yyyy-MM-DD HH:mm'),
+            deposit:
+              (item.amount > 0 ? '+' : '') +
+              parseFloat(item.amount) +
+              (item.type * 1 === 8 || item.type * 1 === 9 ? ' INT' : ' USDT'),
+          });
         });
+        setLoading(false);
+        setDataSource(arr);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
       });
-      setLoading(false);
-      setDataSource(arr);
-    });
   };
   const columns: any[] = [
     {
@@ -84,7 +89,7 @@ const Income: NextPage = () => {
     initRequest();
   }, []);
   return (
-    <ProfitContainer>
+    <ProfitContainer className={loading ? 'loading' : ''}>
       <div className='nav'>
         <SvgIcon
           name='back'
@@ -94,7 +99,33 @@ const Income: NextPage = () => {
         />
         <span>Income</span>
       </div>
-      <PMyTable className={loading ? 'loading' : ''}>
+      <div className='smartContainer withdrawContainer'>
+        <div className='top'>Withdrawable income</div>
+        <div className='middle'>
+          59548.55
+          <div className='unit'>USDT</div>
+        </div>
+        <div className='withdraw'>
+          <div className='recharge'>withdraw</div>
+        </div>
+        <div className='shareContainer'>
+          <div className='sitem'>
+            <div className='stop'>Share revenue</div>
+            <div className='sbot'>
+              <span className='price'>32223.32</span>
+              <span className='sunit'>usdt</span>
+            </div>
+          </div>
+          <div className='sitem'>
+            <div className='stop'>Pledge income</div>
+            <div className='sbot'>
+              <span className='price'>32223.32</span>
+              <span className='sunit'>usdt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <PMyTable style={{marginTop: '20px'}}>
         <div className='header'>
           {columns.map((item, index) => {
             return <div key={index}>{item.title}</div>;

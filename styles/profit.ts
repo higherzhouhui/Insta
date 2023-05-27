@@ -24,6 +24,92 @@ export const ProfitContainer = styled.div`
       transform: translate(0, -50%) rotate(0);
     }
   }
+  .smartContainer {
+    background: #181e30;
+    border-radius: 2px;
+    padding: 12px 12px 36px 12px;
+    margin-top: 40px;
+    .top {
+      font-size: 17px;
+      font-family: PingFang SC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #ffffff;
+      text-align: center;
+    }
+    .middle {
+      position: relative;
+      font-size: 42px;
+      font-family: Segoe UI-Semibold, Segoe UI;
+      font-weight: 600;
+      color: #776cff;
+      text-align: center;
+      margin-top: 30px;
+      .unit {
+        position: absolute;
+        bottom: 0;
+        right: 5%;
+        width: 44px;
+        font-size: 18px;
+        font-family: Segoe UI-Regular, Segoe UI;
+        font-weight: 400;
+        color: #776cff;
+      }
+    }
+    .bot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 45px;
+    }
+    .recharge {
+      padding: 0 12px;
+      height: 32px;
+      background: #776cff;
+      border-radius: 15px 15px 15px 15px;
+      text-align: center;
+      line-height: 32px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .withdraw {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .shareContainer {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 20px;
+      margin-top: 16px;
+      .sitem {
+        padding: 12px;
+        .stop {
+          font-size: 15px;
+          font-family: Segoe UI-Regular, Segoe UI;
+          font-weight: 400;
+          color: #abb5c7;
+        }
+        .sbot {
+          margin-top: 8px;
+          .price {
+            width: 56px;
+            font-size: 20px;
+            font-family: Segoe UI-Semibold, Segoe UI;
+            font-weight: 600;
+            color: #33c497;
+          }
+          .sunit {
+            width: 23px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #6b7280;
+            margin: 6px 0 0 6px;
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const PMyTable = styled.div`

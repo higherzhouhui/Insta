@@ -1,10 +1,9 @@
 import {Statistic, Switch} from 'antd';
 import {FC, memo, useState, useEffect} from 'react';
 import CountUp from 'react-countup';
+import {useTranslation} from 'react-i18next';
 
 import {TrendIntroduceContainer} from './styles';
-
-import {useTranslation} from '@/hooks';
 
 type IProps = {
   isOpen: boolean;

@@ -2,12 +2,12 @@ import {Switch} from 'antd';
 import axios from 'axios';
 import {useRouter} from 'next/router';
 import {useState, useEffect, useContext, FC, memo} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
 import {Web3ProviderContext} from '@/ethers-react';
-import {useTranslation} from '@/hooks';
 import {MyOrderContainer, OrderProductContainer} from '@/styles/order';
 import {SvgIcon} from '@/uikit';
 import {showTip} from '@/utils';

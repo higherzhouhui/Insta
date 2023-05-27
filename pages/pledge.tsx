@@ -1,13 +1,13 @@
 import axios from 'axios';
 import {useRouter} from 'next/router';
 import {useState, useEffect, useContext, SetStateAction} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
 import {TrendIntroduce} from '@/components';
 import {apiUrl} from '@/config';
 import {Web3ProviderContext} from '@/ethers-react';
-import {useTranslation} from '@/hooks';
 import {PledgeContainer} from '@/styles/pledge';
 import {SvgIcon} from '@/uikit';
 import {showTip} from '@/utils';

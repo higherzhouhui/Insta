@@ -19,7 +19,7 @@ import {Loading} from '@/components';
 import {apiUrl} from '@/config';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
-import {useTranslation} from '@/hooks';
+import i18n from '@/locales/config';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
@@ -28,14 +28,13 @@ import {showTip, IMessageType} from '@/utils';
 export const Header: FC = memo(() => {
   const [_userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const {connectedAccount} = useContext(Web3ProviderContext);
-  const {t, change} = useTranslation();
   const [currentLang, setCurrentLang] = useState(
     localStorage.getItem('lang') || 'en'
   );
   const shiftLanguage = (lang: string) => {
     localStorage.setItem('lang', lang);
     setCurrentLang(lang);
-    change(lang);
+    i18n.changeLanguage(lang);
   };
   const LanguagesMenu = useMemo(() => {
     return (

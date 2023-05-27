@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {useRouter} from 'next/router';
 import {useState, useEffect, SetStateAction, useContext, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 import {Autoplay} from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -14,7 +15,6 @@ import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
 import {withDrawAbi, withDrawContractAddress} from '@/config/withDrawContract';
 import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
-import {useTranslation} from '@/hooks';
 import {userState} from '@/store/user';
 import {
   DepositsContainer,

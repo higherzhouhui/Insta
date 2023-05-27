@@ -3,7 +3,7 @@ import {ethers} from 'ethers';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
-import {memo, useEffect, useState} from 'react';
+import {memo, useEffect} from 'react';
 import {useRecoilState} from 'recoil';
 
 import {CommonLayout} from './CommonLayout';
@@ -14,7 +14,7 @@ import {Footer} from '@/components';
 import {apiUrl} from '@/config';
 import {useMetaMask} from '@/ethers-react';
 import {userState} from '@/store/user';
-import {IMessageType, progressInit, showTip, Event, EventTypes} from '@/utils';
+import {IMessageType, progressInit, showTip} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
 const Header = dynamic(import('./header'), {ssr: false});
 
@@ -22,7 +22,6 @@ export const Layout = memo(({children}) => {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
   const {setAccount, connectedAccount} = useMetaMask();
-  const [random, setRandom] = useState(Math.random());
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -61,10 +60,6 @@ export const Layout = memo(({children}) => {
 
   useEffect(() => {
     progressInit(router);
-    const refresHtml = () => {
-      setRandom(Math.random());
-    };
-    Event.addListener(EventTypes.shiftLang, refresHtml);
   }, []);
   const judgeIsLogin = async () => {
     const currentAccount = await getAccount();

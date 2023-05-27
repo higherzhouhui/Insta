@@ -94,6 +94,9 @@ export const DepositsContainer = styled.div`
         }
       }
     }
+    .trendWrapper {
+      margin: 18px 0;
+    }
     .desc {
       display: flex;
       align-items: center;
@@ -104,7 +107,7 @@ export const DepositsContainer = styled.div`
     }
     .approveBtn {
       width: 100%;
-      height: 32px;
+      height: 37px;
       background: #776cff;
       border-radius: 8px;
       opacity: 1;
@@ -112,7 +115,7 @@ export const DepositsContainer = styled.div`
       font-weight: 500;
       font-size: 16px;
       text-align: center;
-      line-height: 32px;
+      line-height: 37px;
       margin: 8px 0;
     }
   }
@@ -122,8 +125,9 @@ export const DepositsContainer = styled.div`
     justify-content: space-between;
     margin: 12px 0;
     .left {
-      font-size: 15px;
       color: #fff;
+      font-size: 16px;
+      font-weight: bold;
     }
     .right {
       color: #6b7280;
@@ -134,6 +138,49 @@ export const DepositsContainer = styled.div`
         height: 16px;
         fill: #6b7280;
         margin-left: 6px;
+      }
+    }
+  }
+  .intWrapper {
+    background: #181e30;
+    border-radius: 8px;
+    padding: 12px 10px;
+    margin: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left {
+      .top {
+        font-size: 12px;
+        font-family: Segoe UI-Regular, Segoe UI;
+        font-weight: 400;
+        color: #abb5c7;
+      }
+      .bot {
+        font-size: 19px;
+        font-family: Segoe UI-Semibold, Segoe UI;
+        font-weight: 600;
+        color: #33c497;
+        margin-top: 7px;
+      }
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      .exchange {
+        font-size: 12px;
+        color: #33c497;
+        margin-top: -5px;
+      }
+      .icons {
+        svg {
+          width: 16px;
+          height: 16px;
+          fill: #33c497;
+        }
+        svg:first-child {
+          margin-right: -8px;
+        }
       }
     }
   }
@@ -239,27 +286,38 @@ export const TotalAddress = styled.div`
     opacity: 1;
     padding: 12px;
     text-align: center;
+    position: relative;
     .top {
       font-size: 14px;
       color: #abb5c7;
-      text-align: center;
+      text-align: left;
     }
     .bot {
       margin-top: 12px;
       font-weight: bold;
       font-size: 16px;
-      text-align: center;
+      text-align: left;
       color: #33c497;
       span {
-        font-size: 14px;
+        font-size: 12px;
         margin-left: 4px;
-        color: #33c497;
+        color: #6b7280;
       }
     }
-    svg {
-      width: 20px;
-      height: 20px;
-      margin-top: 6px;
+    .arrowRight {
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+      right: 10px;
+      font-size: 18px;
+      svg {
+        width: 16px;
+        height: 16px;
+        fill: #33c497;
+      }
+      svg:first-child {
+        margin-right: -8px;
+      }
     }
   }
 `;

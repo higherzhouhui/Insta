@@ -28,14 +28,14 @@ import {showTip, IMessageType} from '@/utils';
 export const Header: FC = memo(() => {
   const [_userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const {connectedAccount} = useContext(Web3ProviderContext);
-  const {t} = useTranslation();
-  const {locale, asPath} = useRouter();
+  const {t, change} = useTranslation();
   const [currentLang, setCurrentLang] = useState(
     localStorage.getItem('lang') || 'en'
   );
   const shiftLanguage = (lang: string) => {
-    setCurrentLang(lang);
     localStorage.setItem('lang', lang);
+    setCurrentLang(lang);
+    change(lang);
   };
   const LanguagesMenu = useMemo(() => {
     return (
@@ -45,7 +45,7 @@ export const Header: FC = memo(() => {
             key: 'en',
             label: (
               <div
-                onClick={() => {
+                onClick={(e) => {
                   shiftLanguage('en');
                 }}
               >
@@ -58,7 +58,7 @@ export const Header: FC = memo(() => {
             key: 'zh',
             label: (
               <div
-                onClick={() => {
+                onClick={(e) => {
                   shiftLanguage('zh');
                 }}
               >

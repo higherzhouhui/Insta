@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from 'react';
 
 import En from '@/locales/en'; // 英文语言包，也就是上面的en.jsx
 import Zh from '@/locales/zh'; // 中文语言包，也就是上面的zh.jsx
-
+import {Event, EventTypes} from '@/utils';
 const LanguageMap: any = {
   en: En,
   zh: Zh,
@@ -11,6 +11,10 @@ const LanguageMap: any = {
 
 export const useTranslation = () => {
   const [lang, setLang] = useState('en');
+  const changeLang = (lang: string) => {
+    setLang(lang);
+    Event.emit(EventTypes.shiftLang, 'change');
+  };
   useEffect(() => {
     const lang: string = localStorage.getItem('lang') || 'en';
     setLang(lang);
@@ -43,5 +47,6 @@ export const useTranslation = () => {
   );
   return {
     t: jsonFun,
+    change: changeLang,
   };
 };

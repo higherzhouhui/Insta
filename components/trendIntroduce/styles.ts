@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const TrendIntroduceContainer = styled.div`
   width: 100%;
-  margin: 12px 0;
   .basicflex {
     display: flex;
     align-items: center;

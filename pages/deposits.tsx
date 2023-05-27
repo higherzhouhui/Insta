@@ -14,6 +14,7 @@ import {abi, contractAddress} from '@/config/depositContract';
 import {staticRollUpData} from '@/config/staticData';
 import {withDrawAbi, withDrawContractAddress} from '@/config/withDrawContract';
 import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
+import {useTranslation} from '@/hooks';
 import {userState} from '@/store/user';
 import {
   DepositsContainer,
@@ -62,6 +63,7 @@ const Deposits: NextPage = () => {
   const approveRef = useRef<any>();
   const depositRef = useRef<any>();
   const [isOpenAutomic, setOpenAutomic] = useState(true);
+  const {t} = useTranslation();
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
     const list = exchangeOptionList.filter((item) => {
@@ -543,7 +545,12 @@ const Deposits: NextPage = () => {
           );
         })}
       </Swiper>
-      <h2>Deposits</h2>
+      <div className='title'>
+        <div className='left'>{t('Deposits')}</div>
+        <div className='right' onClick={() => router.push('/order')}>
+          Order Details <SvgIcon color='#999' name='more-right' />
+        </div>
+      </div>
       <div className='approveContainer'>
         <div className='content'>
           <p>Multiple of 100</p>
@@ -565,7 +572,7 @@ const Deposits: NextPage = () => {
             <div className='bep'>BEP20</div>
           </div>
         </div>
-        <div>
+        <div className='trendWrapper'>
           <TrendIntroduce handleSwitch={handleSwitch} isOpen={isOpenAutomic} />
         </div>
         {/* <div className='desc'>
@@ -588,24 +595,51 @@ const Deposits: NextPage = () => {
         </div> */}
       </div>
       <TotalAddress>
-        <div className='left' onClick={() => router.push('/depositDetail')}>
-          <div className='top'>Cumulative deposits</div>
+        <div className='left' onClick={() => router.push('/balance')}>
+          <div className='top'>balance</div>
           <div className='bot'>
-            {totaldeposits}
+            {balance?.balance || 0}
             <span>USDT</span>
           </div>
-          <SvgIcon color='#999' name='right-icon' />
+          <div className='arrowRight'>
+            <SvgIcon name='more-right' />
+            <SvgIcon name='more-right' />
+          </div>
         </div>
         <div className='left' onClick={() => router.push('/income')}>
-          <div className='top'>Cumulative income</div>
+          <div className='top'>income</div>
           <div className='bot'>
             {totalIncome}
             <span>USDT</span>
           </div>
-          <SvgIcon color='#999' name='right-icon' />
+          <div className='arrowRight'>
+            <SvgIcon name='more-right' />
+            <SvgIcon name='more-right' />
+          </div>
         </div>
       </TotalAddress>
-      <div className='balanceWrapper'>
+      <div className='intWrapper'>
+        <div className='left'>
+          <div className='top'>INT</div>
+          <div className='bot'>{balance?.int || 0}</div>
+        </div>
+        <div className='right'>
+          <div
+            className='exchange'
+            onClick={() => {
+              setExchangeNumber('');
+              setExchangeisable(true);
+            }}
+          >
+            exchange
+          </div>
+          <div className='icons'>
+            <SvgIcon name='more-right' />
+            <SvgIcon name='more-right' />
+          </div>
+        </div>
+      </div>
+      {/* <div className='balanceWrapper'>
         <div className='normalContent'>
           <div className='left'>
             <div className='top'>Balance</div>
@@ -649,12 +683,12 @@ const Deposits: NextPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className='title'>
         <div className='left'>My Team</div>
         <div className='right' onClick={() => router.push('/myTeam')}>
-          Details <SvgIcon color='#999' name='right-icon' />
+          Details <SvgIcon color='#999' name='more-right' />
         </div>
       </div>
       <TotalAddress>

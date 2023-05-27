@@ -10,6 +10,7 @@ export enum EventTypes {
   Message = 'event.message',
   DropDown = 'event.dropDown',
   ModalPopUp = 'event.modalpopup',
+  shiftLang = 'event.shiftLang',
 }
 
 export enum IMessageType {

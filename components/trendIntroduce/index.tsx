@@ -7,7 +7,7 @@ import {TrendIntroduceContainer} from './styles';
 import {useTranslation} from '@/hooks';
 
 type IProps = {
-  isOpen: false;
+  isOpen: boolean;
   handleSwitch: () => void;
 };
 

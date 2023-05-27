@@ -323,8 +323,8 @@ export const TotalAddress = styled.div`
 `;
 
 export const WithDrawContainer = styled.div`
-  padding: 12px;
   position: relative;
+  padding: 12px;
   select {
     background: rgb(6, 25, 11);
     color: #fff;
@@ -362,6 +362,9 @@ export const WithDrawContainer = styled.div`
     color: #fff;
     font-weight: 500;
     font-size: 16px;
+  }
+  .exchangepage {
+    width: 100% !important;
   }
   .close {
     position: absolute;
@@ -401,6 +404,8 @@ export const WithDrawContainer = styled.div`
     height: 100px;
     background: #060b19;
     width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
     .tabList {
       position: absolute;
       display: flex;

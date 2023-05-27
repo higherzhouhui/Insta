@@ -119,7 +119,7 @@ export const PMyTable = styled.div`
   padding: 8px 4px;
   .header {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 1.5fr;
     > div {
       display: flex;
       align-items: center;
@@ -131,7 +131,7 @@ export const PMyTable = styled.div`
   }
   .content {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 1.5fr;
     border-top: 1px solid #2a334d;
     > div {
       display: flex;

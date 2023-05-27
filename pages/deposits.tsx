@@ -412,6 +412,7 @@ const Deposits: NextPage = () => {
 
     setLoading(true);
     try {
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const contract = await getContract(contractAddress, abi);
       const price = getEtherPrice(deposits || 0);
       await contract.deposits(price);
@@ -450,6 +451,7 @@ const Deposits: NextPage = () => {
 
   const checkHasAllowance = async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       approveRef.current = await getContract(
         approveContractAddress,
         approveAbi
@@ -590,9 +592,6 @@ const Deposits: NextPage = () => {
       </div>
       <div className='title'>
         <div className='left'>Summary</div>
-        {/* <div className='right' onClick={() => router.push('/profit')}>
-          Details <SvgIcon color='#999' name='right-icon' />
-        </div> */}
       </div>
       <TotalAddress>
         <div className='left' onClick={() => router.push('/balance')}>
@@ -627,8 +626,9 @@ const Deposits: NextPage = () => {
           <div
             className='exchange'
             onClick={() => {
-              setExchangeNumber('');
-              setExchangeisable(true);
+              // setExchangeNumber('');
+              // setExchangeisable(true);
+              router.push('/exchange');
             }}
           >
             exchange
@@ -749,7 +749,7 @@ const Deposits: NextPage = () => {
               handleWithdraw();
             }}
           >
-            OK
+            Confirm
           </div>
           <img
             className='close'

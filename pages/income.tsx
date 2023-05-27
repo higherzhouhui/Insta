@@ -7,16 +7,21 @@ import {useState, useEffect, useContext} from 'react';
 import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
-import {Web3ProviderContext} from '@/ethers-react';
+import {withDrawContractAddress, withDrawAbi} from '@/config/withDrawContract';
+import {Web3ProviderContext, useContract} from '@/ethers-react';
+import {WithDrawContainer} from '@/styles/deposits';
 import {ProfitContainer, PMyTable} from '@/styles/profit';
-import {SvgIcon} from '@/uikit';
-import {showTip} from '@/utils';
+import {SvgIcon, Modal} from '@/uikit';
+import {IMessageType, showTip} from '@/utils';
 
 const Income: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const [withDrawvisable, setWithDrawVisable] = useState(false);
+  const [withDrawNumber, setWithDrawNumber] = useState<number | string>();
+  const {getContract} = useContract();
 
   const initRequest = () => {
     const arr: any[] = [];
@@ -78,13 +83,56 @@ const Income: NextPage = () => {
       key: 'time',
     },
     {
-      title: 'Profit',
+      title: 'The Amount',
       dataIndex: 'profit',
       align: 'center',
       key: 'profit',
       sorter: true,
     },
   ];
+
+  const handleWithdraw = async () => {
+    if (!withDrawNumber) {
+      return;
+    }
+    setLoading(true);
+    const result: any = await axios({
+      url: `${apiUrl}/api/public/v1/users/withdraw`,
+      method: 'get',
+      params: {wallet: connectedAccount, amount: withDrawNumber},
+    });
+    setLoading(false);
+    if (result?.data?.meta?.status === 200) {
+      const {amount, r, s, v, token, timestamp, orderId, total} =
+        result.data.data;
+      setLoading(true);
+      try {
+        // eslint-disable-next-line prettier/prettier, @typescript-eslint/await-thenable
+      const contract = await getContract(withDrawContractAddress, withDrawAbi);
+        await contract.withdraw(
+          token,
+          total.toString(),
+          amount.toString(),
+          orderId,
+          timestamp,
+          r,
+          s,
+          v
+        );
+        setLoading(false);
+        showTip({type: IMessageType.SUCCESS, content: 'Operation succeeded!'});
+      } catch (error: any) {
+        showTip({
+          type: IMessageType.ERROR,
+          content: error?.data?.message || error?.message,
+        });
+        setLoading(false);
+      }
+    } else {
+      showTip({type: IMessageType.ERROR, content: result?.data?.meta?.msg});
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -106,7 +154,15 @@ const Income: NextPage = () => {
           <div className='unit'>USDT</div>
         </div>
         <div className='withdraw'>
-          <div className='recharge'>withdraw</div>
+          <div
+            className='recharge'
+            onClick={() => {
+              setWithDrawNumber('');
+              setWithDrawVisable(true);
+            }}
+          >
+            withdraw
+          </div>
         </div>
         <div className='shareContainer'>
           <div className='sitem'>
@@ -144,6 +200,41 @@ const Income: NextPage = () => {
           <Empty description={<span style={{color: '#eee'}}>No Data</span>} />
         )}
       </PMyTable>
+      <Modal
+        height='auto'
+        visible={withDrawvisable}
+        width='80%'
+        onClose={() => {
+          setWithDrawVisable(false);
+        }}
+      >
+        <WithDrawContainer className={loading ? 'loading' : ''}>
+          <h2>Withdraw</h2>
+          <input
+            placeholder='Please Enter'
+            type='number'
+            value={withDrawNumber || ''}
+            onChange={(e: any) => {
+              setWithDrawNumber(e.target.value);
+            }}
+          />
+          <div
+            className='submit'
+            onClick={() => {
+              handleWithdraw();
+            }}
+          >
+            Confirm
+          </div>
+          <img
+            className='close'
+            src='/static/image/close.png'
+            onClick={() => {
+              setWithDrawVisable(false);
+            }}
+          />
+        </WithDrawContainer>
+      </Modal>
     </ProfitContainer>
   );
 };

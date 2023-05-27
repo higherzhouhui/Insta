@@ -56,7 +56,7 @@ const DepositDetail: NextPage = () => {
       key: 'time',
     },
     {
-      title: 'Profit',
+      title: 'The Amount',
       dataIndex: 'profit',
       align: 'center',
       key: 'profit',

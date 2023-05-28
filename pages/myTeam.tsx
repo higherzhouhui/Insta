@@ -4,6 +4,7 @@ import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect, useContext} from 'react';
 import CountUp from 'react-countup';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -18,7 +19,7 @@ const MyTeam: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {connectedAccount} = useContext(Web3ProviderContext);
-
+  const {t} = useTranslation();
   const [requestData, setRequestData] = useState<any>({});
   const initRequest = () => {
     setLoading(true);
@@ -53,12 +54,12 @@ const MyTeam: NextPage = () => {
             router.back();
           }}
         />
-        <span>My Team</span>
+        <span>{t('MyTeam')}</span>
       </div>
-      <p>grade</p>
+      <p>{t('grade')}</p>
       <div className='level'>
         <div className='left'>
-          <span>Level:</span>
+          <span>{t('Level')}:</span>
           {requestData?.level}
         </div>
         <img className='grade' src='/static/image/grade.png' />
@@ -66,7 +67,7 @@ const MyTeam: NextPage = () => {
 
       <TotalAddress>
         <div className='left'>
-          <div className='top'>Total deposit</div>
+          <div className='top'>{t('TotalDeposit')}</div>
           <div className='bot'>
             <Statistic
               formatter={formatter}
@@ -76,7 +77,7 @@ const MyTeam: NextPage = () => {
           </div>
         </div>
         <div className='left'>
-          <div className='top'>Other deposit</div>
+          <div className='top'>{t('Otherdeposit')}</div>
           <div className='bot'>
             <Statistic
               formatter={formatter}
@@ -86,7 +87,9 @@ const MyTeam: NextPage = () => {
           </div>
         </div>
       </TotalAddress>
-      <div className='level'>Invited Users({requestData.invite_num || 0})</div>
+      <div className='level'>
+        {t('InvitedUsers')}({requestData.invite_num || 0})
+      </div>
       <List
         dataSource={requestData?.wallets}
         loading={loading}

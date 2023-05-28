@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect, useContext} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -23,7 +24,7 @@ const Balance: NextPage = () => {
   const [rechargevisable, setRechargeVisable] = useState(false);
   const [withDrawNumber, setWithDrawNumber] = useState<number | string>();
   const {getContract} = useContract();
-
+  const {t} = useTranslation();
   const initRequest = () => {
     const arr: any[] = [];
     setLoading(true);
@@ -71,20 +72,20 @@ const Balance: NextPage = () => {
   };
   const columns: any[] = [
     {
-      title: 'Classification',
+      title: t('Classification'),
       dataIndex: 'class',
       key: 'class',
       align: 'center',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Time',
+      title: t('Time'),
       dataIndex: 'time',
       align: 'center',
       key: 'time',
     },
     {
-      title: 'The Amount',
+      title: t('The Amount'),
       dataIndex: 'profit',
       align: 'center',
       key: 'profit',
@@ -121,7 +122,7 @@ const Balance: NextPage = () => {
           v
         );
         setLoading(false);
-        showTip({type: IMessageType.SUCCESS, content: 'Operation succeeded!'});
+        showTip({type: IMessageType.SUCCESS, content: t('OperationSuccess')});
       } catch (error: any) {
         showTip({
           type: IMessageType.ERROR,
@@ -151,7 +152,7 @@ const Balance: NextPage = () => {
         <span>Balance</span>
       </div>
       <div className='smartContainer'>
-        <div className='top'>Smart contract pool balance</div>
+        <div className='top'>{t('Smartcontract')}</div>
         <div className='middle'>
           59548.55
           <div className='unit'>USDT</div>
@@ -164,7 +165,7 @@ const Balance: NextPage = () => {
               setRechargeVisable(true);
             }}
           >
-            Recharge
+            {t('Recharge')}
           </div>
           <div
             className='recharge'
@@ -173,10 +174,10 @@ const Balance: NextPage = () => {
               setWithDrawVisable(true);
             }}
           >
-            Withdraw
+            {t('Withdraw')}
           </div>
           <div className='recharge' onClick={() => router.push('/pledge')}>
-            Pledge
+            {t('Pledge')}
           </div>
         </div>
       </div>
@@ -196,7 +197,9 @@ const Balance: NextPage = () => {
           );
         })}
         {!loading && dataSource.length === 0 && (
-          <Empty description={<span style={{color: '#eee'}}>No Data</span>} />
+          <Empty
+            description={<span style={{color: '#eee'}}>{t('NoData')}</span>}
+          />
         )}
       </PMyTable>
       <Modal
@@ -210,7 +213,7 @@ const Balance: NextPage = () => {
         <WithDrawContainer className={loading ? 'loading' : ''}>
           <h2>Withdraw</h2>
           <input
-            placeholder='Please Enter'
+            placeholder={t('PleaseEnter')}
             type='number'
             value={withDrawNumber || ''}
             onChange={(e: any) => {
@@ -223,7 +226,7 @@ const Balance: NextPage = () => {
               handleWithdraw();
             }}
           >
-            Confirm
+            {t('Confirm')}
           </div>
           <img
             className='close'
@@ -246,7 +249,7 @@ const Balance: NextPage = () => {
         <WithDrawContainer className={loading ? 'loading' : ''}>
           <h2>Recharge</h2>
           <input
-            placeholder='Please Enter'
+            placeholder={t('PleaseEnter')}
             type='number'
             value={withDrawNumber || ''}
             onChange={(e: any) => {
@@ -259,7 +262,7 @@ const Balance: NextPage = () => {
               handleRecharge();
             }}
           >
-            Confirm
+            {t('Confirm')}
           </div>
           <img
             className='close'

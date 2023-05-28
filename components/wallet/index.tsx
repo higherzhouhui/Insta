@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {FC, useState, memo, useContext} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 
 import {
@@ -34,6 +35,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
   const [user] = useRecoilState(userState);
   const {connectedAccount, balance} = useContext(Web3ProviderContext);
   const [addFundShow, setAddFundShow] = useState<boolean>(false);
+  const {t} = useTranslation();
   return (
     <>
       <Drawer
@@ -63,7 +65,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
                       <SvgIcon height={32} name='login-user-icon' width={32} />
                     )}
                   </div>
-                  <span>My wallet</span>
+                  <span>{t('Mywallet')}</span>
                   <Image
                     alt='Wallet'
                     height={12}
@@ -99,7 +101,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
                   });
                 }}
               >
-                Add Funds
+                {t('Add funds')}
               </div>
             </WalletBallanceContainer>
           </WalletContainer>
@@ -110,7 +112,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
                 <div className='img-box'>
                   <SvgIcon height={24} name='login-user-icon' width={24} />
                 </div>
-                <span>My wallet</span>
+                <span>{t('Mywallet')}</span>
               </div>
               <img
                 height={20}
@@ -121,10 +123,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
                 }}
               />
             </WalletHeadContainer>
-            <WalletTipContainer>
-              Connect with one of our available wallet providers or create a new
-              one.
-            </WalletTipContainer>
+            <WalletTipContainer>{t('Connectwith')}</WalletTipContainer>
             <WalletList />
           </WalletContainer>
         )}
@@ -149,6 +148,7 @@ export const WalletList = memo(() => {
   const {getSignMessage} = useSigner();
   const {connectWallect} = useMetaMask();
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const {t} = useTranslation();
   const onloginRequest = async (publicAddress: string) => {
     if (!publicAddress) {
       return;
@@ -188,7 +188,7 @@ export const WalletList = memo(() => {
       if (res?.data?.meta?.status !== 200) {
         showTip({
           type: IMessageType.ERROR,
-          content: res?.data?.meta?.msg || 'network error',
+          content: res?.data?.meta?.msg || t('networkerror'),
         });
         return;
       }
@@ -209,7 +209,7 @@ export const WalletList = memo(() => {
         updatedAt,
         uuid,
       });
-      showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+      showTip({type: IMessageType.SUCCESS, content: t('login.success')});
       setLoading(false);
     });
     // const res: any = await getLoginNonce({publicAddress});
@@ -275,7 +275,7 @@ export const WalletList = memo(() => {
       updatedAt,
       uuid,
     });
-    showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+    showTip({type: IMessageType.SUCCESS, content: t('login.success')});
     return uuid;
   };
   // MetaMask链接
@@ -310,7 +310,7 @@ export const WalletList = memo(() => {
           <SvgIcon height={24} name='wallet-connect-icon' width={24} />
           <span>Wallet Connect</span>
         </div>
-        <div className='tip-box'>Coming Soon</div>
+        <div className='tip-box'>{t('come.soon')}</div>
       </WalletItemContainer>
     </WalletListContainer>
   );
@@ -322,7 +322,7 @@ const DownList: FC<IDownListProps> = memo(() => {
   const [user, setUser] = useRecoilState(userState);
   const {disconnectWallect} = useMetaMask();
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
-
+  const {t} = useTranslation();
   // 退出登录
   const handleLogoutClick = async () => {
     localStorage.removeItem('x-token');
@@ -341,7 +341,7 @@ const DownList: FC<IDownListProps> = memo(() => {
       updatedAt: null,
       uuid: null,
     });
-    showTip({type: IMessageType.SUCCESS, content: 'Log out successfully!'});
+    showTip({type: IMessageType.SUCCESS, content: t('login.out')});
     setUserDrawer({
       open: !userDrawer.open,
     });

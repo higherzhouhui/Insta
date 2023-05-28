@@ -1,4 +1,5 @@
 import {useRouter} from 'next/router';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -7,7 +8,7 @@ import {SvgIcon} from '@/uikit';
 
 const LearnMore: NextPage = () => {
   const router = useRouter();
-
+  const {t} = useTranslation();
   return (
     <LearnMoreContainer>
       <div className='nav'>
@@ -17,7 +18,7 @@ const LearnMore: NextPage = () => {
             router.back();
           }}
         />
-        <span>Learn More</span>
+        <span>{t('learnMore')}</span>
       </div>
       <main>
         <h2>Hyper-optimised cross-chain yield aggregator</h2>

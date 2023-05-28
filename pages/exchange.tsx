@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect, useContext} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -33,7 +34,7 @@ const Balance: NextPage = () => {
   const [toObj, setToObj] = useState(exchangeOptionList[1]);
   const [exchangeNumber, setExchangeNumber] = useState<number | string>('');
   const exchangeList = [25, 50, 75, 100];
-
+  const {t} = useTranslation();
   const onchangeFrom = (e: any, type: string) => {
     const value = e.target.value;
     const list = exchangeOptionList.filter((item) => {
@@ -89,9 +90,8 @@ const Balance: NextPage = () => {
             });
             showTip({
               type: IMessageType.SUCCESS,
-              content: 'Operation succeeded!',
+              content: t('OperationSuccess'),
             });
-            setExchangeisable(false);
             setFromObj({
               ...fromObj,
               balance: USDT,
@@ -124,7 +124,7 @@ const Balance: NextPage = () => {
             });
             showTip({
               type: IMessageType.SUCCESS,
-              content: 'Operation succeeded!',
+              content: t('OperationSuccess'),
             });
             setFromObj({
               ...fromObj,
@@ -230,20 +230,20 @@ const Balance: NextPage = () => {
   };
   const columns: any[] = [
     {
-      title: 'Classification',
+      title: t('Classification'),
       dataIndex: 'class',
       key: 'class',
       align: 'center',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Time',
+      title: t('Time'),
       dataIndex: 'time',
       align: 'center',
       key: 'time',
     },
     {
-      title: 'The Amount',
+      title: t('The Amount'),
       dataIndex: 'profit',
       align: 'center',
       key: 'profit',
@@ -285,11 +285,13 @@ const Balance: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Balance: {fromObj.balance}</div>
+            <div className='right'>
+              {t('Balance')}: {fromObj.balance}
+            </div>
           </div>
           <div className='exchangeContent'>
             <input
-              placeholder='Please Enter'
+              placeholder={t('PleaseEnter')}
               type='text'
               value={exchangeNumber}
               onChange={(e: any) => {
@@ -338,7 +340,9 @@ const Balance: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Balance: {toObj.balance}</div>
+            <div className='right'>
+              {t('Balance')}: {toObj.balance}
+            </div>
           </div>
           <div className='exchangeContent'>
             <input placeholder='' type='text' value={almostPrice()} />
@@ -369,7 +373,9 @@ const Balance: NextPage = () => {
           );
         })}
         {!loading && dataSource.length === 0 && (
-          <Empty description={<span style={{color: '#eee'}}>No Data</span>} />
+          <Empty
+            description={<span style={{color: '#eee'}}>{t('NoData')}</span>}
+          />
         )}
       </PMyTable>
     </ProfitContainer>

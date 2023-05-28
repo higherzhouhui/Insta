@@ -84,18 +84,16 @@ const Pledge: NextPage = () => {
       <div className={`main ${loading ? 'loading' : ''}`}>
         <div className='approveContainer'>
           <div className='content'>
-            <p>Multiple of 100</p>
+            <p>{t('Multipleof')}</p>
             <div className='inputWrapper'>
               <input
                 className='inputDeposit'
-                placeholder='Please Enter'
+                placeholder={t('PleaseEnter')}
                 type='number'
                 value={deposits}
                 onChange={onChangeDeposits}
               />
-              {depositError && (
-                <div className='error'>Multiple of 100(100-1000)</div>
-              )}
+              {depositError && <div className='error'>{t('Multiple100')}</div>}
               {/* <div className='usdtWrapper'>
                 <SvgIcon name='usdt' />
                 <span>USDT</span>
@@ -115,7 +113,7 @@ const Pledge: NextPage = () => {
               handleClickBtn();
             }}
           >
-            Pledge
+            {t('Pledge')}
           </div>
         </div>
       </div>

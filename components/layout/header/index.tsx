@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {FC, useState, memo, useContext, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 
 import {
@@ -135,7 +136,7 @@ const Wallet = memo(() => {
   const {connectedAccount} = useContext(Web3ProviderContext);
   const router = useRouter();
   const {getSignMessage} = useSigner();
-
+  const {t} = useTranslation();
   const {inviterId} = router.query;
 
   const onloginRequest = async (publicAddress: string) => {
@@ -150,8 +151,7 @@ const Wallet = memo(() => {
     if (!inviterId) {
       showTip({
         type: IMessageType.ERROR,
-        content:
-          'This website adopts an invitation system, please contact the recommender',
+        content: t('wallet.hint'),
         showTime: 6000,
       });
       return;
@@ -225,7 +225,7 @@ const Wallet = memo(() => {
       updatedAt,
       uuid,
     });
-    showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
+    showTip({type: IMessageType.SUCCESS, content: t('login.success')});
     return uuid;
   };
   // MetaMask链接
@@ -270,7 +270,7 @@ const Wallet = memo(() => {
           />
           <span>Wallet Connect</span>
         </div>
-        <div className='tip-box'>Coming Soon</div>
+        <div className='tip-box'>{t('come.soon')}</div>
       </WalletItemContainer>
     </WalletListContainer>
   );

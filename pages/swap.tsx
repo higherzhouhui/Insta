@@ -1,5 +1,6 @@
 import {ethers} from 'ethers';
 import {useState, SetStateAction, useContext} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -38,6 +39,7 @@ const Swap: NextPage = () => {
   const [fromObj, setFromObj] = useState(exchangeOptionList[0]);
   const [toObj, setToObj] = useState(exchangeOptionList[4]);
   const {connectedAccount} = useContext(Web3ProviderContext);
+  const {t} = useTranslation();
   const getAccount = async () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -50,7 +52,7 @@ const Swap: NextPage = () => {
       }
       return currentAccount;
     } catch {
-      showTip({content: 'Please Install MetaMask'});
+      showTip({content: t('PleaseInstall')});
       return '';
     }
   };
@@ -60,7 +62,7 @@ const Swap: NextPage = () => {
       account = await getAccount();
     }
     if (!money) {
-      showTip({type: IMessageType.WARN, content: 'Please Enter'});
+      showTip({type: IMessageType.WARN, content: t('PleaseEnter')});
       return;
     }
     // USDT TO BNB
@@ -131,7 +133,7 @@ const Swap: NextPage = () => {
         setLoading(false);
         showTip({
           type: IMessageType.ERROR,
-          content: 'Operation succeeded!',
+          content: t('OperationSuccess'),
         });
       } catch (error: any) {
         showTip({
@@ -227,9 +229,9 @@ const Swap: NextPage = () => {
         })}
       </div>
       <div className='main'>
-        <h2>Swap</h2>
-        <div className='desc'>Optimize returns through trade routing</div>
-        <div className='from'>From</div>
+        <h2>{t('Swap')}</h2>
+        <div className='desc'>{t('Optimizereturns')}</div>
+        <div className='from'>{t('From')}</div>
         <div className='setting'>
           <SvgIcon
             name='setting'
@@ -241,7 +243,7 @@ const Swap: NextPage = () => {
         {setting && (
           <div className='settingContainer'>
             <div className='settingContent'>
-              <div className='desc'>Gas price(gwei)</div>
+              <div className='desc'>{t('Gasprice')}</div>
               <div className='settingItem'>
                 <div className='left'>
                   {[6, 10, 15].map((item, index) => {
@@ -271,7 +273,7 @@ const Swap: NextPage = () => {
               </div>
             </div>
             <div className='settingContent'>
-              <div className='desc'>Slippage tolerance</div>
+              <div className='desc'>{t('Slippagetolerance')}</div>
               <div className='settingItem'>
                 <div className='left'>
                   {[0.1, 0.5, 1].map((item, index) => {
@@ -308,7 +310,7 @@ const Swap: NextPage = () => {
               <div className='top'>
                 <input
                   disabled={loading}
-                  placeholder='Please Enter'
+                  placeholder={t('PleaseEnter')}
                   type='number'
                   value={money}
                   onChange={handleChangeMoney}
@@ -343,7 +345,7 @@ const Swap: NextPage = () => {
               }}
             />
           </div>
-          <div className='from'>To</div>
+          <div className='from'>{t('To')}</div>
           <MoneyContainer>
             <div className='left'>
               <div className='top'>
@@ -377,7 +379,7 @@ const Swap: NextPage = () => {
             handleClickBtn();
           }}
         >
-          {connectedAccount ? 'Confirm' : 'Connect Wallet'}
+          {connectedAccount ? t('Confirm') : t('ConnectWallet')}
         </div>
       </div>
     </SwapContainer>

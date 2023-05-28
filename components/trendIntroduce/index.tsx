@@ -36,7 +36,7 @@ export const TrendIntroduce: FC<IProps> = memo(({isOpen, handleSwitch}) => {
   return (
     <TrendIntroduceContainer>
       <div className='basicflex'>
-        <div className='left'>{t('Invest  Days :')}</div>
+        <div className='left'>{t('InvestDays')}</div>
         <div className='right list'>
           {dayList.map((item) => {
             return (
@@ -56,7 +56,7 @@ export const TrendIntroduce: FC<IProps> = memo(({isOpen, handleSwitch}) => {
         </div>
       </div>
       <div className='basicflex'>
-        <div className='left'>{t('Daily  Yield  :')}</div>
+        <div className='left'>{t('DailyYield')}</div>
         <div className='right'>
           <Statistic
             formatter={formatter}
@@ -67,7 +67,7 @@ export const TrendIntroduce: FC<IProps> = memo(({isOpen, handleSwitch}) => {
         </div>
       </div>
       <div className='basicflex'>
-        <div className='left'>{t('automatic  :')}</div>
+        <div className='left'>{t('automatic')}</div>
         <div className='right'>
           <Switch
             checked={switchOpen}

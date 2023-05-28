@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as echarts from 'echarts';
 import moment from 'moment';
 import {useContext, useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -32,7 +33,7 @@ const Info: NextPage = () => {
   const {connectedAccount} = useContext(Web3ProviderContext);
   const [finalPrice, setFinalPrice] = useState<number>(0);
   const [increase, setIncrease] = useState(null);
-
+  const {t} = useTranslation();
   const initRequestData = () => {
     axios({
       url: `${apiUrl}/api/public/v1/users/trend`,
@@ -106,9 +107,9 @@ const Info: NextPage = () => {
       <h2>INT TOKEN</h2>
       <div className='baseInfo'>
         <div className='left'>
-          <h3>Today's increase: 5%</h3>
-          <h3>Weekly increase: 63.22%</h3>
-          <h3>Monthly increase: 788.48%</h3>
+          <h3>{t('TodayIncreas')} 5%</h3>
+          <h3>{t('WeeklyIncrease')} 63.22%</h3>
+          <h3>{t('MonthlyIncrease')} 788.48%</h3>
         </div>
         <div className='right'>${finalPrice}</div>
       </div>

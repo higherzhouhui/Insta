@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {useRouter} from 'next/router';
 import {useState, useEffect, useContext} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import type {NextPage} from 'next';
 
@@ -17,7 +18,7 @@ const DepositDetail: NextPage = () => {
   const router = useRouter();
   const [dataSource, setDataSource] = useState<any>([]);
   const {connectedAccount} = useContext(Web3ProviderContext);
-
+  const {t} = useTranslation();
   const initRequest = () => {
     const arr: any[] = [];
     setLoading(true);
@@ -43,20 +44,20 @@ const DepositDetail: NextPage = () => {
   };
   const columns: any[] = [
     {
-      title: 'Classification',
+      title: t('Classification'),
       dataIndex: 'class',
       key: 'class',
       align: 'center',
       render: (text: any) => <a>{text}</a>,
     },
     {
-      title: 'Time',
+      title: t('Time'),
       dataIndex: 'time',
       align: 'center',
       key: 'time',
     },
     {
-      title: 'The Amount',
+      title: t('The Amount'),
       dataIndex: 'profit',
       align: 'center',
       key: 'profit',
@@ -75,7 +76,7 @@ const DepositDetail: NextPage = () => {
             router.back();
           }}
         />
-        <span>Deposit</span>
+        <span>{t('Deposits')}</span>
       </div>
       <PMyTable className={loading ? 'loading' : ''}>
         <div className='header'>
@@ -93,7 +94,9 @@ const DepositDetail: NextPage = () => {
           );
         })}
         {!loading && dataSource.length === 0 && (
-          <Empty description={<span style={{color: '#eee'}}>No Data</span>} />
+          <Empty
+            description={<span style={{color: '#eee'}}>{t('NoData')}</span>}
+          />
         )}
       </PMyTable>
     </ProfitContainer>

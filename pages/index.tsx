@@ -2,6 +2,7 @@ import axios from 'axios';
 import {ethers} from 'ethers';
 import {useRouter} from 'next/router';
 import {useContext, useEffect, useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
   const [visible, setVisible] = useState(false);
   const {connectedAccount} = useContext(Web3ProviderContext);
   const {getNetwork} = useEthersUtils();
-
+  const {t} = useTranslation();
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const {inviterId} = router.query;
@@ -122,21 +123,21 @@ const Home: NextPage = () => {
 
   return (
     <HomeContainer ref={homeRef}>
-      <h1>The best cross‑chain Yield Aggregator across DeFi</h1>
-      <h3>Buy and deposit on insta and start earning</h3>
+      <h1>{t('home.title')}</h1>
+      <h3>{t('home.subTitle')}</h3>
       <div className='btnGroup'>
         <div className='btn'>
-          Browse Vaults
+          {t('Browse')}
           <SvgIcon color='#fff' name='right-icon' />
         </div>
         <div className='btn btnRight' onClick={() => router.push('/learnMore')}>
-          Learn More
+          {t('learnMore')}
         </div>
       </div>
-      <h3>Total Value Locked</h3>
-      <h2>$30,976,140.71</h2>
+      <h3>{t('TotalValue')}</h3>
+      <h2>$31,976,140.71</h2>
       <div className='divide' />
-      <h2>Supported Chains</h2>
+      <h2>{t('SupportedChains')}</h2>
       <div className='grid'>
         <div className='flex flex-col items-center leading-none space-y-1'>
           <div className='rounded-lg flex items-center justify-center w-10 h-8 sm:w-10 sm:h-10 relative'>
@@ -603,8 +604,8 @@ const Home: NextPage = () => {
           <div className='font-medium text-sm'>Wanchain</div>
         </div>
       </div>
-      <h1>Top Vaults</h1>
-      <h2>Newest</h2>
+      <h1>{t('TopVaults')}</h1>
+      <h2>{t('Newest')}</h2>
       {staticHomeData.newest.map((item, index) => {
         return (
           <div className='product' key={index}>
@@ -634,7 +635,7 @@ const Home: NextPage = () => {
         );
       })}
 
-      <h2>Highest APYS</h2>
+      <h2>{t('HighestAPYS')}</h2>
       {staticHomeData.topAPYs.map((item, index) => {
         return (
           <div className='product' key={index}>
@@ -663,7 +664,7 @@ const Home: NextPage = () => {
           </div>
         );
       })}
-      <h2>Hottest(last 7 days)</h2>
+      <h2>{t('Hottest')}</h2>
       {staticHomeData.hottest.map((item, index) => {
         return (
           <div className='product' key={index}>
@@ -692,7 +693,7 @@ const Home: NextPage = () => {
           </div>
         );
       })}
-      <h2>Stablecoins</h2>
+      <h2>{t('Stablecoins')}</h2>
       {staticHomeData.topStablecoins.map((item, index) => {
         return (
           <div className='product' key={index}>
@@ -721,7 +722,7 @@ const Home: NextPage = () => {
           </div>
         );
       })}
-      <h2>Our Partners</h2>
+      <h2>{t('OurPartners')}</h2>
       <div className='HomePage_partners__T7882'>
         <a
           href='https://www.alpacafinance.org/'
@@ -896,7 +897,7 @@ const Home: NextPage = () => {
         }}
       >
         <InviterComp className={loading ? 'loading' : ''}>
-          <h2>Inviter Id</h2>
+          <h2>{t('InviterId')}</h2>
           <p>{inviterId}</p>
           <div
             className='confirm'
@@ -904,7 +905,7 @@ const Home: NextPage = () => {
               handleClickBtn();
             }}
           >
-            Confirm
+            {t('Confirm')}
           </div>
           <img
             alt='close'

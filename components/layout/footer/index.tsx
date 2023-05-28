@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {FC, memo, useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {FooterContainer, FooterTop, FooterBot} from './styles';
 
@@ -8,7 +9,7 @@ import {SvgIcon} from '@/uikit';
 
 export const Footer: FC = memo(() => {
   const router = useRouter();
-
+  const {t} = useTranslation();
   const learnList = [
     {title: 'Audit', link: '/'},
     {title: 'Github', link: '/'},
@@ -24,10 +25,10 @@ export const Footer: FC = memo(() => {
   ];
 
   const [navList, setNavList] = useState([
-    {title: 'Home', link: '/', active: true, icon: 'home'},
-    {title: 'Deposits', link: '/deposits', active: false, icon: 'deposits'},
-    {title: 'Swap', link: '/swap', active: false, icon: 'swap'},
-    {title: 'Info', link: '/info', active: false, icon: 'info'},
+    {title: t('Home'), link: '/', active: true, icon: 'home'},
+    {title: t('Deposits'), link: '/deposits', active: false, icon: 'deposits'},
+    {title: t('Swap'), link: '/swap', active: false, icon: 'swap'},
+    {title: t('Info'), link: '/info', active: false, icon: 'info'},
   ]);
   const handleRoute = (item: any) => {
     router.push(item.link);
@@ -54,12 +55,12 @@ export const Footer: FC = memo(() => {
       }}
     >
       <FooterTop>
-        <h1>Contact Us</h1>
-        <h3>Business Enquiries</h3>
-        <p>hell@insta.network</p>
+        <h1>{t('contactus')}</h1>
+        <h3>{t('business')}</h3>
+        <p>hello@insta.network</p>
         <h3>Customer Support</h3>
         <p>support@insta.network</p>
-        <h1>Learn More</h1>
+        <h1>{t('learnMore')}</h1>
         <div className='learnList'>
           {learnList.map((item, index) => {
             return (
@@ -69,7 +70,7 @@ export const Footer: FC = memo(() => {
             );
           })}
         </div>
-        <h1>Join Community</h1>
+        <h1>{t('Join')}</h1>
         <div className='learnList'>
           {joinList.map((item, index) => {
             return <SvgIcon key={index} name={item.title} />;

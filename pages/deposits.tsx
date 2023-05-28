@@ -296,7 +296,7 @@ const Deposits: NextPage = () => {
           v
         );
         setLoading(false);
-        showTip({type: IMessageType.SUCCESS, content: 'Operation succeeded!'});
+        showTip({type: IMessageType.SUCCESS, content: t('OperationSuccess')});
       } catch (error: any) {
         showTip({
           type: IMessageType.ERROR,
@@ -328,7 +328,7 @@ const Deposits: NextPage = () => {
             });
             showTip({
               type: IMessageType.SUCCESS,
-              content: 'Operation succeeded!',
+              content: t('OperationSuccess'),
             });
             setExchangeisable(false);
             setFromObj({
@@ -363,7 +363,7 @@ const Deposits: NextPage = () => {
             });
             showTip({
               type: IMessageType.SUCCESS,
-              content: 'Operation succeeded!',
+              content: t('OperationSuccess'),
             });
             setFromObj({
               ...fromObj,
@@ -398,7 +398,7 @@ const Deposits: NextPage = () => {
       }
     }
     if (!deposits) {
-      showTip({type: IMessageType.ERROR, content: 'Please Input'});
+      showTip({type: IMessageType.ERROR, content: t('PleaseInput')});
       return;
     }
 
@@ -419,7 +419,7 @@ const Deposits: NextPage = () => {
       setLoading(false);
       showTip({
         type: IMessageType.SUCCESS,
-        content: 'Operation succeeded!',
+        content: t('OperationSuccess'),
       });
     } catch (error: any) {
       showTip({
@@ -555,18 +555,16 @@ const Deposits: NextPage = () => {
       </div>
       <div className='approveContainer'>
         <div className='content'>
-          <p>Multiple of 100</p>
+          <p>{t('Multipleof')}</p>
           <div className='inputWrapper'>
             <input
               className='inputDeposit'
-              placeholder='Please Enter'
+              placeholder={t('PleaseEnter')}
               type='number'
               value={deposits}
               onChange={onChangeDeposits}
             />
-            {depositError && (
-              <div className='error'>Multiple of 100(100-1000)</div>
-            )}
+            {depositError && <div className='error'>{t('Multiple100')}</div>}
             <div className='usdtWrapper'>
               <SvgIcon name='usdt' />
               <span>USDT</span>
@@ -591,11 +589,11 @@ const Deposits: NextPage = () => {
         </div>
       </div>
       <div className='title'>
-        <div className='left'>Summary</div>
+        <div className='left'>{t('Summary')}</div>
       </div>
       <TotalAddress>
         <div className='left' onClick={() => router.push('/balance')}>
-          <div className='top'>balance</div>
+          <div className='top'>{t('Balance')}</div>
           <div className='bot'>
             {balance?.balance || 0}
             <span>USDT</span>
@@ -606,7 +604,7 @@ const Deposits: NextPage = () => {
           </div>
         </div>
         <div className='left' onClick={() => router.push('/income')}>
-          <div className='top'>income</div>
+          <div className='top'>{t('Income')}</div>
           <div className='bot'>
             {totalIncome}
             <span>USDT</span>
@@ -631,7 +629,7 @@ const Deposits: NextPage = () => {
               router.push('/exchange');
             }}
           >
-            exchange
+            {t('Exchange')}
           </div>
           <div className='icons'>
             <SvgIcon name='more-right' />
@@ -686,18 +684,18 @@ const Deposits: NextPage = () => {
       </div> */}
 
       <div className='title'>
-        <div className='left'>My Team</div>
+        <div className='left'>{t('MyTeam')}</div>
         <div className='right' onClick={() => router.push('/myTeam')}>
-          Details <SvgIcon color='#999' name='more-right' />
+          {t('Details')} <SvgIcon color='#999' name='more-right' />
         </div>
       </div>
       <TotalAddress>
         <div className='left'>
-          <div className='top'>Total address</div>
+          <div className='top'>{t('TotalAddress')}</div>
           <div className='bot'>{totalAddress}</div>
         </div>
         <div className='left'>
-          <div className='top'>Total deposit</div>
+          <div className='top'>{t('TotalDeposit')}</div>
           <div className='bot'>
             {teamTotalDeposits}
             <span>USDT</span>
@@ -707,7 +705,7 @@ const Deposits: NextPage = () => {
       {copyLink && (
         <>
           <div className='title'>
-            <div className='left'>Share Link</div>
+            <div className='left'>{t('ShareLink')}</div>
           </div>
           <div className='normalContent'>
             <div className='network'>{copyLink}</div>
@@ -718,7 +716,7 @@ const Deposits: NextPage = () => {
                   copyToClip(copyLink);
                 }}
               >
-                Copy
+                {t('Copy')}
               </div>
             </div>
           </div>
@@ -736,7 +734,7 @@ const Deposits: NextPage = () => {
         <WithDrawContainer className={loading ? 'loading' : ''}>
           <h2>Withdraw</h2>
           <input
-            placeholder='Please Enter'
+            placeholder={t('PleaseEnter')}
             type='number'
             value={withDrawNumber || ''}
             onChange={(e: any) => {
@@ -749,7 +747,7 @@ const Deposits: NextPage = () => {
               handleWithdraw();
             }}
           >
-            Confirm
+            {t('Confirm')}
           </div>
           <img
             className='close'
@@ -789,11 +787,13 @@ const Deposits: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Balance: {fromObj.balance}</div>
+            <div className='right'>
+              {t('Balance')}: {fromObj.balance}
+            </div>
           </div>
           <div className='exchangeContent'>
             <input
-              placeholder='Please Enter'
+              placeholder={t('PleaseEnter')}
               type='text'
               value={exchangeNumber}
               onChange={(e: any) => {
@@ -842,7 +842,9 @@ const Deposits: NextPage = () => {
                 })}
               </select>
             </div>
-            <div className='right'>Balance: {toObj.balance}</div>
+            <div className='right'>
+              {t('Balance')}: {toObj.balance}
+            </div>
           </div>
           <div className='exchangeContent'>
             <input placeholder='' type='text' value={almostPrice()} />
@@ -853,7 +855,7 @@ const Deposits: NextPage = () => {
               handleExchange();
             }}
           >
-            OK
+            {t('Confirm')}
           </div>
           <img
             className='close'

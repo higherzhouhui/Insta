@@ -113,27 +113,28 @@ interface IProps {
 }
 
 const OrderProduct: FC<IProps> = memo((product) => {
+  const {t} = useTranslation();
   return (
     <OrderProductContainer>
       <div className='basicFlex'>
-        <div className='left'>Pledge Amount:</div>
+        <div className='left'>{t('PledgeAmount')}:</div>
         <div className='right'>{product?.pledge || 11}</div>
       </div>
       <div className='basicFlex'>
-        <div className='left'>Expected Return:</div>
+        <div className='left'>{t('ExpectedReturn')}:</div>
         <div className='right'>{product?.expect || 22}</div>
       </div>
       <div className='basicFlex'>
-        <div className='left'>Starting Time:</div>
+        <div className='left'>{t('StartingTime')}:</div>
         <div className='right'>{product?.start || '2023-5-27'}</div>
       </div>
       <div className='basicFlex'>
-        <div className='left'>End Time:</div>
+        <div className='left'>{t('EndTime')}:</div>
         <div className='right'>{product?.end || '2023-5-27'}</div>
       </div>
       {product.automatic ? (
         <div className='basicFlex'>
-          <div className='left'>Automatic:</div>
+          <div className='left'>{t('Automatic')}:</div>
           <div className='right'>
             <Switch checked size='small' />
           </div>

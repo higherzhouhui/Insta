@@ -85,4 +85,6 @@ export default {
   Order: '訂單',
   Orders: '訂單',
   Scanning: '正在掃描',
+  Approve: '授權',
+  D: '天',
 };

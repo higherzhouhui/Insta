@@ -585,7 +585,7 @@ const Deposits: NextPage = () => {
             handleClickBtn();
           }}
         >
-          {hasApprove ? 'Deposit' : 'Approve'}
+          {hasApprove ? t('Deposit') : t('Approve')}
         </div>
       </div>
       <div className='title'>

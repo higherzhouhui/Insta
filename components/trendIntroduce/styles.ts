@@ -13,8 +13,9 @@ export const TrendIntroduceContainer = styled.div`
     }
     .right {
       .listItem {
-        width: 31px;
+        min-width: 31px;
         height: 34px;
+        padding: 0 3px;
         background: #060b19;
         border-radius: 7px 7px 7px 7px;
         font-size: 14px;

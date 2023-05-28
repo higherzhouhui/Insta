@@ -49,7 +49,8 @@ export const TrendIntroduce: FC<IProps> = memo(({isOpen, handleSwitch}) => {
                   handleClickDay(item);
                 }}
               >
-                {item.key}D
+                {item.key}
+                {t('D')}
               </div>
             );
           })}

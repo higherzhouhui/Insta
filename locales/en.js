@@ -88,4 +88,6 @@ export default {
   Order: 'Order',
   Orders: 'Orders',
   Scanning: 'Scanning',
+  Approve: 'Approve',
+  D: 'D',
 };

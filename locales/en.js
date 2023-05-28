@@ -85,4 +85,6 @@ export default {
   Slippagetolerance: 'Slippage tolerance',
   To: 'To',
   ConnectWallet: 'Connect Wallet',
+  Order: 'Order',
+  Scanning: 'Scanning',
 };

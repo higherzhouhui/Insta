@@ -504,7 +504,7 @@ const Deposits: NextPage = () => {
   }, [connectedAccount]);
   return (
     <DepositsContainer className={loading ? 'loading' : ''}>
-      <h2>Scanning</h2>
+      <h2>{t('Scanning')}</h2>
       <div className='header'>
         {columns.map((item, index) => {
           return <div key={index}>{item.title}</div>;
@@ -550,7 +550,7 @@ const Deposits: NextPage = () => {
       <div className='title'>
         <div className='left'>{t('Deposits')}</div>
         <div className='right' onClick={() => router.push('/order')}>
-          Order Details <SvgIcon color='#999' name='more-right' />
+          {t('Order')} {t('Details')} <SvgIcon color='#999' name='more-right' />
         </div>
       </div>
       <div className='approveContainer'>

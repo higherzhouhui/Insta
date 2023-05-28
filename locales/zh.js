@@ -82,4 +82,6 @@ export default {
   Slippagetolerance: 'Slippage tolerance',
   To: '至',
   ConnectWallet: '連接錢包',
+  Order: '订单',
+  Scanning: '正在掃描',
 };

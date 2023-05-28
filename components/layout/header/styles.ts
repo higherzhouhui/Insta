@@ -38,6 +38,7 @@ export const HeaderOptionContainer = styled.div`
     width: 70px;
     text-align: center;
     border-radius: 6px;
+    z-index: 9989;
   }
 `;
 export const HeadeSearchContainer = styled.div`

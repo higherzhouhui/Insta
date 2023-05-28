@@ -9,7 +9,7 @@ import {SvgIcon} from '@/uikit';
 
 export const Footer: FC = memo(() => {
   const router = useRouter();
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const learnList = [
     {title: 'Audit', link: '/'},
     {title: 'Github', link: '/'},
@@ -23,16 +23,22 @@ export const Footer: FC = memo(() => {
     {title: 'icon-Twiter', link: '/'},
     {title: 'icon-INS', link: '/'},
   ];
-
-  const [navList, setNavList] = useState([
+  const staticNavList = [
     {title: t('Home'), link: '/', active: true, icon: 'home'},
     {title: t('Deposits'), link: '/deposits', active: false, icon: 'deposits'},
     {title: t('Swap'), link: '/swap', active: false, icon: 'swap'},
     {title: t('Info'), link: '/info', active: false, icon: 'info'},
-  ]);
+  ];
+  const [navList, setNavList] = useState(staticNavList);
+
   const handleRoute = (item: any) => {
     router.push(item.link);
   };
+
+  useEffect(() => {
+    setNavList(staticNavList);
+  }, [i18n.language]);
+
   useEffect(() => {
     // eslint-disable-next-line array-callback-return
     navList.map((item: any) => {

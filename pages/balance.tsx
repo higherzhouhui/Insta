@@ -247,7 +247,7 @@ const Balance: NextPage = () => {
         }}
       >
         <WithDrawContainer className={loading ? 'loading' : ''}>
-          <h2>Recharge</h2>
+          <h2>{t('Recharge')}</h2>
           <input
             placeholder={t('PleaseEnter')}
             type='number'

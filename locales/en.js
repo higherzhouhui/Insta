@@ -86,5 +86,6 @@ export default {
   To: 'To',
   ConnectWallet: 'Connect Wallet',
   Order: 'Order',
+  Orders: 'Orders',
   Scanning: 'Scanning',
 };

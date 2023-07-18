@@ -79,6 +79,7 @@ export const Layout = memo(({children}) => {
         uuid: null,
         sign: null,
       });
+      return;
     }
     let sign = localStorage.getItem('sign');
     if (!sign) {

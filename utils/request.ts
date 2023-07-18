@@ -2,16 +2,14 @@ import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 
 import {addPending, removePending} from './pending';
 
-import {webUrl} from '@/config';
 import {showTip, IMessageType} from '@/utils';
 
 // 处理响应
 const handleResponse = (data: GlobalRequest.Response<any>) => {
-  const {code} = data;
-  if (code === 40001) {
+  const {CODE} = data;
+  if (CODE === 401) {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('x-token');
-      window.location.href = `${webUrl}/user/login?redirectUrl=${window.location.href}`;
+      localStorage.removeItem('Authorization');
     }
   }
 };
@@ -28,7 +26,7 @@ const handleError = (res: any) => {
 
 // 创建请求实例
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: '/fina',
   timeout: 500000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
@@ -39,11 +37,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     if (typeof window !== 'undefined') {
-      const xToken = localStorage.getItem('x-token');
+      const xToken = localStorage.getItem('Authorization');
       if (xToken) {
         config.headers = {
           ...config.headers,
-          'x-token': xToken,
+          Authorization: xToken,
         };
       }
     }

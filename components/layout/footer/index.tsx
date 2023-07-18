@@ -1,11 +1,9 @@
-import Link from 'next/link';
+import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {FC, memo, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {FooterContainer, FooterTop, FooterBot} from './styles';
-
-import {SvgIcon} from '@/uikit';
+import {FooterContainer, FooterBot} from './styles';
 
 export const Footer: FC = memo(() => {
   const router = useRouter();
@@ -24,14 +22,16 @@ export const Footer: FC = memo(() => {
     {title: 'icon-INS', link: '/'},
   ];
   const staticNavList = [
-    {title: t('Home'), link: '/', active: true, icon: 'home'},
-    {title: t('Deposits'), link: '/deposits', active: false, icon: 'deposits'},
-    {title: t('Swap'), link: '/swap', active: false, icon: 'swap'},
-    {title: t('Info'), link: '/info', active: false, icon: 'info'},
+    {title: t('IDO'), link: '/', active: true, icon: 'ido'},
+    {title: t('shouye'), link: '/shouye', active: false, icon: 'shouye'},
+    {title: t('stq'), link: '/stq', active: false, icon: 'stq'},
+    {title: t('info'), link: '/info', active: false, icon: 'info'},
   ];
   const [navList, setNavList] = useState(staticNavList);
-
   const handleRoute = (item: any) => {
+    if (item.link === '/shouye' || item.link === '/stq') {
+      return;
+    }
     router.push(item.link);
   };
 
@@ -60,7 +60,7 @@ export const Footer: FC = memo(() => {
           : 'block',
       }}
     >
-      <FooterTop>
+      {/* <FooterTop>
         <h1>{t('contactus')}</h1>
         <h3>{t('business')}</h3>
         <p>hello@insta.network</p>
@@ -82,7 +82,7 @@ export const Footer: FC = memo(() => {
             return <SvgIcon key={index} name={item.title} />;
           })}
         </div>
-      </FooterTop>
+      </FooterTop> */}
       <FooterBot>
         {navList.map((item, index) => {
           return (
@@ -93,7 +93,16 @@ export const Footer: FC = memo(() => {
                 handleRoute(item);
               }}
             >
-              <SvgIcon name={item.icon} />
+              <div className='menuTab'>
+                <Image
+                  alt='menu'
+                  layout='fill'
+                  src={`/static/image/${item.icon}${
+                    item.active ? '-active' : ''
+                  }.png`}
+                />
+              </div>
+
               <p>{item.title}</p>
             </div>
           );

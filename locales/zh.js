@@ -29,8 +29,8 @@ export default {
   Hottest: '最熱（最近7天）',
   Stablecoins: '穩定幣',
   OurPartners: '我們的合作夥伴',
-  Confirm: '證實',
-  InviterId: '邀請人 Id',
+  Confirm: '註冊',
+  InviterId: '邀請碼',
   PleaseInstall: '請安裝MetaMask',
   Home: '主頁',
   Swap: '交換',
@@ -87,4 +87,7 @@ export default {
   Scanning: '正在掃描',
   Approve: '授權',
   D: '天',
+  shouye: '首頁',
+  stq: '生態圈',
+  info: '我的',
 };

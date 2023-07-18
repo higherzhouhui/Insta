@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {ethers} from 'ethers';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -11,8 +10,9 @@ import {ListLayout} from './ListLayout';
 import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
-import {apiUrl} from '@/config';
 import {useMetaMask} from '@/ethers-react';
+import {useSigner} from '@/ethers-react/useSigner';
+import {onLogin} from '@/services/user';
 import {userState} from '@/store/user';
 import {IMessageType, progressInit, showTip} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
@@ -22,6 +22,7 @@ export const Layout = memo(({children}) => {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
   const {setAccount, connectedAccount} = useMetaMask();
+  const {getSignMessage} = useSigner();
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -78,55 +79,37 @@ export const Layout = memo(({children}) => {
         pid: null,
         updatedAt: null,
         uuid: null,
+        sign: null,
       });
     }
-    axios({
-      url: `${apiUrl}/api/public/v1/users/info`,
-      method: 'get',
-      params: {wallet: currentAccount},
-    })
-      .then((res: any) => {
-        if (res?.data?.meta?.status !== 200) {
-          setUser({
-            expiresAt: null,
-            portrait: null,
-            token: null,
-            username: null,
-            userId: null,
-            accountAddress: currentAccount,
-            createdAt: null,
-            id: null,
-            last_login: null,
-            path: null,
-            pid: null,
-            updatedAt: null,
-            uuid: null,
-          });
-          setAccount(currentAccount);
-          return;
-        }
-        const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
-          res.data.data;
+    let sign = user.sign;
+    if (!sign) {
+      const signature = await getSignMessage('Login');
+      if (!signature.status) {
+        showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+        return;
+      }
+      sign = signature.sign;
+      setUser({...user, sign: signature.sign});
+    }
+    onLogin({wallet: currentAccount, sign}).then((loginRes: any) => {
+      if (loginRes.CODE === 0) {
+        const {user} = loginRes.DATA;
+        localStorage.setItem('Authorization', loginRes.token);
         setUser({
-          expiresAt: 154154125154,
-          portrait: '',
-          token: uuid,
-          username: 'james',
-          userId: id,
-          accountAddress: currentAccount,
-          createdAt,
-          id,
-          last_login,
-          path,
-          pid,
-          updatedAt,
-          uuid,
+          ...user,
+          hash_rate: user.hash_rate,
+          level: user.level,
+          invite_code: user.invite_code,
         });
-        setAccount(currentAccount);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      } else {
+        showTip({
+          type: IMessageType.ERROR,
+          content: '本系统为邀约制，请联系推荐人！',
+        });
+        console.log(loginRes.MESSAGE);
+      }
+    });
   };
   useEffect(() => {
     if (
@@ -141,7 +124,7 @@ export const Layout = memo(({children}) => {
   return (
     <>
       <Head>
-        <title>Insta</title>
+        <title>Finovate</title>
       </Head>
       <Header />
       <LayoutContainer>

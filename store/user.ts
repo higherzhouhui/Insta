@@ -16,6 +16,10 @@ interface IUserStore {
   pid?: any;
   updatedAt?: any;
   uuid?: any;
+  sign?: any;
+  hash_rate?: any;
+  invite_code?: any;
+  level?: any;
 }
 
 export const userState = atom<IUserStore>({
@@ -34,6 +38,10 @@ export const userState = atom<IUserStore>({
     pid: null,
     updatedAt: null,
     uuid: null,
+    sign: null,
+    hash_rate: null,
+    invite_code: null,
+    level: null,
   },
   effects_UNSTABLE: [persistAtom],
 });

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const FooterContainer = styled.div`
   width: 100%;
-  background: rgb(6, 25, 11);
+  background: #1d1731;
 `;
 
 export const FooterTop = styled.div`
@@ -42,7 +42,7 @@ export const FooterBot = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgb(6, 11, 25);
+  background: #090518;
   height: 60px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -60,9 +60,15 @@ export const FooterBot = styled.div`
     }
   }
   .active {
-    color: #fff;
+    color: #d158e9;
     svg {
-      fill: #fff;
+      fill: #d158e9;
     }
+  }
+  .menuTab {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin-bottom: 5px;
   }
 `;

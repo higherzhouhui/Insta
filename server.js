@@ -3,10 +3,10 @@ const {createProxyMiddleware} = require('http-proxy-middleware');
 const next = require('next');
 
 const devProxy = {
-  '/api': {
-    target: 'http://www.pixso.site',
+  '/fina': {
+    target: 'http://192.168.2.253:7001',
     pathRewrite: {
-      '^/api': '/',
+      '^/fina': '/',
     },
     changeOrigin: true,
   },

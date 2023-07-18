@@ -27,7 +27,7 @@ const LearnMore: NextPage = () => {
           data-offset-key='6d0f9c0483aa4228b56b7f9222457562:0'
           data-slate-leaf='true'
         >
-          Insta is a yield farming aggregator running on 19 different
+          Finovate is a yield farming aggregator running on 19 different
           EVM-compatible networks
         </strong>
         <span data-offset-key='62da19b570e641d3928cf21fb78915a5:0'>
@@ -36,9 +36,9 @@ const LearnMore: NextPage = () => {
           with the other DApps in the DeFi space.
         </span>
         <span data-offset-key='682cad45bf544fc7b3bfb0d9e811d4a3:0'>
-          Insta was initiated on BNB Chain (formerly Binance Smart Chain) with
-          no pre-farm, no pre-sales and with the goal of optimising DeFi users'
-          yield farming at the
+          Finovate was initiated on BNB Chain (formerly Binance Smart Chain)
+          with no pre-farm, no pre-sales and with the goal of optimising DeFi
+          users' yield farming at the
         </span>
         <span data-offset-key='682cad45bf544fc7b3bfb0d9e811d4a3:2'>
           (All APY &amp; APRs shown have already included fees).
@@ -58,7 +58,7 @@ const LearnMore: NextPage = () => {
           </strong>
           <span data-offset-key='8f1d8cf4a3e746f5805682d0ceed07a3:0'>Swap</span>
           <span data-offset-key='76b0491010f7407db86f0da5200b689d:2'>
-            Your trades with Insta Swap also become non-front-runnable and
+            Your trades with Finovate Swap also become non-front-runnable and
             non-arbitrageable.
           </span>
         </span>

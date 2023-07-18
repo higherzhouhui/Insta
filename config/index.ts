@@ -1,21 +1,21 @@
 // 网站地址
 let webUrl = '//localhost:10002';
 // api
-let apiUrl = '//www.pixso.site';
+let apiUrl = '//192.168.2.253:7001';
 
 if (process.env.APP_ENV === 'development') {
   webUrl = '//localhost:10002';
-  apiUrl = '//www.pixso.site';
+  apiUrl = '//192.168.2.253:7001';
 }
 
 if (process.env.APP_ENV === 'test') {
   webUrl = 'https://www.pd-1st.com';
-  apiUrl = '//www.pixso.site';
+  apiUrl = '//192.168.2.253:7001';
 }
 
 if (process.env.APP_ENV === 'production') {
   webUrl = 'https://www.pd-1st.com';
-  apiUrl = '//www.pixso.site';
+  apiUrl = '//192.168.2.253:7001';
 }
 
 export {webUrl, apiUrl};

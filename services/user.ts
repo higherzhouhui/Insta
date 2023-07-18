@@ -20,7 +20,7 @@ export const getLoginNonce = (data: LoginNonceProps) => {
 // 登录
 export const onLogin = (data: LoginProps) => {
   return service({
-    url: '/base/login',
+    url: '/api/user/login',
     method: 'POST',
     data,
   });
@@ -64,7 +64,7 @@ export const getUserFavorite = (params: GetUserWorks) => {
 // 查询任意用户信息
 export const getUserInfo = (params: userInfoParams) => {
   return service<GlobalUser.User>({
-    url: '/base/userinfo',
+    url: '/api/user/userinfo',
     method: 'GET',
     params,
   });
@@ -73,8 +73,21 @@ export const getUserInfo = (params: userInfoParams) => {
 // 查询自己的信息
 export const getMyInfo = () => {
   return service<GlobalUser.User>({
-    url: '/user/userinfo',
+    url: '/api/user/info',
     method: 'GET',
+  });
+};
+
+// 注册
+export const registerAccount = (data: {
+  invite_code: string;
+  wallet: string;
+  sign: string;
+}) => {
+  return service<any>({
+    url: '/api/user/register',
+    method: 'POST',
+    data,
   });
 };
 

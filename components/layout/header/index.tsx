@@ -23,14 +23,13 @@ import {useSigner} from '@/ethers-react/useSigner';
 import i18n from '@/locales/config';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
-import {SvgIcon} from '@/uikit';
 import {showTip, IMessageType} from '@/utils';
 
 export const Header: FC = memo(() => {
   const [_userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
   const {connectedAccount} = useContext(Web3ProviderContext);
   const [currentLang, setCurrentLang] = useState(
-    localStorage.getItem('lang') || 'en'
+    localStorage.getItem('lang') || 'zh'
   );
   const shiftLanguage = (lang: string) => {
     localStorage.setItem('lang', lang);
@@ -76,8 +75,8 @@ export const Header: FC = memo(() => {
     <HeaderContainer>
       <HeaderLogoContainer>
         <Link passHref href='/'>
-          <a>
-            <SvgIcon height={60} name='logo' width={100} />
+          <a className='logo'>
+            <Image layout='fill' src='/static/image/logo.png' />
           </a>
         </Link>
       </HeaderLogoContainer>
@@ -110,10 +109,7 @@ export const Header: FC = memo(() => {
               )}`}
             </div>
           ) : (
-            <>
-              <SvgIcon name='wallet-icon' />
-              <span className='wallet'>Wallet</span>
-            </>
+            <div className='wallet'>Connect Wallet</div>
           )}
         </WalletContainer>
       </HeaderOptionContainer>
@@ -157,7 +153,7 @@ const Wallet = memo(() => {
       return;
     }
     setLoading(true);
-    const msg = getHashId(`this is a insta system`);
+    const msg = getHashId(`REGISTER`);
     const signature = await getSignMessage(msg);
     setLoading(false);
     if (!signature.status) {
@@ -166,9 +162,13 @@ const Wallet = memo(() => {
     }
     setLoading(true);
     axios({
-      url: `${apiUrl}/api/public/v1/users/register`,
+      url: `${apiUrl}/api/user/register`,
       method: 'post',
-      data: {parent: inviterId, wallet: publicAddress},
+      data: {
+        invite_code: inviterId,
+        wallet: publicAddress,
+        sign: signature.sign,
+      },
     }).then((res: any) => {
       setLoading(false);
       if (res?.data?.meta?.status !== 200) {
@@ -197,9 +197,9 @@ const Wallet = memo(() => {
   };
   const getUserInfo = async (account: any) => {
     const res = await axios({
-      url: `${apiUrl}/api/public/v1/users/info`,
-      method: 'get',
-      params: {wallet: account},
+      url: `${apiUrl}/api/user/login`,
+      method: 'POST',
+      data: {wallet: account},
     });
     if (res?.data?.meta?.status !== 200) {
       showTip({

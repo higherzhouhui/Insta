@@ -16,7 +16,7 @@ const getInitLng = () => {
   if (typeof window !== 'undefined') {
     return localStorage.getItem('lang');
   }
-  return 'en';
+  return 'zh';
 };
 
 i18n.use(initReactI18next).init({

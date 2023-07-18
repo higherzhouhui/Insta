@@ -161,8 +161,7 @@ export const WalletList = memo(() => {
     if (!location.href.includes('?inviterId=')) {
       showTip({
         type: IMessageType.ERROR,
-        content:
-          'This website adopts an invitation system, please contact the recommender',
+        content: '本系统为邀约制，请联系推荐人',
         showTime: 6000,
       });
       setLoading(false);
@@ -182,7 +181,11 @@ export const WalletList = memo(() => {
     axios({
       url: `${apiUrl}/api/public/v1/users/register`,
       method: 'post',
-      data: {parent: inviterId, wallet: publicAddress},
+      data: {
+        invite_code: inviterId,
+        wallet: publicAddress,
+        sign: signature.sign,
+      },
     }).then((res: any) => {
       setLoading(false);
       if (res?.data?.meta?.status !== 200) {
@@ -239,7 +242,7 @@ export const WalletList = memo(() => {
     //       accountAddress: publicAddress,
     //     });
     //     setLoading(false);
-    //     localStorage.setItem('x-token', res1.data.token);
+    //     localStorage.setItem('Authorization', res1.data.token);
 
     //     if (redirectUrl && typeof redirectUrl === 'string') {
     //       router.push(redirectUrl.split(webUrl).join(''));
@@ -251,9 +254,9 @@ export const WalletList = memo(() => {
   };
   const getUserInfo = async (account: any) => {
     const res = await axios({
-      url: `${apiUrl}/api/public/v1/users/info`,
-      method: 'get',
-      params: {wallet: account},
+      url: `${apiUrl}/api/user/login`,
+      method: 'POST',
+      data: {wallet: account, sign: '11'},
     });
     if (res?.data?.meta?.status !== 200) {
       return '';
@@ -325,7 +328,7 @@ const DownList: FC<IDownListProps> = memo(() => {
   const {t} = useTranslation();
   // 退出登录
   const handleLogoutClick = async () => {
-    localStorage.removeItem('x-token');
+    localStorage.removeItem('Authorization');
     setUser({
       expiresAt: null,
       portrait: null,
@@ -349,7 +352,7 @@ const DownList: FC<IDownListProps> = memo(() => {
     return;
     const res: any = await onLogout();
     if (res?.code === 0) {
-      localStorage.removeItem('x-token');
+      localStorage.removeItem('Authorization');
       setUser({
         expiresAt: null,
         portrait: null,

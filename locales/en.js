@@ -90,4 +90,7 @@ export default {
   Scanning: 'Scanning',
   Approve: 'Approve',
   D: 'D',
+  shouye: 'Home',
+  stq: 'Ecosphere',
+  info: 'My',
 };

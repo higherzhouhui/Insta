@@ -1,6 +1,7 @@
 declare namespace GlobalRequest {
   interface Response<D> {
     code: number;
+    CODE: number;
     data: D | any;
     msg?: string;
     err?: string;

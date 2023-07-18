@@ -10,11 +10,11 @@ export type UpdateUserProps = {
 };
 
 export interface LoginProps extends LoginNonceProps {
-  signature: string;
+  sign: string;
 }
 
 export interface LoginNonceProps {
-  publicAddress: string;
+  wallet: string;
 }
 
 export interface GetUserWorks extends GlobalPaging.BasePagingParams {

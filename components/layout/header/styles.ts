@@ -16,8 +16,12 @@ export const HeaderContainer = styled.header`
 `;
 
 export const HeaderLogoContainer = styled.div`
-  margin-right: 80px;
   cursor: pointer;
+  .logo {
+    position: relative;
+    width: 180px;
+    height: 28px;
+  }
 `;
 
 export const HeaderOptionContainer = styled.div`
@@ -27,7 +31,7 @@ export const HeaderOptionContainer = styled.div`
   justify-content: flex-end;
   .account-address-box {
     font-size: 14px;
-    color: #776cff;
+    color: #fff;
   }
   .dropDown {
     padding: 4px 0;
@@ -68,16 +72,17 @@ export const WalletContainer = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 4px 6px;
+  padding: 6px 10px;
   border: 1px solid #776cff;
-  border-radius: 12px;
+  border-radius: 16px;
+  background: #d158e9;
   svg {
     width: 22px;
     height: 22px;
     fill: #776cff;
   }
   .wallet {
-    color: #776cff;
+    color: #fff;
     font-size: 14px;
   }
 `;

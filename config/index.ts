@@ -1,10 +1,10 @@
 // 网站地址
-let webUrl = '//localhost:10010';
+let webUrl = '//localhost:10002';
 // api
 let apiUrl = '//192.168.2.253:7001';
 
 if (process.env.APP_ENV === 'development') {
-  webUrl = '//localhost:10010';
+  webUrl = '//localhost:10002';
   apiUrl = '//192.168.2.253:7001';
 }
 

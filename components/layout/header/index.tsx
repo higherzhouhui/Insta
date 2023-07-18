@@ -21,6 +21,7 @@ import {apiUrl} from '@/config';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import i18n from '@/locales/config';
+import {onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {showTip, IMessageType} from '@/utils';
@@ -139,60 +140,61 @@ const Wallet = memo(() => {
     if (!publicAddress) {
       return;
     }
-    const uuid = await getUserInfo(publicAddress);
-    // 如果当前用户存在，直接登录
-    if (uuid) {
-      return;
-    }
     if (!inviterId) {
       showTip({
         type: IMessageType.ERROR,
-        content: t('wallet.hint'),
+        content: '本系统为邀约制，请联系推荐人',
         showTime: 6000,
       });
       return;
     }
     setLoading(true);
-    const msg = getHashId(`REGISTER`);
-    const signature = await getSignMessage(msg);
-    setLoading(false);
+    // const msg = getHashId(`REGISTER`);
+    const signature = await getSignMessage('REGISTER');
     if (!signature.status) {
       showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      setLoading(false);
       return;
     }
     setLoading(true);
-    axios({
-      url: `${apiUrl}/api/user/register`,
-      method: 'post',
-      data: {
-        invite_code: inviterId,
-        wallet: publicAddress,
-        sign: signature.sign,
-      },
+    const sign = signature.sign;
+    localStorage.setItem('sign', sign);
+    registerAccount({
+      invite_code: inviterId as any,
+      wallet: publicAddress,
+      sign: signature.sign,
     }).then((res: any) => {
       setLoading(false);
-      if (res?.data?.meta?.status !== 200) {
-        return;
+      if (res?.CODE === 0) {
+        onLogin({
+          wallet: publicAddress as any,
+          sign,
+        }).then((loginRes: any) => {
+          if (loginRes?.CODE === 0) {
+            const {token, user} = loginRes.DATA;
+            localStorage.setItem('token', token);
+            setUser({
+              ...user,
+              sign: signature.sign,
+              hash_rate: user.hash_rate,
+              level: user.level,
+              invite_code: user.invite_code,
+            });
+            showTip({
+              type: IMessageType.SUCCESS,
+              content: '註冊成功！',
+            });
+          } else {
+            showTip({
+              type: IMessageType.ERROR,
+              content: res?.data?.MESSAGE,
+            });
+          }
+        });
+      } else {
+        showTip({type: IMessageType.ERROR, content: res?.data?.MESSAGE});
+        setLoading(false);
       }
-      const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
-        res.data.data;
-      setUser({
-        expiresAt: 15155,
-        portrait: '',
-        token: uuid,
-        username: 'james',
-        userId: id,
-        accountAddress: publicAddress,
-        createdAt,
-        id,
-        last_login,
-        path,
-        pid,
-        updatedAt,
-        uuid,
-      });
-      showTip({type: IMessageType.SUCCESS, content: 'Login successfully!'});
-      setLoading(false);
     });
   };
   const getUserInfo = async (account: any) => {

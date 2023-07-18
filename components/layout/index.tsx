@@ -10,6 +10,7 @@ import {ListLayout} from './ListLayout';
 import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
+import {useMetaMask} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import {onLogin} from '@/services/user';
 import {userState} from '@/store/user';
@@ -21,6 +22,8 @@ export const Layout = memo(({children}) => {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
   const {getSignMessage} = useSigner();
+  const {disconnectWallect} = useMetaMask();
+
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -103,11 +106,7 @@ export const Layout = memo(({children}) => {
           invite_code: user.invite_code,
         });
       } else {
-        showTip({
-          type: IMessageType.ERROR,
-          content: '本系统为邀约制，请联系推荐人！',
-        });
-        console.log(loginRes.MESSAGE);
+        disconnectWallect();
       }
     });
   };
@@ -121,6 +120,7 @@ export const Layout = memo(({children}) => {
       judgeIsLogin();
     }
   }, [router.pathname]);
+
   return (
     <>
       <Head>

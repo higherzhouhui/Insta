@@ -20,7 +20,7 @@ import {Loading, AddFundModal, DropDown} from '@/components';
 import {apiUrl} from '@/config';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
-import {onLogout} from '@/services/user';
+import {onLogin, onLogout, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
@@ -153,11 +153,23 @@ export const WalletList = memo(() => {
     if (!publicAddress) {
       return;
     }
-    const uuid = await getUserInfo(publicAddress);
-    // 如果当前用户存在，直接登录
-    if (uuid) {
+
+    const loginsignature: any = await getSignMessage('Login');
+    setLoading(false);
+    if (!loginsignature.status) {
+      showTip({type: IMessageType.ERROR, content: loginsignature.sign || ''});
       return;
     }
+    const loginRes = await onLogin({
+      wallet: publicAddress,
+      sign: loginsignature.sign,
+    });
+    if (loginRes.CODE === 0) {
+      showTip({content: '登录成功'});
+      setLoading(false);
+      return;
+    }
+
     if (!location.href.includes('?inviterId=')) {
       showTip({
         type: IMessageType.ERROR,
@@ -170,87 +182,57 @@ export const WalletList = memo(() => {
     const inviterId = location.href.split('?inviterId=')[1];
 
     setLoading(true);
-    const msg = getHashId(`this is a insta system`);
-    const signature = await getSignMessage(msg);
+    const signature = await getSignMessage('Register');
     setLoading(false);
     if (!signature.status) {
       showTip({type: IMessageType.ERROR, content: signature.sign || ''});
       return;
     }
     setLoading(true);
-    axios({
-      url: `${apiUrl}/api/public/v1/users/register`,
-      method: 'post',
-      data: {
+    try {
+      registerAccount({
         invite_code: inviterId,
         wallet: publicAddress,
         sign: signature.sign,
-      },
-    }).then((res: any) => {
-      setLoading(false);
-      if (res?.data?.meta?.status !== 200) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: res?.data?.meta?.msg || t('networkerror'),
-        });
-        return;
-      }
-      const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
-        res.data.data;
-      setUser({
-        expiresAt: 15155,
-        portrait: '',
-        token: uuid,
-        username: 'james',
-        userId: id,
-        accountAddress: publicAddress,
-        createdAt,
-        id,
-        last_login,
-        path,
-        pid,
-        updatedAt,
-        uuid,
+      }).then((res: any) => {
+        setLoading(false);
+        if (res.CODE === 0) {
+          onLogin({
+            wallet: publicAddress as any,
+            sign: signature.sign,
+          }).then((loginRes: any) => {
+            setLoading(false);
+            if (loginRes?.CODE === 0) {
+              const {token, user} = loginRes.DATA;
+              localStorage.setItem('token', token);
+              setUser({
+                ...user,
+                sign: signature.sign,
+                hash_rate: user.hash_rate,
+                level: user.level,
+                invite_code: user.invite_code,
+              });
+              showTip({
+                type: IMessageType.SUCCESS,
+                content: '註冊成功！',
+              });
+            } else {
+              showTip({
+                type: IMessageType.ERROR,
+                content: loginRes?.MESSAGE,
+              });
+            }
+          });
+        } else {
+          showTip({
+            type: IMessageType.ERROR,
+            content: res?.MESSAGE,
+          });
+        }
       });
-      showTip({type: IMessageType.SUCCESS, content: t('login.success')});
+    } catch {
       setLoading(false);
-    });
-    // const res: any = await getLoginNonce({publicAddress});
-    // const {redirectUrl} = router.query;
-    // const nonce = res.data.nonce || '';
-
-    // if (res.code === 0) {
-    //   const msg = getHashId(`this is a pd1 ${nonce}`);
-    //   const signature = await getSignMessage(msg);
-    //   if (!signature.status) {
-    //     setLoading(false);
-    //     showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-    //     return;
-    //   }
-    //   const res1: any = await onLogin({
-    //     signature: signature.sign,
-    //     publicAddress,
-    //   });
-    //   if (res1.code === 0) {
-    //     const {expiresAt, portrait, token, username, uuid} = res1.data;
-    //     setUser({
-    //       expiresAt,
-    //       portrait,
-    //       token,
-    //       username,
-    //       userId: uuid,
-    //       accountAddress: publicAddress,
-    //     });
-    //     setLoading(false);
-    //     localStorage.setItem('Authorization', res1.data.token);
-
-    //     if (redirectUrl && typeof redirectUrl === 'string') {
-    //       router.push(redirectUrl.split(webUrl).join(''));
-    //     } else {
-    //       router.push('/');
-    //     }
-    //   }
-    // }
+    }
   };
   const getUserInfo = async (account: any) => {
     const res = await axios({

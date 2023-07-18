@@ -120,6 +120,7 @@ const Home: NextPage = () => {
       const {level, parent, reward, r, s, v} = mintRes.DATA;
 
       await nftRef.current.mint(level, parent, reward, r, s, v);
+
       setDisMint(true);
       setLoading(false);
       showTip({
@@ -146,6 +147,7 @@ const Home: NextPage = () => {
     const signature = await getSignMessage('Register');
     if (!signature.status) {
       showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      setRegisterLoading(false);
       return;
     }
     sign = signature.sign;
@@ -191,7 +193,7 @@ const Home: NextPage = () => {
   };
   const judgeIsRegister = async (inviterId: any) => {
     if (inviterId) {
-      if (connectedAccount) {
+      if (connectedAccount && localStorage.getItem('Authorization')) {
         setVisible(false);
         // 判断是否注册，未注册则弹窗
         const res = await getMyInfo();
@@ -212,7 +214,7 @@ const Home: NextPage = () => {
       tab: 'tab1',
       bg: 'bg1',
       total: 108,
-      remain: 54,
+      remain: 108,
       price: 1000,
       hint: [
         '万龙天城原住民机票一张（1000算力）直推20%',
@@ -231,7 +233,7 @@ const Home: NextPage = () => {
       tab: 'tab2',
       bg: 'bg2',
       total: 500,
-      remain: 250,
+      remain: 500,
       price: 500,
       hint: [
         '万龙天城原住民机票一张（500算力）',
@@ -248,7 +250,7 @@ const Home: NextPage = () => {
       tab: 'tab3',
       bg: 'bg3',
       total: 99999,
-      remain: 50000,
+      remain: 99999,
       price: 100,
       hint: [
         '获得100算力',
@@ -317,10 +319,6 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
-    isMint();
-  }, []);
-
-  useEffect(() => {
     getRemain();
   }, [currentTab]);
 
@@ -330,6 +328,7 @@ const Home: NextPage = () => {
       if (connectedAccount) {
         checkHasAllowance();
         judgeIsRegister(inviterId);
+        isMint();
         getRemain();
       }
     }, 500);

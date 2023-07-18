@@ -16,6 +16,8 @@ export const MessageWrapper = styled.div<BackgroundProps>`
   z-index: 10001;
   padding: 10px 20px;
   border-radius: 8px;
+  max-height: 500px;
+  overflow: hidden;
   .text {
     font-size: 16px;
     font-family: HarmonyOs-Bold;

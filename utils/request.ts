@@ -10,7 +10,6 @@ const handleResponse = (data: GlobalRequest.Response<any>) => {
 
   if (CODE === 401) {
     localStorage.clear();
-    showTip({content: '登录过期，请重新登录', type: IMessageType.ERROR});
   }
 };
 // 处理错误
@@ -26,7 +25,7 @@ const handleError = (res: any) => {
 
 // 创建请求实例
 const instance = axios.create({
-  baseURL: 'http://192.168.2.253:7001',
+  baseURL: '/fina',
   timeout: 500000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',

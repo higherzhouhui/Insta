@@ -1,4 +1,3 @@
-import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
@@ -17,7 +16,6 @@ import {
 } from './styles';
 
 import {Loading, AddFundModal, DropDown} from '@/components';
-import {apiUrl} from '@/config';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import {onLogin, onLogout, registerAccount} from '@/services/user';
@@ -234,35 +232,7 @@ export const WalletList = memo(() => {
       setLoading(false);
     }
   };
-  const getUserInfo = async (account: any) => {
-    const res = await axios({
-      url: `${apiUrl}/api/user/login`,
-      method: 'POST',
-      data: {wallet: account, sign: '11'},
-    });
-    if (res?.data?.meta?.status !== 200) {
-      return '';
-    }
-    const {createdAt, id, last_login, path, pid, updatedAt, uuid} =
-      res.data.data;
-    setUser({
-      expiresAt: 15155,
-      portrait: '',
-      token: uuid,
-      username: 'james',
-      userId: id,
-      accountAddress: account,
-      createdAt,
-      id,
-      last_login,
-      path,
-      pid,
-      updatedAt,
-      uuid,
-    });
-    showTip({type: IMessageType.SUCCESS, content: t('login.success')});
-    return uuid;
-  };
+
   // MetaMask链接
   const handleMetaMaskClick = () => {
     setLoading(true);

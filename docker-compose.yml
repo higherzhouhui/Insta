@@ -5,7 +5,7 @@ services:
     image: pd1-web-development
     build: .
     ports:
-      - 10002:10002
+      - 10010:10010
     restart: on-failure
     volumes:
       # - ./pages:/app/pages

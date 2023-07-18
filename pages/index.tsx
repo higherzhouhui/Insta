@@ -383,12 +383,12 @@ const Home: NextPage = () => {
                 <div className='describe'>
                   <div className='number'>
                     <div className='total'>发行总量</div>
-                    <div className='total'>剩余总量</div>
+                    {/* <div className='total'>剩余总量</div> */}
                   </div>
                   <div className='proWrapper'>
                     <div className='showNumber'>
                       <div>{item.total}</div>
-                      <div>{item.remain}</div>
+                      {/* <div>{item.remain}</div> */}
                     </div>
                     <div
                       className='proTotal'

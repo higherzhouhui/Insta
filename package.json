@@ -11,10 +11,12 @@
 		"build:test": "APP_ENV=test next build",
 		"build:prod": "APP_ENV=production next build",
 		"start": "APP_ENV=production NODE_ENV=production node server.js",
+		"start:local": "set APP_ENV=production && set NODE_ENV=production && node server.js",
 		"start:dev": "APP_ENV=development node server.js",
 		"start:test": "APP_ENV=test node server.js",
 		"start:prod": "APP_ENV=production node server.js",
-		"pm2": "pm2 start npm --name 'insta' -- start",
+		"pm2": "pm2 start npm --name 'AIMETASPACE DAO' -- start",
+		"pm2:local": "pm2 start server.js --name 'AIMETASPACEDAO'",
 		"static-run": "next export && serve out",
 		"lint": "next lint",
 		"build:win": "set APP_ENV=production && next build"

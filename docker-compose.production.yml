@@ -8,4 +8,4 @@ services:
       dockerfile: Dockerfile.production
     restart: on-failure
     ports:
-      - 10005:10005
+      - 10002:10002

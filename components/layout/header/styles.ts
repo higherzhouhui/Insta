@@ -30,7 +30,7 @@ export const HeaderOptionContainer = styled.div`
   align-items: center;
   justify-content: flex-end;
   .account-address-box {
-    font-size: 14px;
+    font-size: 12px;
     color: #fff;
   }
   .dropDown {
@@ -38,10 +38,10 @@ export const HeaderOptionContainer = styled.div`
     border: 1px solid #adabc7;
     color: #adabc7;
     font-size: 14px;
-    margin-right: 12px;
-    width: 70px;
+    margin-right: 8px;
+    width: 50px;
     text-align: center;
-    border-radius: 6px;
+    border-radius: 4px;
     z-index: 9989;
   }
 `;
@@ -83,7 +83,7 @@ export const WalletContainer = styled.div`
   }
   .wallet {
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
   }
 `;
 export const WalletListContainer = styled.div`

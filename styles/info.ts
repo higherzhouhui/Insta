@@ -9,8 +9,8 @@ export const InfoContainer = styled.div`
   background-repeat: no-repeat;
   min-height: 100vh;
   .title {
-    width: 150px;
-    height: 38px;
+    width: 130px;
+    height: 30px;
     margin: 12px auto 24px auto;
     position: relative;
   }
@@ -68,8 +68,8 @@ export const InfoContainer = styled.div`
     }
   }
   .share {
-    width: 100px;
-    height: 22px;
+    width: 90px;
+    height: 20px;
     margin: 42px auto 24px auto;
     position: relative;
   }
@@ -87,11 +87,11 @@ export const InfoContainer = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px;
+      padding: 6px 8px;
       color: #fff;
       margin: 12px 0 24px 0;
       .mylink {
-        font-size: 15px;
+        font-size: 13px;
       }
       .copy {
         width: 20px;
@@ -128,7 +128,7 @@ export const InfoContainer = styled.div`
     .left {
       flex: 1;
       text-align: left;
-      font-size: 15px;
+      font-size: 13px;
     }
   }
   .list:last-child {

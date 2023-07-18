@@ -5,6 +5,8 @@ import {useTranslation} from 'react-i18next';
 
 import {FooterContainer, FooterBot} from './styles';
 
+import {showTip} from '@/utils';
+
 export const Footer: FC = memo(() => {
   const router = useRouter();
   const {t, i18n} = useTranslation();
@@ -30,7 +32,14 @@ export const Footer: FC = memo(() => {
   const [navList, setNavList] = useState(staticNavList);
   const handleRoute = (item: any) => {
     if (item.link === '/shouye' || item.link === '/stq') {
+      showTip({content: '暂未开放'});
       return;
+    }
+    if (item.link === 'info') {
+      if (!localStorage.getItem('Authorization')) {
+        showTip({content: '请先登录'});
+        return;
+      }
     }
     router.push(item.link);
   };

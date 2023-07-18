@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {ethers} from 'ethers';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
@@ -10,17 +9,12 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import type {NextPage} from 'next';
 
 // eslint-disable-next-line import/order
-import {apiUrl} from '@/config';
 // import {approveAbi, approveContractAddress} from '@/config/approveContract';
 import {nftAbi, nftContractAddress} from '@/config/nftContract';
 import {usdtAbi, usdtContractAddress} from '@/config/usdtContract';
-import {
-  useContract,
-  useEthersUtils,
-  useMetaMask,
-  Web3ProviderContext,
-} from '@/ethers-react';
+import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
+import {getMyInfo, mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
 import {Modal} from '@/uikit';
@@ -32,8 +26,9 @@ const Home: NextPage = () => {
   const [visible, setVisible] = useState(false);
   const {connectedAccount} = useContext(Web3ProviderContext);
   const approveRef = useRef<any>();
+  const nftRef = useRef<any>();
   const {getContract} = useContract();
-  const {getEtherPrice, getNormalPrice, getNetwork} = useEthersUtils();
+  const {getNormalPrice, getNetwork} = useEthersUtils();
   const {t} = useTranslation();
   const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
@@ -41,15 +36,16 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState(false);
   const [swiper, setSwiper] = useState<any>('');
   const {getSignMessage} = useSigner();
-  const {setAccount} = useMetaMask();
   const [hasApprove, setHasApprove] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
+  const [disMint, setDisMint] = useState(false);
   const checkIsApprove = async () => {
     setLoading(true);
     try {
       const price =
         '115792089237316195423570985008687907853269984665640564039457584007913129639935';
       await approveRef.current.approve(nftContractAddress, price);
+
       setHasApprove(true);
       setLoading(false);
       return true;
@@ -88,28 +84,49 @@ const Home: NextPage = () => {
   };
 
   const mint = async (deposits: number) => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     if (!hasApprove) {
       await checkIsApprove();
+      setLoading(false);
+
       if (!hasApprove) {
         return;
       }
     }
     if (!deposits) {
-      showTip({type: IMessageType.ERROR, content: t('PleaseInput')});
+      showTip({type: IMessageType.ERROR, content: t('Please Input')});
+      setLoading(false);
       return;
     }
-
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      const contract = await getContract(nftContractAddress, nftAbi);
-      const price = getEtherPrice(deposits || 0);
-      await contract.deposits(price);
+      let tlevel = currentTab;
+      if (currentTab === 0) {
+        tlevel = 3;
+      } else if (currentTab === 1) {
+        tlevel = 2;
+      } else if (currentTab === 2) {
+        tlevel = 1;
+      }
+      const mintRes: any = await mintNft({level: tlevel});
+      if (mintRes?.CODE !== 0) {
+        setLoading(false);
+        showTip({content: mintRes?.MESSAGE});
+        return;
+      }
+      const {level, parent, reward, r, s, v} = mintRes.DATA;
+
+      await nftRef.current.mint(level, parent, reward, r, s, v);
+      setDisMint(true);
       setLoading(false);
       showTip({
         type: IMessageType.SUCCESS,
-        content: t('OperationSuccess'),
+        content: t('鑄造成功！'),
       });
+      await getRemain();
     } catch (error: any) {
       showTip({
         type: IMessageType.ERROR,
@@ -118,18 +135,67 @@ const Home: NextPage = () => {
       setLoading(false);
     }
   };
-
+  const handleClickBtn = async () => {
+    setRegisterLoading(true);
+    let accountAddress = connectedAccount;
+    if (!accountAddress) {
+      // eslint-disable-next-line require-atomic-updates
+      accountAddress = await getAccount();
+    }
+    let sign = '';
+    const signature = await getSignMessage('Register');
+    if (!signature.status) {
+      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      return;
+    }
+    sign = signature.sign;
+    localStorage.setItem('sign', sign);
+    registerAccount({
+      invite_code: inviterId as any,
+      wallet: accountAddress,
+      sign: signature.sign,
+    }).then((res: any) => {
+      setRegisterLoading(false);
+      if (res?.CODE === 0) {
+        onLogin({
+          wallet: accountAddress as any,
+          sign,
+        }).then((loginRes: any) => {
+          if (loginRes?.CODE === 0) {
+            const {token, user} = loginRes.DATA;
+            localStorage.setItem('token', token);
+            setUser({
+              ...user,
+              sign: signature.sign,
+              hash_rate: user.hash_rate,
+              level: user.level,
+              invite_code: user.invite_code,
+            });
+            showTip({
+              type: IMessageType.SUCCESS,
+              content: '註冊成功！',
+            });
+          } else {
+            showTip({
+              type: IMessageType.ERROR,
+              content: res?.data?.MESSAGE,
+            });
+          }
+        });
+      } else {
+        showTip({type: IMessageType.ERROR, content: res?.data?.MESSAGE});
+        setRegisterLoading(false);
+      }
+    });
+    setVisible(false);
+  };
   const judgeIsRegister = async (inviterId: any) => {
     if (inviterId) {
       if (connectedAccount) {
         setVisible(false);
         // 判断是否注册，未注册则弹窗
-        const res = await axios({
-          url: `${apiUrl}/api/user/login`,
-          method: 'POST',
-          data: {wallet: connectedAccount, sign: user.sign},
-        });
-        if (res?.data?.CODE === 0) {
+        const res = await getMyInfo();
+        if (res?.CODE === 0) {
           setVisible(false);
         } else {
           setVisible(true);
@@ -145,8 +211,8 @@ const Home: NextPage = () => {
       title: '创世节点',
       tab: 'tab1',
       bg: 'bg1',
-      total: 1000,
-      remain: 523,
+      total: 108,
+      remain: 54,
       price: 1000,
       hint: [
         '万龙天城原住民机票一张（1000算力）直推20%',
@@ -181,8 +247,8 @@ const Home: NextPage = () => {
       title: '初级节点',
       tab: 'tab3',
       bg: 'bg3',
-      total: 100,
-      remain: 60,
+      total: 99999,
+      remain: 50000,
       price: 100,
       hint: [
         '获得100算力',
@@ -209,11 +275,63 @@ const Home: NextPage = () => {
     setCurrentTab(index);
   };
 
+  const getRemain = async () => {
+    setLoading(true);
+    if (!nftRef || !nftRef.current) {
+      // eslint-disable-next-line require-atomic-updates
+      nftRef.current = await getContract(nftContractAddress, nftAbi);
+    }
+    let level = currentTab;
+    if (currentTab === 0) {
+      level = 3;
+    } else if (currentTab === 1) {
+      level = 2;
+    } else if (currentTab === 2) {
+      level = 1;
+    }
+    try {
+      const remain = await nftRef.current.getStock(level);
+      setLoading(false);
+      tabs[currentTab].remain = remain.toString();
+      setTabs([...tabs]);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+  const isMint = async () => {
+    if (!nftRef || !nftRef.current) {
+      // eslint-disable-next-line require-atomic-updates
+      nftRef.current = await getContract(nftContractAddress, nftAbi);
+    }
+    try {
+      const flag = await nftRef.current.mintLog(connectedAccount);
+      if (flag) {
+        setDisMint(true);
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    isMint();
+  }, []);
+
+  useEffect(() => {
+    getRemain();
+  }, [currentTab]);
+
   useEffect(() => {
     shiftNetWork();
     setTimeout(() => {
-      checkHasAllowance();
-      judgeIsRegister(inviterId);
+      if (connectedAccount) {
+        checkHasAllowance();
+        judgeIsRegister(inviterId);
+        getRemain();
+      }
     }, 500);
   }, [inviterId, connectedAccount]);
 
@@ -304,7 +422,10 @@ const Home: NextPage = () => {
                     <span className='price'>价格：</span>
                     <span className='priceNumber'>{item.price}U</span>
                   </div>
-                  <div className='btn' onClick={() => mint(1)}>
+                  <div
+                    className={`btn ${disMint ? 'disMint' : ''}`}
+                    onClick={() => mint(item.price)}
+                  >
                     {hasApprove ? t('MINT') : t('授权')}
                   </div>
                 </div>
@@ -333,7 +454,7 @@ const Home: NextPage = () => {
         }}
       >
         <InviterComp className={registerLoading ? 'loading' : ''}>
-          <h2>{t('InviterId')}</h2>
+          <h2>{t('邀請碼')}</h2>
           <p>{inviterId}</p>
           <div
             className='confirm'
@@ -341,7 +462,7 @@ const Home: NextPage = () => {
               handleClickBtn();
             }}
           >
-            {t('Confirm')}
+            {t('註冊')}
           </div>
           <img
             alt='close'

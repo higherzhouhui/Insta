@@ -2,40 +2,40 @@ import axios from 'axios';
 import * as echarts from 'echarts';
 import moment from 'moment';
 import Image from 'next/image';
-import {useContext, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
 import {apiUrl} from '@/config';
-import {Web3ProviderContext} from '@/ethers-react/Web3ContextProvider';
+import {getInviters, getPower} from '@/services/user';
+import {userState} from '@/store/user';
 import {InfoContainer} from '@/styles/info';
 import {IMessageType, copyUrlToClip, showTip} from '@/utils';
 
 const Info: NextPage = () => {
-  const {connectedAccount} = useContext(Web3ProviderContext);
-  const [finalPrice, setFinalPrice] = useState<number>(0);
-  const [increase, setIncrease] = useState(null);
+  const [user, setUser] = useRecoilState(userState);
+  const [totalPower, setTotalPower] = useState<any>({});
+  const [inviteLink, setInviteLink] = useState('');
+  const [list, setList] = useState<any>([]);
   const {t} = useTranslation();
   const initRequestData = () => {
-    axios({
-      url: `${apiUrl}/api/public/v1/users/trend`,
-      method: 'get',
-      params: {wallet: connectedAccount},
-    }).then((res) => {
-      if (res?.data?.meta?.status !== 200) {
-        showTip({content: res?.data?.meta?.msg});
-      }
-      const data = res?.data?.data || [];
-      const xdata: string[] = [];
-      const ydata: string[] = [];
-      data.forEach((item: any) => {
-        xdata.push(moment(new Date(item.createdAt)).format('MM-DD'));
-        ydata.push(item.price);
+    Promise.all([getPower(), getInviters()])
+      .then((res: any) => {
+        const [power, inviters] = res;
+        setTotalPower(power.DATA);
+        const mlist = inviters.DATA;
+        mlist.forEach((item: any) => {
+          item.wallet = `${item.wallet.slice(0, 8)}...${item.wallet.slice(37)}`;
+          item.created_at = moment(item.created_at).format('YYYY-MM-DD HH:mm');
+        });
+        setList(inviters.DATA);
+      })
+      .catch((err) => {
+        console.log(err);
+        showTip({content: err || 'error'});
       });
-      setFinalPrice(data[data.length - 1].price);
-      initLineChart(xdata, ydata);
-    });
   };
 
   const initIncrease = () => {
@@ -87,7 +87,9 @@ const Info: NextPage = () => {
   };
   useEffect(() => {
     initRequestData();
+    setInviteLink(`${location.host}?inviterId=${user?.invite_code}`);
   }, []);
+
   return (
     <InfoContainer>
       <div className='title'>
@@ -95,23 +97,29 @@ const Info: NextPage = () => {
       </div>
       <div className='myLevel'>
         <div className='desc'>我的等級</div>
-        <div className='level'>V3</div>
+        <div className='level'>V{user?.level || 0}</div>
       </div>
       <div className='myPower'>
         <div className='left'>
           <div className='desc'>我的算力</div>
-          <div className='number'>{Number(3233442432).toLocaleString()}</div>
+          <div className='number'>
+            {Number(user?.hash_rate || 0).toLocaleString()}
+          </div>
         </div>
         <div className='right'>確定</div>
       </div>
       <div className='totalPower'>
         <div className='left'>
           <div className='desc'>總算力</div>
-          <div className='number'>{Number(3233442432).toLocaleString()}</div>
+          <div className='number'>
+            {Number(totalPower?.totalHashRate || 0).toLocaleString()}
+          </div>
         </div>
         <div className='left'>
           <div className='desc'>小區算力</div>
-          <div className='number'>{Number(3233442432).toLocaleString()}</div>
+          <div className='number'>
+            {Number(totalPower?.minHashRate || 0).toLocaleString()}
+          </div>
         </div>
       </div>
       <div className='share'>
@@ -120,11 +128,11 @@ const Info: NextPage = () => {
       <div className='wrapper'>
         <div className='link'>邀請鏈接：</div>
         <div className='linkUrl'>
-          <div className='mylink'>http://www.baidu.com</div>
+          <div className='mylink'>{inviteLink}</div>
           <div
             className='copy'
             onClick={() => {
-              copyToClip('3232');
+              copyToClip(inviteLink);
             }}
           >
             <Image layout='fill' src='/static/image/copy.png' />
@@ -137,10 +145,14 @@ const Info: NextPage = () => {
             <div className='left'>地址</div>
             <div className='left'>時間</div>
           </div>
-          <div className='list'>
-            <div className='left'>23feafaefaewfawe</div>
-            <div className='left'>2023-705</div>
-          </div>
+          {list.map((item: any, index: number) => {
+            return (
+              <div className='list' key={index}>
+                <div className='left'>{item.wallet}</div>
+                <div className='left'>{item.created_at}</div>
+              </div>
+            );
+          })}
           {/* <div className='content'>暂无数据</div> */}
         </div>
       </div>

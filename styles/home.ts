@@ -181,6 +181,9 @@ export const SwipperItem = styled.div`
       background: #d158e9;
       font-weight: bold;
     }
+    .disMint {
+      background: #555;
+    }
   }
   .hint {
     margin-top: 36px;

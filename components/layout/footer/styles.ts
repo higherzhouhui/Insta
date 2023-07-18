@@ -67,8 +67,8 @@ export const FooterBot = styled.div`
   }
   .menuTab {
     position: relative;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     margin-bottom: 5px;
   }
 `;

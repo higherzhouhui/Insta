@@ -7,10 +7,10 @@ import {showTip, IMessageType} from '@/utils';
 // 处理响应
 const handleResponse = (data: GlobalRequest.Response<any>) => {
   const {CODE} = data;
+
   if (CODE === 401) {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('Authorization');
-    }
+    localStorage.clear();
+    showTip({content: '登录过期，请重新登录', type: IMessageType.ERROR});
   }
 };
 // 处理错误
@@ -26,7 +26,7 @@ const handleError = (res: any) => {
 
 // 创建请求实例
 const instance = axios.create({
-  baseURL: '/fina',
+  baseURL: 'http://192.168.2.253:7001',
   timeout: 500000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
@@ -41,7 +41,7 @@ instance.interceptors.request.use(
       if (xToken) {
         config.headers = {
           ...config.headers,
-          Authorization: xToken,
+          Authorization: `Bearer ${xToken}`,
         };
       }
     }

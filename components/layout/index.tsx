@@ -10,7 +10,6 @@ import {ListLayout} from './ListLayout';
 import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
-import {useMetaMask} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import {onLogin} from '@/services/user';
 import {userState} from '@/store/user';
@@ -21,7 +20,6 @@ const Header = dynamic(import('./header'), {ssr: false});
 export const Layout = memo(({children}) => {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userState);
-  const {setAccount, connectedAccount} = useMetaMask();
   const {getSignMessage} = useSigner();
   const listRouterPathName = [
     '/nft/list',
@@ -82,7 +80,7 @@ export const Layout = memo(({children}) => {
         sign: null,
       });
     }
-    let sign = user.sign;
+    let sign = localStorage.getItem('sign');
     if (!sign) {
       const signature = await getSignMessage('Login');
       if (!signature.status) {
@@ -90,12 +88,13 @@ export const Layout = memo(({children}) => {
         return;
       }
       sign = signature.sign;
+      localStorage.setItem('sign', sign);
       setUser({...user, sign: signature.sign});
     }
     onLogin({wallet: currentAccount, sign}).then((loginRes: any) => {
       if (loginRes.CODE === 0) {
-        const {user} = loginRes.DATA;
-        localStorage.setItem('Authorization', loginRes.token);
+        const {user, token} = loginRes.DATA;
+        localStorage.setItem('Authorization', token);
         setUser({
           ...user,
           hash_rate: user.hash_rate,

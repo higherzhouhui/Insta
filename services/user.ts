@@ -101,3 +101,27 @@ export const getRecapRes = (resp: string) => {
     },
   });
 };
+// MINT
+export const mintNft = (data: {level: number}) => {
+  return service({
+    url: '/api/nft/mint',
+    method: 'POST',
+    data,
+  });
+};
+
+// 算力
+export const getPower = () => {
+  return service({
+    url: '/api/user/hash_rate',
+    method: 'GET',
+  });
+};
+
+// 我的团队
+export const getInviters = () => {
+  return service({
+    url: '/api/user/invite_user',
+    method: 'GET',
+  });
+};

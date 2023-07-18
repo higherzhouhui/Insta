@@ -4,7 +4,7 @@ const next = require('next');
 
 const devProxy = {
   '/fina': {
-    target: 'http://dapp.aimetaspacedao.co',
+    target: 'http://20.205.136.171',
     pathRewrite: {
       '^/fina': '/',
     },

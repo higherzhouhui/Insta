@@ -180,12 +180,12 @@ const Home: NextPage = () => {
           } else {
             showTip({
               type: IMessageType.ERROR,
-              content: res?.data?.MESSAGE,
+              content: res?.MESSAGE,
             });
           }
         });
       } else {
-        showTip({type: IMessageType.ERROR, content: res?.data?.MESSAGE});
+        showTip({type: IMessageType.ERROR, content: res?.MESSAGE});
         setRegisterLoading(false);
       }
     });
@@ -249,8 +249,8 @@ const Home: NextPage = () => {
       title: '初级节点',
       tab: 'tab3',
       bg: 'bg3',
-      total: 99999,
-      remain: 99999,
+      total: 9999,
+      remain: 9999,
       price: 100,
       hint: [
         '获得100算力',

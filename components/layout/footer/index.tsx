@@ -25,9 +25,9 @@ export const Footer: FC = memo(() => {
   ];
   const staticNavList = [
     {title: t('IDO'), link: '/', active: true, icon: 'ido'},
-    {title: t('shouye'), link: '/shouye', active: false, icon: 'shouye'},
-    {title: t('stq'), link: '/stq', active: false, icon: 'stq'},
-    {title: t('info'), link: '/info', active: false, icon: 'info'},
+    {title: t('首頁'), link: '/shouye', active: false, icon: 'shouye'},
+    {title: t('生態圈'), link: '/stq', active: false, icon: 'stq'},
+    {title: t('我的'), link: '/info', active: false, icon: 'info'},
   ];
   const [navList, setNavList] = useState(staticNavList);
   const handleRoute = (item: any) => {

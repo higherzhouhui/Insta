@@ -12,7 +12,12 @@ import type {NextPage} from 'next';
 import {RPCPROVIDERURL} from '@/config/contractAddress';
 import {nftAbi, nftContractAddress} from '@/config/nftContract';
 import {usdtAbi, usdtContractAddress} from '@/config/usdtContract';
-import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
+import {
+  useContract,
+  useEthersUtils,
+  useMetaMask,
+  Web3ProviderContext,
+} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import {mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
@@ -42,12 +47,17 @@ const Home: NextPage = () => {
   const [hasApprove, setHasApprove] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
   const [disMint, setDisMint] = useState(false);
+  const {setAccount} = useMetaMask();
 
   const checkIsApprove = async () => {
     setLoading(true);
     try {
       if (!connectedAccount) {
-        await getAccount();
+        const account = await getAccount();
+        if (!account) {
+          return;
+        }
+        setAccount(account);
       }
       approveRef.current = await getContract(usdtContractAddress, usdtAbi);
       const price =
@@ -98,7 +108,6 @@ const Home: NextPage = () => {
     if (!hasApprove) {
       await checkIsApprove();
       setLoading(false);
-
       if (!hasApprove) {
         return;
       }
@@ -123,6 +132,7 @@ const Home: NextPage = () => {
       const {level, parent, reward, r, s, v} = mintRes.DATA;
 
       const contract: any = new web3.eth.Contract(nftAbi, nftContractAddress);
+      console.log(connectedAccount, 'accountaddress');
       await contract.methods
         .mint(level, parent, reward, r, s, v)
         .send({from: connectedAccount});

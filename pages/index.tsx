@@ -431,7 +431,7 @@ const Home: NextPage = () => {
                     className={`btn ${disMint ? 'disMint' : ''}`}
                     onClick={() => mint(item.price)}
                   >
-                    {hasApprove ? t('MINT') : t('授权')}
+                    {hasApprove ? t('MINT') : t('授權')}
                   </div>
                 </div>
                 <div className='hint'>

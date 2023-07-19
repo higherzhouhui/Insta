@@ -317,7 +317,6 @@ const Home: NextPage = () => {
     return () => {
       clearTimeout(timer);
       setLoading(false);
-      Event.removeListener(EventTypes.notRegister, listEvent);
     };
   }, [connectedAccount]);
 

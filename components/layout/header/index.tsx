@@ -37,6 +37,7 @@ export const Header: FC = memo(() => {
     setCurrentLang(lang);
     i18n.changeLanguage(lang);
   };
+  const [user, setUser] = useRecoilState(userState);
   const LanguagesMenu = useMemo(() => {
     return (
       <Menu
@@ -103,7 +104,7 @@ export const Header: FC = memo(() => {
             });
           }}
         >
-          {connectedAccount ? (
+          {connectedAccount && user.invite_code ? (
             <div className='account-address-box'>
               {`${connectedAccount.slice(0, 4)}...${connectedAccount.slice(
                 37

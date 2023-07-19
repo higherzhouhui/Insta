@@ -299,7 +299,7 @@ const DownList: FC<IDownListProps> = memo(() => {
   // 退出登录
   const handleLogoutClick = async () => {
     localStorage.removeItem('Authorization');
-    localStorage.removeItem('token');
+    localStorage.removeItem('sign');
     setUser({
       expiresAt: null,
       portrait: null,

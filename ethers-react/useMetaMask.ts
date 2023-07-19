@@ -60,6 +60,7 @@ export const useMetaMask = () => {
           setConnectedAccount(accounts[0]);
         } else {
           setConnectedAccount(null);
+          localStorage.clear();
         }
       });
     } catch (error) {

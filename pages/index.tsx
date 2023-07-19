@@ -46,7 +46,8 @@ const Home: NextPage = () => {
         await getAccount();
       }
       approveRef.current = await getContract(usdtContractAddress, usdtAbi);
-      const price = '999999999999999';
+      const price =
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935';
       await approveRef.current.approve(nftContractAddress, price);
       setHasApprove(true);
       setLoading(false);

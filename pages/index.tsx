@@ -9,7 +9,6 @@ import Web3 from 'web3';
 
 import type {NextPage} from 'next';
 
-import {RPCPROVIDERURL} from '@/config/contractAddress';
 import {nftAbi, nftContractAddress} from '@/config/nftContract';
 import {usdtAbi, usdtContractAddress} from '@/config/usdtContract';
 import {
@@ -28,8 +27,6 @@ import {IMessageType, showTip, Event, EventTypes} from '@/utils';
 import 'swiper/css';
 
 const Home: NextPage = () => {
-  const web3 = new Web3(RPCPROVIDERURL);
-
   const homeRef: any = useRef(null);
   const [visible, setVisible] = useState(false);
   const {connectedAccount} = useContext(Web3ProviderContext);
@@ -130,7 +127,13 @@ const Home: NextPage = () => {
         return;
       }
       const {level, parent, reward, r, s, v} = mintRes.DATA;
-
+      const web3 = new Web3(window.ethereum);
+      const gasLimit = 22864; // 设置 Gas 限制
+      const gasPrice = '20000000000'; // 设置 Gas
+      web3.eth.sendTransaction({
+        gas: gasLimit,
+        gasPrice,
+      });
       const contract: any = new web3.eth.Contract(nftAbi, nftContractAddress);
       console.log(connectedAccount, 'accountaddress');
       await contract.methods
@@ -149,6 +152,7 @@ const Home: NextPage = () => {
         type: IMessageType.ERROR,
         content: error?.data?.message || error?.message,
       });
+      console.log(error);
       setLoading(false);
     }
   };

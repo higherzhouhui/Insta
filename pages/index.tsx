@@ -5,11 +5,11 @@ import {useContext, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import Web3 from 'web3';
 
 import type {NextPage} from 'next';
 
-// eslint-disable-next-line import/order
-// import {approveAbi, approveContractAddress} from '@/config/approveContract';
+import {RPCPROVIDERURL} from '@/config/contractAddress';
 import {nftAbi, nftContractAddress} from '@/config/nftContract';
 import {usdtAbi, usdtContractAddress} from '@/config/usdtContract';
 import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
@@ -19,9 +19,12 @@ import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
 import {Modal} from '@/uikit';
 import {IMessageType, showTip, Event, EventTypes} from '@/utils';
+
 import 'swiper/css';
 
 const Home: NextPage = () => {
+  const web3 = new Web3(RPCPROVIDERURL);
+
   const homeRef: any = useRef(null);
   const [visible, setVisible] = useState(false);
   const {connectedAccount} = useContext(Web3ProviderContext);
@@ -119,7 +122,8 @@ const Home: NextPage = () => {
       }
       const {level, parent, reward, r, s, v} = mintRes.DATA;
 
-      await nftRef.current.mint(level, parent, reward, r, s, v);
+      const contract = new web3.eth.Contract(nftAbi, nftContractAddress);
+      await contract.mint(level, parent, reward, r, s, v);
 
       setDisMint(true);
       setLoading(false);

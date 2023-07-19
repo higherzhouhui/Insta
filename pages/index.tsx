@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   const {getContract} = useContract();
   const {getNormalPrice, getNetwork} = useEthersUtils();
   const {t} = useTranslation();
-  const [user, setUser] = useRecoilState(userState);
+  const [originUser, setUser] = useRecoilState(userState);
   const router = useRouter();
   const {inviterId} = router.query;
   const [loading, setLoading] = useState(false);
@@ -166,14 +166,14 @@ const Home: NextPage = () => {
           sign,
         }).then((loginRes: any) => {
           if (loginRes?.CODE === 0) {
-            const {token, datauser} = loginRes.DATA;
+            const {token, user} = loginRes.DATA;
             localStorage.setItem('Authorization', token);
             setUser({
-              ...user,
+              ...originUser,
               sign: signature.sign,
-              hash_rate: datauser.hash_rate,
-              level: datauser.level,
-              invite_code: datauser.invite_code,
+              hash_rate: user.hash_rate,
+              level: user.level,
+              invite_code: user.invite_code,
             });
             showTip({
               type: IMessageType.SUCCESS,

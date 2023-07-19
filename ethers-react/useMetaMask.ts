@@ -42,7 +42,7 @@ export const useMetaMask = () => {
       });
     } catch (error: any) {
       showTip({
-        content: 'Please manually switch the network to BNG Smart Chain',
+        content: 'Please manually switch the network to BNB Smart Chain',
         showTime: 6000,
       });
     }

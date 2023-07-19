@@ -46,7 +46,7 @@ const Home: NextPage = () => {
         await getAccount();
       }
       approveRef.current = await getContract(usdtContractAddress, usdtAbi);
-      const price = '99999999999';
+      const price = '999999999999999';
       await approveRef.current.approve(nftContractAddress, price);
       setHasApprove(true);
       setLoading(false);
@@ -98,11 +98,7 @@ const Home: NextPage = () => {
         return;
       }
     }
-    if (!deposits) {
-      showTip({type: IMessageType.ERROR, content: t('Please Input')});
-      setLoading(false);
-      return;
-    }
+
     setLoading(true);
     try {
       let tlevel = currentTab;
@@ -318,16 +314,13 @@ const Home: NextPage = () => {
   }, [currentTab]);
 
   useEffect(() => {
-    let timer: any = '';
-    if (connectedAccount) {
-      timer = setTimeout(() => {
-        shiftNetWork();
-        checkHasAllowance();
-        judgeIsRegister(inviterId);
-        isMint();
-        getRemain();
-      }, 500);
-    }
+    const timer = setTimeout(() => {
+      shiftNetWork();
+      checkHasAllowance();
+      judgeIsRegister(inviterId);
+      isMint();
+      getRemain();
+    }, 500);
 
     return () => {
       clearTimeout(timer);

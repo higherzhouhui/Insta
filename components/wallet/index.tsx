@@ -165,7 +165,7 @@ export const WalletList = memo(() => {
       wallet: publicAddress,
       sign: loginsignature.sign,
     });
-    if (loginRes.CODE === 0) {
+    if (loginRes?.CODE === 0) {
       showTip({content: '登录成功'});
       const {user, token} = loginRes.DATA;
       localStorage.setItem('Authorization', token);
@@ -298,8 +298,7 @@ const DownList: FC<IDownListProps> = memo(() => {
   const {t} = useTranslation();
   // 退出登录
   const handleLogoutClick = async () => {
-    localStorage.removeItem('Authorization');
-    localStorage.removeItem('sign');
+    localStorage.clear();
     setUser({
       expiresAt: null,
       portrait: null,
@@ -314,6 +313,10 @@ const DownList: FC<IDownListProps> = memo(() => {
       pid: null,
       updatedAt: null,
       uuid: null,
+      sign: null,
+      hash_rate: null,
+      invite_code: null,
+      level: null,
     });
     showTip({type: IMessageType.SUCCESS, content: t('退出登录成功！')});
     setUserDrawer({

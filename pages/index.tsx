@@ -166,6 +166,7 @@ const Home: NextPage = () => {
             localStorage.setItem('Authorization', token);
             setUser({
               ...originUser,
+              accountAddress,
               sign: signature.sign,
               hash_rate: user.hash_rate,
               level: user.level,

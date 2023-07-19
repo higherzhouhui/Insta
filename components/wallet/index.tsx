@@ -255,7 +255,6 @@ export const WalletList = memo(() => {
   const handleMetaMaskClick = () => {
     setLoading(true);
     if (!connectedAccount) {
-      alert(11);
       connectWallect((account: string | null) => {
         if (account) {
           onloginRequest(account);

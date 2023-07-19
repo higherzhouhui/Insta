@@ -18,8 +18,7 @@ import {mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
 import {Modal} from '@/uikit';
-import {Event, EventTypes} from '@/utils';
-import {IMessageType, showTip} from '@/utils';
+import {IMessageType, showTip, Event, EventTypes} from '@/utils';
 import 'swiper/css';
 
 const Home: NextPage = () => {
@@ -318,6 +317,7 @@ const Home: NextPage = () => {
     return () => {
       clearTimeout(timer);
       setLoading(false);
+      Event.removeListener(EventTypes.notRegister, listEvent);
     };
   }, [connectedAccount]);
 
@@ -329,7 +329,9 @@ const Home: NextPage = () => {
       }
     };
     Event.addListener(EventTypes.notRegister, listEvent);
-    return () => Event.removeListener(EventTypes.notRegister, listEvent);
+    return () => {
+      Event.removeListener(EventTypes.notRegister, listEvent);
+    };
   }, [inviterId]);
 
   return (

@@ -18,7 +18,7 @@ import {
 import {Loading, AddFundModal, DropDown} from '@/components';
 import {useMetaMask, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
-import {onLogin, onLogout, registerAccount} from '@/services/user';
+import {onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
@@ -123,6 +123,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
             </WalletHeadContainer>
             <WalletTipContainer>{t('Connectwith')}</WalletTipContainer>
             <WalletList />
+            <DownList />
           </WalletContainer>
         )}
       </Drawer>
@@ -141,12 +142,14 @@ Wallet.displayName = 'Wallet';
 export const WalletList = memo(() => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [user, setUser] = useRecoilState(userState);
+  const [originUser, setUser] = useRecoilState(userState);
   const {getHashId} = useEthersUtils();
   const {getSignMessage} = useSigner();
   const {connectWallect} = useMetaMask();
   const {connectedAccount} = useContext(Web3ProviderContext);
   const {t} = useTranslation();
+  const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
+
   const onloginRequest = async (publicAddress: string) => {
     if (!publicAddress) {
       return;
@@ -158,13 +161,25 @@ export const WalletList = memo(() => {
       showTip({type: IMessageType.ERROR, content: loginsignature.sign || ''});
       return;
     }
-    const loginRes = await onLogin({
+    const loginRes: any = await onLogin({
       wallet: publicAddress,
       sign: loginsignature.sign,
     });
     if (loginRes.CODE === 0) {
       showTip({content: '登录成功'});
+      const {user, token} = loginRes.DATA;
+      localStorage.setItem('Authorization', token);
+      localStorage.setItem('sign', loginsignature.sign);
+      setUser({
+        ...originUser,
+        hash_rate: user.hash_rate,
+        level: user.level,
+        invite_code: user.invite_code,
+      });
       setLoading(false);
+      setUserDrawer({
+        open: !userDrawer.open,
+      });
       return;
     }
 
@@ -177,6 +192,7 @@ export const WalletList = memo(() => {
       setLoading(false);
       return;
     }
+
     const inviterId = location.href.split('?inviterId=')[1];
 
     setLoading(true);
@@ -203,8 +219,9 @@ export const WalletList = memo(() => {
             if (loginRes?.CODE === 0) {
               const {token, user} = loginRes.DATA;
               localStorage.setItem('Authorization', token);
+              localStorage.setItem('sign', signature.sign);
               setUser({
-                ...user,
+                ...originUser,
                 sign: signature.sign,
                 hash_rate: user.hash_rate,
                 level: user.level,
@@ -247,6 +264,7 @@ export const WalletList = memo(() => {
     }
     onloginRequest(connectedAccount || '');
   };
+
   return (
     <WalletListContainer>
       <WalletItemContainer onClick={handleMetaMaskClick}>
@@ -281,6 +299,7 @@ const DownList: FC<IDownListProps> = memo(() => {
   // 退出登录
   const handleLogoutClick = async () => {
     localStorage.removeItem('Authorization');
+    localStorage.removeItem('token');
     setUser({
       expiresAt: null,
       portrait: null,
@@ -296,29 +315,16 @@ const DownList: FC<IDownListProps> = memo(() => {
       updatedAt: null,
       uuid: null,
     });
-    showTip({type: IMessageType.SUCCESS, content: t('login.out')});
+    showTip({type: IMessageType.SUCCESS, content: t('退出登录成功！')});
     setUserDrawer({
       open: !userDrawer.open,
     });
     disconnectWallect();
-    return;
-    const res: any = await onLogout();
-    if (res?.code === 0) {
-      localStorage.removeItem('Authorization');
-      setUser({
-        expiresAt: null,
-        portrait: null,
-        token: null,
-        username: null,
-        userId: null,
-        accountAddress: null,
-      });
-    }
   };
 
   return (
     <DownListContainer>
-      <div className='down-item-box is-active'>
+      {/* <div className='down-item-box is-active'>
         <div className='left'>
           <SvgIcon height={24} name='metamask-icon' width={24} />
           <span>MetaMask</span>
@@ -331,7 +337,7 @@ const DownList: FC<IDownListProps> = memo(() => {
             width={16}
           />
         </div>
-      </div>
+      </div> */}
       <div className='down-item-box' onClick={handleLogoutClick}>
         <div className='left'>
           <SvgIcon color='#333333' height={24} name='logout-icon' width={24} />

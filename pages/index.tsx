@@ -14,7 +14,7 @@ import {nftAbi, nftContractAddress} from '@/config/nftContract';
 import {usdtAbi, usdtContractAddress} from '@/config/usdtContract';
 import {useContract, useEthersUtils, Web3ProviderContext} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
-import {getMyInfo, mintNft, onLogin, registerAccount} from '@/services/user';
+import {mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
 import {Modal} from '@/uikit';
@@ -46,8 +46,7 @@ const Home: NextPage = () => {
         await getAccount();
       }
       approveRef.current = await getContract(usdtContractAddress, usdtAbi);
-      const price =
-        '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+      const price = '99999999999';
       await approveRef.current.approve(nftContractAddress, price);
       setHasApprove(true);
       setLoading(false);
@@ -90,6 +89,9 @@ const Home: NextPage = () => {
       return;
     }
     setLoading(true);
+
+    await checkIsApprove();
+
     if (!hasApprove) {
       await checkIsApprove();
       setLoading(false);
@@ -166,14 +168,14 @@ const Home: NextPage = () => {
           sign,
         }).then((loginRes: any) => {
           if (loginRes?.CODE === 0) {
-            const {token, user} = loginRes.DATA;
+            const {token, datauser} = loginRes.DATA;
             localStorage.setItem('Authorization', token);
             setUser({
               ...user,
               sign: signature.sign,
-              hash_rate: user.hash_rate,
-              level: user.level,
-              invite_code: user.invite_code,
+              hash_rate: datauser.hash_rate,
+              level: datauser.level,
+              invite_code: datauser.invite_code,
             });
             showTip({
               type: IMessageType.SUCCESS,
@@ -197,13 +199,6 @@ const Home: NextPage = () => {
     if (inviterId) {
       if (connectedAccount && localStorage.getItem('Authorization')) {
         setVisible(false);
-        // 判断是否注册，未注册则弹窗
-        const res = await getMyInfo();
-        if (res?.CODE === 0) {
-          setVisible(false);
-        } else {
-          setVisible(true);
-        }
       } else {
         setVisible(true);
       }
@@ -284,7 +279,6 @@ const Home: NextPage = () => {
   };
 
   const getRemain = async () => {
-    setLoading(true);
     try {
       nftRef.current = await getContract(nftContractAddress, nftAbi);
 
@@ -297,19 +291,19 @@ const Home: NextPage = () => {
         level = 1;
       }
       const remain = await nftRef.current.getStock(level);
-      setLoading(false);
       tabs[currentTab].remain = remain.toString();
       setTabs([...tabs]);
     } catch (err) {
       console.log(err);
-      setLoading(false);
     }
   };
 
   const isMint = async () => {
     try {
       nftRef.current = await getContract(nftContractAddress, nftAbi);
-      const flag = await nftRef.current.mintLog(connectedAccount);
+      // eslint-disable-next-line new-cap
+      const flag = await nftRef.current.MintLog(connectedAccount);
+      console.log(flag, 'flag');
       if (flag) {
         setDisMint(true);
       }
@@ -326,15 +320,21 @@ const Home: NextPage = () => {
   }, [currentTab]);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (connectedAccount) {
+    let timer: any = '';
+    if (connectedAccount) {
+      timer = setTimeout(() => {
         shiftNetWork();
         checkHasAllowance();
         judgeIsRegister(inviterId);
         isMint();
         getRemain();
-      }
-    }, 500);
+      }, 500);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      setLoading(false);
+    };
   }, [inviterId, connectedAccount]);
 
   return (

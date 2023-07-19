@@ -32,18 +32,11 @@ export const Web3ContextProvider = ({children}: Props) => {
   const {connectedAccount} = useMetaMask();
   const {balance} = useWeb3();
   const [user, setUser] = useRecoilState(userState);
-  // const { mintNFT, buyNFT, nfts, myNfts, isLoading } = useNFT(NFTAddress, NFTABI, NFTMarketAddress, NFTMarketABI);
   return (
     <Web3ProviderContext.Provider
       value={{
         connectedAccount: connectedAccount || user.accountAddress,
         balance,
-        // mintNFT,
-        // buyNFT,
-
-        // nfts,
-        // myNfts,
-        // nftLoading: isLoading
       }}
     >
       {children}

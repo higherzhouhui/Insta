@@ -153,7 +153,7 @@ const Info: NextPage = () => {
               </div>
             );
           })}
-          {/* <div className='content'>暂无数据</div> */}
+          {!list.length && <div className='content'>暂无邀请</div>}
         </div>
       </div>
     </InfoContainer>

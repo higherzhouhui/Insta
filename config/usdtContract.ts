@@ -1,4 +1,4 @@
-export const usdtContractAddress = '0x0714eaBB5589f20E8409430992f392366cd8138e';
+export const usdtContractAddress = '0xf9cAC4017ef656A797e8989F731E191252D93487';
 export const usdtAbi = [
   {
     inputs: [],

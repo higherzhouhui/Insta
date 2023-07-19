@@ -122,7 +122,7 @@ const Home: NextPage = () => {
       }
       const {level, parent, reward, r, s, v} = mintRes.DATA;
 
-      const contract = new web3.eth.Contract(nftAbi, nftContractAddress);
+      const contract: any = new web3.eth.Contract(nftAbi, nftContractAddress);
       await contract.mint(level, parent, reward, r, s, v);
 
       setDisMint(true);

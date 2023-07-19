@@ -2,12 +2,15 @@ import Image from 'next/image';
 import {useRouter} from 'next/router';
 import {FC, memo, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {useRecoilState} from 'recoil';
 
 import {FooterContainer, FooterBot} from './styles';
 
+import {userState} from '@/store/user';
 import {showTip} from '@/utils';
 
 export const Footer: FC = memo(() => {
+  const [user, setUser] = useRecoilState(userState);
   const router = useRouter();
   const {t, i18n} = useTranslation();
   const learnList = [
@@ -35,8 +38,8 @@ export const Footer: FC = memo(() => {
       showTip({content: '暂未开放'});
       return;
     }
-    if (item.link === 'info') {
-      if (!localStorage.getItem('Authorization')) {
+    if (item.link === '/info') {
+      if (!user?.invite_code) {
         showTip({content: '请先登录'});
         return;
       }

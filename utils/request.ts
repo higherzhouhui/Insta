@@ -25,7 +25,7 @@ const handleError = (res: any) => {
 
 // 创建请求实例
 const instance = axios.create({
-  baseURL: 'http://20.205.136.171:7001',
+  baseURL: 'https://dapp.aimetaspacedao.co',
   timeout: 500000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',

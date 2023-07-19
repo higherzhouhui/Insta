@@ -4,8 +4,6 @@ import {FC, useState, memo} from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import {Auth} from '../auth';
-import {ShareComp} from '../share';
 import {
   CollectContainer,
   NftBotComp,
@@ -14,6 +12,8 @@ import {
   NftTopComp,
   TagProductContainer,
 } from './styles';
+import {Auth} from '../auth';
+import {ShareComp} from '../share';
 
 import {RouterPath} from '@/config/routes';
 import {SvgIcon} from '@/uikit';

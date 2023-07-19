@@ -1,7 +1,7 @@
 import {FC, memo, useEffect, useRef, useState} from 'react';
 
-import {Loading} from '../loading';
 import {MessageWrapper} from './styles';
+import {Loading} from '../loading';
 
 import {Event, EventTypes, IMessageType} from '@/utils';
 

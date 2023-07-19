@@ -42,8 +42,7 @@ export const useMetaMask = () => {
       });
     } catch (error: any) {
       showTip({
-        content:
-          'Please manually switch the network to Binance Smart Chain Testnet',
+        content: 'Please manually switch the network to ID 56',
         showTime: 8000,
       });
     }

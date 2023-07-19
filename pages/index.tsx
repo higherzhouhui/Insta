@@ -315,6 +315,7 @@ const Home: NextPage = () => {
   }, [currentTab]);
 
   useEffect(() => {
+    shiftNetWork();
     const timer = setTimeout(() => {
       if (connectedAccount) {
         shiftNetWork();

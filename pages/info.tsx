@@ -24,8 +24,8 @@ const Info: NextPage = () => {
     Promise.all([getPower(), getInviters()])
       .then((res: any) => {
         const [power, inviters] = res;
-        setTotalPower(power.DATA);
-        const mlist = inviters.DATA;
+        setTotalPower(power.DATA || {});
+        const mlist = inviters.DATA || [];
         mlist.forEach((item: any) => {
           item.wallet = `${item.wallet.slice(0, 8)}...${item.wallet.slice(37)}`;
           item.created_at = moment(item.created_at).format('YYYY-MM-DD HH:mm');

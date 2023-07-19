@@ -165,7 +165,7 @@ const Home: NextPage = () => {
         }).then((loginRes: any) => {
           if (loginRes?.CODE === 0) {
             const {token, user} = loginRes.DATA;
-            localStorage.setItem('token', token);
+            localStorage.setItem('Authorization', token);
             setUser({
               ...user,
               sign: signature.sign,

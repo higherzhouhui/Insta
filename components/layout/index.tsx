@@ -10,7 +10,7 @@ import {ListLayout} from './ListLayout';
 import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
-import {useMetaMask} from '@/ethers-react';
+import {useEthersUtils, useMetaMask} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import {getMyInfo, onLogin} from '@/services/user';
 import {userState} from '@/store/user';
@@ -23,6 +23,7 @@ export const Layout = memo(({children}) => {
   const [originUser, setUser] = useRecoilState(userState);
   const {getSignMessage} = useSigner();
   const {disconnectWallect, setAccount} = useMetaMask();
+  const {getNormalPrice, getNetwork} = useEthersUtils();
 
   const listRouterPathName = [
     '/nft/list',
@@ -59,11 +60,21 @@ export const Layout = memo(({children}) => {
       return '';
     }
   };
+  const shiftNetWork = async () => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await getNetwork(provider);
+      }
+    });
+  };
 
   useEffect(() => {
     progressInit(router);
   }, []);
   const judgeIsLogin = async () => {
+    await shiftNetWork();
     const currentAccount = await getAccount();
     if (!currentAccount) {
       localStorage.clear();

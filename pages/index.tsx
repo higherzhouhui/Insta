@@ -214,7 +214,6 @@ const Home: NextPage = () => {
         '送永久V3級別',
         '推廣創世、高級、初級節點享受20%收益(U)',
         '獲得推廣節點算力加成',
-        '送永久V3级别',
         'AMD上線享受白名單優先購買（限購50000枚）',
         '萬龍天城原住民機票一張（可進入元宇宙遊戲）',
         '萬龍天城內購買房產，開店享受9折折扣優惠',
@@ -233,7 +232,6 @@ const Home: NextPage = () => {
         '獲得500個算力',
         '享受AMD交易手續費分紅',
         '送永久V2級別',
-        '送永久V2级别',
         '推廣創世、高級、初級節點享受20%收益(U)',
         '獲得推廣節點算力加成',
         'AMD上線享受白名單優先購買（限購25000枚）',
@@ -315,10 +313,8 @@ const Home: NextPage = () => {
   }, [currentTab]);
 
   useEffect(() => {
-    shiftNetWork();
     const timer = setTimeout(() => {
       if (connectedAccount) {
-        shiftNetWork();
         checkHasAllowance();
         judgeIsRegister(inviterId);
         isMint();

@@ -42,8 +42,8 @@ export const useMetaMask = () => {
       });
     } catch (error: any) {
       showTip({
-        content: 'Please manually switch the network to ID 56',
-        showTime: 8000,
+        content: 'Please manually switch the network to BNG Smart Chain',
+        showTime: 6000,
       });
     }
   };
@@ -59,6 +59,7 @@ export const useMetaMask = () => {
           setConnectedAccount(accounts[0]);
         } else {
           setConnectedAccount(null);
+          localStorage.clear();
         }
       });
     } catch (error) {

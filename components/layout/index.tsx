@@ -14,7 +14,7 @@ import {useEthersUtils, useMetaMask} from '@/ethers-react';
 import {useSigner} from '@/ethers-react/useSigner';
 import {getMyInfo, onLogin} from '@/services/user';
 import {userState} from '@/store/user';
-import {IMessageType, progressInit, showTip} from '@/utils';
+import {IMessageType, progressInit, showTip, Event, EventTypes} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
 const Header = dynamic(import('./header'), {ssr: false});
 
@@ -96,13 +96,12 @@ export const Layout = memo(({children}) => {
       return;
     }
     setAccount(currentAccount);
-    setUser({...originUser, accountAddress: currentAccount});
-
     const myInfo: any = await getMyInfo();
     if (myInfo.CODE === 0) {
       const {DATA} = myInfo;
       setUser({
         ...originUser,
+        accountAddress: currentAccount,
         hash_rate: DATA.hash_rate,
         level: DATA.level,
         invite_code: DATA.invite_code,
@@ -122,13 +121,15 @@ export const Layout = memo(({children}) => {
         if (loginRes.CODE === 0) {
           const {user, token} = loginRes.DATA;
           localStorage.setItem('Authorization', token);
-          setAccount(currentAccount);
           setUser({
             ...originUser,
+            accountAddress: currentAccount,
             hash_rate: user.hash_rate,
             level: user.level,
             invite_code: user.invite_code,
           });
+        } else {
+          Event.emit(EventTypes.notRegister);
         }
       });
     }

@@ -104,7 +104,9 @@ export const Header: FC = memo(() => {
             });
           }}
         >
-          {connectedAccount ? (
+          {connectedAccount &&
+          user.accountAddress &&
+          localStorage.getItem('Authorization') ? (
             <div className='account-address-box'>
               {`${connectedAccount.slice(0, 4)}...${connectedAccount.slice(
                 37

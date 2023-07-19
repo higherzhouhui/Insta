@@ -44,7 +44,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
           setUserDrawer({open: false});
         }}
       >
-        {user.accountAddress ? (
+        {user.accountAddress && localStorage.getItem('Authorization') ? (
           <WalletContainer>
             <WalletHeadContainer>
               <DropDown OptionsNode={<DownList />} placement='left'>
@@ -73,10 +73,10 @@ const Wallet: FC<IProps> = memo(({children}) => {
                 </div>
               </DropDown>
               <div className='account-address-box'>
-                {connectedAccount &&
-                  `${connectedAccount.slice(0, 4)}...${connectedAccount.slice(
-                    37
-                  )}`}
+                {`${user.accountAddress.slice(
+                  0,
+                  4
+                )}...${user.accountAddress.slice(37)}`}
               </div>
               <img
                 height={20}
@@ -255,6 +255,7 @@ export const WalletList = memo(() => {
   const handleMetaMaskClick = () => {
     setLoading(true);
     if (!connectedAccount) {
+      alert(11);
       connectWallect((account: string | null) => {
         if (account) {
           onloginRequest(account);

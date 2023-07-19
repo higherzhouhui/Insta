@@ -18,6 +18,7 @@ import {mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
 import {Modal} from '@/uikit';
+import {Event, EventTypes} from '@/utils';
 import {IMessageType, showTip} from '@/utils';
 import 'swiper/css';
 
@@ -39,6 +40,7 @@ const Home: NextPage = () => {
   const [hasApprove, setHasApprove] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
   const [disMint, setDisMint] = useState(false);
+
   const checkIsApprove = async () => {
     setLoading(true);
     try {
@@ -191,15 +193,7 @@ const Home: NextPage = () => {
     });
     setVisible(false);
   };
-  const judgeIsRegister = async (inviterId: any) => {
-    if (inviterId) {
-      if (connectedAccount && localStorage.getItem('Authorization')) {
-        setVisible(false);
-      } else {
-        setVisible(true);
-      }
-    }
-  };
+
   const [currentTab, setCurrentTab] = useState(0);
   const [tabs, setTabs] = useState([
     {
@@ -245,8 +239,8 @@ const Home: NextPage = () => {
       title: '初级节点',
       tab: 'tab3',
       bg: 'bg3',
-      total: 9999,
-      remain: 9999,
+      total: 99999,
+      remain: 99999,
       price: 100,
       hint: [
         '獲得100算力',
@@ -275,7 +269,6 @@ const Home: NextPage = () => {
   const getRemain = async () => {
     try {
       nftRef.current = await getContract(nftContractAddress, nftAbi);
-
       let level = currentTab;
       if (currentTab === 0) {
         level = 3;
@@ -286,6 +279,7 @@ const Home: NextPage = () => {
       }
       const remain = await nftRef.current.getStock(level);
       tabs[currentTab].remain = remain.toString();
+      console.log(remain.toString(), 11111111111111);
       setTabs([...tabs]);
     } catch (err) {
       console.log(err);
@@ -317,7 +311,6 @@ const Home: NextPage = () => {
     const timer = setTimeout(() => {
       if (connectedAccount) {
         checkHasAllowance();
-        judgeIsRegister(inviterId);
         isMint();
         getRemain();
       }
@@ -326,7 +319,18 @@ const Home: NextPage = () => {
       clearTimeout(timer);
       setLoading(false);
     };
-  }, [inviterId, connectedAccount]);
+  }, [connectedAccount]);
+
+  useEffect(() => {
+    shiftNetWork();
+    const listEvent = () => {
+      if (inviterId) {
+        setVisible(true);
+      }
+    };
+    Event.addListener(EventTypes.notRegister, listEvent);
+    return () => Event.removeListener(EventTypes.notRegister, listEvent);
+  }, [inviterId]);
 
   return (
     <HomeContainer ref={homeRef}>

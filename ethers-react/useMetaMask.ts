@@ -77,6 +77,7 @@ export const useMetaMask = () => {
       window.ethereum.on('chainChanged', function (_chainId: string) {
         console.log('chainChanged:', parseInt(_chainId));
         setConnectedChainId(_chainId);
+        localStorage.clear();
         window.location.reload();
       });
     } catch (error) {
@@ -139,6 +140,7 @@ export const useMetaMask = () => {
       //     return false;
       // }
       setConnectedAccount(null);
+      localStorage.clear();
     } catch (error) {
       console.log(error);
       // throw new Error("No ethereum object.");

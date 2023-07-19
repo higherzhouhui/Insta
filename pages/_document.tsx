@@ -40,11 +40,11 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta
-            content='The best cross‑chain Yield Aggregator across DeFi. Buy, stake and earn optimized yield on BNB, Cronos, Polygon, Avalanche, and many more chains.'
+            content='AI METASPACE DAO搶占萬龍天成的原住民名額，通向未來世界.'
             name='description'
           />
           <meta
-            content='The best cross‑chain Yield Aggregator across DeFi. Buy, stake and earn optimized yield on BNB, Cronos, Polygon, Avalanche, and many more chains.'
+            content='AI METASPACE DAO創世節點、高級節點、初級節點.'
             name='keywords'
           />
           <meta

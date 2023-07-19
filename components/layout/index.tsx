@@ -124,7 +124,7 @@ export const Layout = memo(({children}) => {
   return (
     <>
       <Head>
-        <title>AIMETDAO</title>
+        <title>METASPACE</title>
       </Head>
       <Header />
       <LayoutContainer>

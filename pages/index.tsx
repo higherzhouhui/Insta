@@ -42,10 +42,13 @@ const Home: NextPage = () => {
   const checkIsApprove = async () => {
     setLoading(true);
     try {
+      if (!connectedAccount) {
+        await getAccount();
+      }
+      approveRef.current = await getContract(usdtContractAddress, usdtAbi);
       const price =
         '115792089237316195423570985008687907853269984665640564039457584007913129639935';
       await approveRef.current.approve(nftContractAddress, price);
-
       setHasApprove(true);
       setLoading(false);
       return true;
@@ -62,7 +65,6 @@ const Home: NextPage = () => {
 
   const checkHasAllowance = async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/await-thenable
       approveRef.current = await getContract(usdtContractAddress, usdtAbi);
       const account = connectedAccount;
       const edu = await approveRef.current.allowance(
@@ -267,14 +269,12 @@ const Home: NextPage = () => {
   ]);
 
   const shiftNetWork = async () => {
-    return new Promise((resolve, reject) => {
-      const timer = setInterval(async () => {
-        if (window.ethereum) {
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          await getNetwork(provider);
-          clearInterval(timer);
-        }
-      }, 100);
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      if (window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await getNetwork(provider);
+      }
     });
   };
 
@@ -285,19 +285,17 @@ const Home: NextPage = () => {
 
   const getRemain = async () => {
     setLoading(true);
-    if (!nftRef || !nftRef.current) {
-      // eslint-disable-next-line require-atomic-updates
-      nftRef.current = await getContract(nftContractAddress, nftAbi);
-    }
-    let level = currentTab;
-    if (currentTab === 0) {
-      level = 3;
-    } else if (currentTab === 1) {
-      level = 2;
-    } else if (currentTab === 2) {
-      level = 1;
-    }
     try {
+      nftRef.current = await getContract(nftContractAddress, nftAbi);
+
+      let level = currentTab;
+      if (currentTab === 0) {
+        level = 3;
+      } else if (currentTab === 1) {
+        level = 2;
+      } else if (currentTab === 2) {
+        level = 1;
+      }
       const remain = await nftRef.current.getStock(level);
       setLoading(false);
       tabs[currentTab].remain = remain.toString();
@@ -309,11 +307,8 @@ const Home: NextPage = () => {
   };
 
   const isMint = async () => {
-    if (!nftRef || !nftRef.current) {
-      // eslint-disable-next-line require-atomic-updates
-      nftRef.current = await getContract(nftContractAddress, nftAbi);
-    }
     try {
+      nftRef.current = await getContract(nftContractAddress, nftAbi);
       const flag = await nftRef.current.mintLog(connectedAccount);
       if (flag) {
         setDisMint(true);
@@ -325,13 +320,15 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
-    getRemain();
+    if (connectedAccount) {
+      getRemain();
+    }
   }, [currentTab]);
 
   useEffect(() => {
-    shiftNetWork();
     setTimeout(() => {
       if (connectedAccount) {
+        shiftNetWork();
         checkHasAllowance();
         judgeIsRegister(inviterId);
         isMint();

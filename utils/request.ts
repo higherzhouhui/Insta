@@ -7,7 +7,6 @@ import {showTip, IMessageType} from '@/utils';
 // 处理响应
 const handleResponse = (data: GlobalRequest.Response<any>) => {
   const {CODE} = data;
-
   if (CODE === 401) {
     localStorage.clear();
   }

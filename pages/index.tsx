@@ -90,8 +90,6 @@ const Home: NextPage = () => {
     }
     setLoading(true);
 
-    await checkIsApprove();
-
     if (!hasApprove) {
       await checkIsApprove();
       setLoading(false);

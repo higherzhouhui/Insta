@@ -74,7 +74,6 @@ export const Layout = memo(({children}) => {
     progressInit(router);
   }, []);
   const judgeIsLogin = async () => {
-    await shiftNetWork();
     const currentAccount = await getAccount();
     if (!currentAccount) {
       localStorage.clear();

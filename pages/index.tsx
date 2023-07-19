@@ -85,7 +85,7 @@ const Home: NextPage = () => {
   };
 
   const mint = async (deposits: number) => {
-    if (loading) {
+    if (loading || disMint) {
       return;
     }
     setLoading(true);

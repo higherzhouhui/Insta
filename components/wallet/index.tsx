@@ -89,7 +89,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
             </WalletHeadContainer>
             <WalletBallanceContainer>
               <p>Total Balance</p>
-              <strong>{Number(balance).toFixed(2)} ETH</strong>
+              <strong>— ETH</strong>
               <div
                 className='btn-box'
                 onClick={() => {
@@ -123,7 +123,6 @@ const Wallet: FC<IProps> = memo(({children}) => {
             </WalletHeadContainer>
             <WalletTipContainer>{t('Connectwith')}</WalletTipContainer>
             <WalletList />
-            <DownList />
           </WalletContainer>
         )}
       </Drawer>
@@ -172,6 +171,7 @@ export const WalletList = memo(() => {
       localStorage.setItem('sign', loginsignature.sign);
       setUser({
         ...originUser,
+        accountAddress: publicAddress,
         hash_rate: user.hash_rate,
         level: user.level,
         invite_code: user.invite_code,
@@ -222,6 +222,7 @@ export const WalletList = memo(() => {
               localStorage.setItem('sign', signature.sign);
               setUser({
                 ...originUser,
+                accountAddress: publicAddress,
                 sign: signature.sign,
                 hash_rate: user.hash_rate,
                 level: user.level,
@@ -327,7 +328,7 @@ const DownList: FC<IDownListProps> = memo(() => {
 
   return (
     <DownListContainer>
-      {/* <div className='down-item-box is-active'>
+      <div className='down-item-box is-active'>
         <div className='left'>
           <SvgIcon height={24} name='metamask-icon' width={24} />
           <span>MetaMask</span>
@@ -340,7 +341,7 @@ const DownList: FC<IDownListProps> = memo(() => {
             width={16}
           />
         </div>
-      </div> */}
+      </div>
       <div className='down-item-box' onClick={handleLogoutClick}>
         <div className='left'>
           <SvgIcon color='#333333' height={24} name='logout-icon' width={24} />

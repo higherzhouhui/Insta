@@ -194,13 +194,10 @@ export const WalletItemContainer = styled.div`
 `;
 
 export const DownListContainer = styled.div`
-  background: #817272;
+  width: 200px;
+  background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  width: 300px;
-  margin: 30px 0 0 10px;
-  box-sizing: border-box;
-  position: relative;
   .down-item-box {
     width: 100%;
     height: 48px;
@@ -219,7 +216,7 @@ export const DownListContainer = styled.div`
       span {
         font-size: 14px;
         font-family: HarmonyOs-Medium;
-        color: #333;
+        color: #333333;
         margin-left: 12px;
       }
     }

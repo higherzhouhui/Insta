@@ -22,7 +22,7 @@ export const Layout = memo(({children}) => {
   const router = useRouter();
   const [originUser, setUser] = useRecoilState(userState);
   const {getSignMessage} = useSigner();
-  const {disconnectWallect} = useMetaMask();
+  const {disconnectWallect, setAccount} = useMetaMask();
 
   const listRouterPathName = [
     '/nft/list',
@@ -85,6 +85,8 @@ export const Layout = memo(({children}) => {
       });
       return;
     }
+    setAccount(currentAccount);
+    setUser({...originUser, accountAddress: currentAccount});
 
     const myInfo: any = await getMyInfo();
     if (myInfo.CODE === 0) {
@@ -105,20 +107,18 @@ export const Layout = memo(({children}) => {
         }
         sign = signature.sign;
         localStorage.setItem('sign', sign);
-        setUser({...originUser, sign: signature.sign});
       }
       onLogin({wallet: currentAccount, sign}).then((loginRes: any) => {
         if (loginRes.CODE === 0) {
           const {user, token} = loginRes.DATA;
           localStorage.setItem('Authorization', token);
+          setAccount(currentAccount);
           setUser({
             ...originUser,
             hash_rate: user.hash_rate,
             level: user.level,
             invite_code: user.invite_code,
           });
-        } else {
-          disconnectWallect();
         }
       });
     }

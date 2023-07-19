@@ -315,13 +315,14 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      shiftNetWork();
-      checkHasAllowance();
-      judgeIsRegister(inviterId);
-      isMint();
-      getRemain();
+      if (connectedAccount) {
+        shiftNetWork();
+        checkHasAllowance();
+        judgeIsRegister(inviterId);
+        isMint();
+        getRemain();
+      }
     }, 500);
-
     return () => {
       clearTimeout(timer);
       setLoading(false);

@@ -24,7 +24,7 @@ export const AddFundModal: FC<IProps> = memo(({show, onClose}) => {
     showTip({type: IMessageType.SUCCESS, content: t('copySuccess')});
   };
   return (
-    <Modal height={432} visible={show} width='90%' onClose={onClose}>
+    <Modal height={432} visible={show} width='80%' onClose={onClose}>
       <AddFundContainer>
         <h2>{t('Add funds')}</h2>
         <div className='img-box'>

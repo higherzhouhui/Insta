@@ -104,7 +104,7 @@ export const Header: FC = memo(() => {
             });
           }}
         >
-          {connectedAccount && user.invite_code ? (
+          {connectedAccount ? (
             <div className='account-address-box'>
               {`${connectedAccount.slice(0, 4)}...${connectedAccount.slice(
                 37

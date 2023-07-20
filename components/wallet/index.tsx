@@ -22,7 +22,7 @@ import {onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
-import {showTip, IMessageType, setHeaderToken} from '@/utils';
+import {showTip, IMessageType, setHeaderToken, clearToken} from '@/utils';
 const Drawer = dynamic(import('@/uikit/components/Drawer/Drawer'), {
   ssr: false,
 });
@@ -302,7 +302,7 @@ const DownList: FC<IDownListProps> = memo(() => {
   const {t} = useTranslation();
   // 退出登录
   const handleLogoutClick = async () => {
-    localStorage.clear();
+    clearToken(user.accountAddress);
     setUser({
       expiresAt: null,
       portrait: null,

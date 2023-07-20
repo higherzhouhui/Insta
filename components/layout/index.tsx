@@ -83,7 +83,6 @@ export const Layout = memo(({children}) => {
     const currentAccount = await getAccount();
     setAccount(currentAccount);
     if (!currentAccount) {
-      localStorage.clear();
       setUser({
         expiresAt: null,
         portrait: null,

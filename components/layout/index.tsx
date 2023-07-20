@@ -65,15 +65,6 @@ export const Layout = memo(({children}) => {
       return '';
     }
   };
-  const shiftNetWork = async () => {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      if (window.ethereum) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await getNetwork(provider);
-      }
-    });
-  };
 
   useEffect(() => {
     progressInit(router);

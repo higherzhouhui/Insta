@@ -82,6 +82,9 @@ const Home: NextPage = () => {
 
   const checkHasAllowance = async () => {
     try {
+      if (!connectedAccount) {
+        return;
+      }
       approveRef.current = await getContract(usdtContractAddress, usdtAbi);
       const account = connectedAccount;
       const edu = await approveRef.current.allowance(
@@ -127,9 +130,10 @@ const Home: NextPage = () => {
       } else if (currentTab === 2) {
         tlevel = 1;
       }
+      const account = connectedAccount || originUser.accountAddress;
       const mintRes: any = await mintNft({
         level: tlevel,
-        address: connectedAccount || '',
+        address: account || '',
       });
       if (mintRes?.CODE !== 0) {
         setLoading(false);
@@ -145,10 +149,10 @@ const Home: NextPage = () => {
         gasPrice,
       });
       const contract: any = new web3.eth.Contract(nftAbi, nftContractAddress);
-      console.log(connectedAccount, 'accountaddress');
+      console.log(account, 'accountaddress');
       await contract.methods
         .mint(level, parent, reward, r, s, v)
-        .send({from: connectedAccount});
+        .send({from: account});
 
       setDisMint(true);
       setLoading(false);
@@ -296,6 +300,9 @@ const Home: NextPage = () => {
 
   const getRemain = async () => {
     try {
+      if (!connectedAccount) {
+        return;
+      }
       nftRef.current = await getContract(nftContractAddress, nftAbi);
       let level = currentTab;
       if (currentTab === 0) {
@@ -307,7 +314,7 @@ const Home: NextPage = () => {
       }
       const remain = await nftRef.current.getStock(level);
       tabs[currentTab].remain = remain.toString();
-      console.log(remain.toString(), 'remain');
+      console.log('remain:', remain.toString());
       setTabs([...tabs]);
     } catch (err) {
       console.log(err);
@@ -316,15 +323,20 @@ const Home: NextPage = () => {
 
   const isMint = async () => {
     try {
-      nftRef.current = await getContract(nftContractAddress, nftAbi);
-      // eslint-disable-next-line new-cap
-      const flag = await nftRef.current.MintLog(connectedAccount);
-      console.log(flag, 'flag');
-      if (flag) {
-        setDisMint(true);
+      if (connectedAccount) {
+        nftRef.current = await getContract(nftContractAddress, nftAbi);
+        // eslint-disable-next-line new-cap
+        const flag = await nftRef.current.MintLog(connectedAccount);
+        console.log(flag, 'flag');
+        if (flag) {
+          setDisMint(true);
+        }
+      } else {
+        setDisMint(false);
       }
     } catch (err) {
-      console.log(err);
+      console.log('mintlog', err);
+      setDisMint(false);
       setLoading(false);
     }
   };

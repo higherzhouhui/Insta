@@ -129,7 +129,7 @@ const Home: NextPage = () => {
       }
       const mintRes: any = await mintNft({
         level: tlevel,
-        address: connectedAccount,
+        address: connectedAccount || '',
       });
       if (mintRes?.CODE !== 0) {
         setLoading(false);

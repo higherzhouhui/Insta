@@ -340,7 +340,7 @@ const Home: NextPage = () => {
       getRemain();
       checkHasAllowance();
       isMint();
-    }, 500);
+    }, 1000);
     return () => {
       clearTimeout(timer);
       setLoading(false);

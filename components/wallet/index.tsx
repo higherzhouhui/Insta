@@ -155,21 +155,21 @@ export const WalletList = memo(() => {
       return;
     }
 
-    const loginsignature: any = await getSignMessage('Login');
-    setLoading(false);
-    if (!loginsignature.status) {
-      showTip({type: IMessageType.ERROR, content: loginsignature.sign || ''});
-      return;
-    }
+    // const loginsignature: any = await getSignMessage('Login');
+    // setLoading(false);
+    // if (!loginsignature.status) {
+    //   showTip({type: IMessageType.ERROR, content: loginsignature.sign || ''});
+    //   return;
+    // }
     const loginRes: any = await onLogin({
       wallet: publicAddress,
-      sign: loginsignature.sign,
+      sign: 'Login',
     });
     if (loginRes?.CODE === 0) {
       showTip({content: '登录成功'});
       const {user, token} = loginRes.DATA;
       localStorage.setItem('Authorization', token);
-      localStorage.setItem('sign', loginsignature.sign);
+      // localStorage.setItem('sign', loginsignature.sign);
       setUser({
         ...originUser,
         accountAddress: publicAddress,
@@ -194,35 +194,34 @@ export const WalletList = memo(() => {
       return;
     }
 
-    setLoading(true);
-    const signature = await getSignMessage('Register');
-    setLoading(false);
-    if (!signature.status) {
-      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-      return;
-    }
+    // setLoading(true);
+    // const signature = await getSignMessage('Register');
+    // setLoading(false);
+    // if (!signature.status) {
+    //   showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+    //   return;
+    // }
     setLoading(true);
     try {
       registerAccount({
         invite_code: theId,
         wallet: publicAddress,
-        sign: signature.sign,
+        sign: 'Register',
       }).then((res: any) => {
         setLoading(false);
         if (res.CODE === 0) {
           onLogin({
             wallet: publicAddress as any,
-            sign: signature.sign,
+            sign: 'Login',
           }).then((loginRes: any) => {
             setLoading(false);
             if (loginRes?.CODE === 0) {
               const {token, user} = loginRes.DATA;
               localStorage.setItem('Authorization', token);
-              localStorage.setItem('sign', signature.sign);
+              // localStorage.setItem('sign', signature.sign);
               setUser({
                 ...originUser,
                 accountAddress: publicAddress,
-                sign: signature.sign,
                 hash_rate: user.hash_rate,
                 level: user.level,
                 invite_code: user.invite_code,

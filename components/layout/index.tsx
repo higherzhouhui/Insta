@@ -107,17 +107,17 @@ export const Layout = memo(({children}) => {
         invite_code: DATA.invite_code,
       });
     } else {
-      let sign = localStorage.getItem('sign');
-      if (!sign) {
-        const signature = await getSignMessage('Login');
-        if (!signature.status) {
-          showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-          return;
-        }
-        sign = signature.sign;
-        localStorage.setItem('sign', sign);
-      }
-      onLogin({wallet: currentAccount, sign}).then((loginRes: any) => {
+      // let sign = localStorage.getItem('sign');
+      // if (!sign) {
+      //   const signature = await getSignMessage('Login');
+      //   if (!signature.status) {
+      //     showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+      //     return;
+      //   }
+      //   sign = signature.sign;
+      //   localStorage.setItem('sign', sign);
+      // }
+      onLogin({wallet: currentAccount, sign: 'Login'}).then((loginRes: any) => {
         if (loginRes.CODE === 0) {
           const {user, token} = loginRes.DATA;
           localStorage.setItem('Authorization', token);

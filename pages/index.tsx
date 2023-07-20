@@ -163,19 +163,19 @@ const Home: NextPage = () => {
       // eslint-disable-next-line require-atomic-updates
       accountAddress = await getAccount();
     }
-    let sign = '';
-    const signature = await getSignMessage('Register');
-    if (!signature.status) {
-      showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-      setRegisterLoading(false);
-      return;
-    }
-    sign = signature.sign;
-    localStorage.setItem('sign', sign);
+    const sign = 'Register';
+    // const signature = await getSignMessage('Register');
+    // if (!signature.status) {
+    //   showTip({type: IMessageType.ERROR, content: signature.sign || ''});
+    //   setRegisterLoading(false);
+    //   return;
+    // }
+    // sign = signature.sign;
+    // localStorage.setItem('sign', sign);
     registerAccount({
       invite_code: inviterId as any,
       wallet: accountAddress,
-      sign: signature.sign,
+      sign,
     }).then((res: any) => {
       setRegisterLoading(false);
       if (res?.CODE === 0) {
@@ -189,7 +189,6 @@ const Home: NextPage = () => {
             setUser({
               ...originUser,
               accountAddress,
-              sign: signature.sign,
               hash_rate: user.hash_rate,
               level: user.level,
               invite_code: user.invite_code,
@@ -298,7 +297,7 @@ const Home: NextPage = () => {
       }
       const remain = await nftRef.current.getStock(level);
       tabs[currentTab].remain = remain.toString();
-      console.log(remain.toString(), 11111111111111);
+      console.log(remain.toString(), 'remain');
       setTabs([...tabs]);
     } catch (err) {
       console.log(err);
@@ -328,10 +327,10 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (connectedAccount) {
+      getRemain();
+      if (connectedAccount && localStorage.getItem('Authorization')) {
         checkHasAllowance();
         isMint();
-        getRemain();
       }
     }, 500);
     return () => {
@@ -403,30 +402,32 @@ const Home: NextPage = () => {
                 </div>
                 <div className='describe'>
                   <div className='number'>
-                    <div className='total'>发行总量</div>
+                    <div className='total'>{item.title}</div>
                     {/* <div className='total'>剩余总量</div> */}
                   </div>
                   <div className='proWrapper'>
                     <div className='showNumber'>
-                      <div>{item.total}</div>
+                      <div>
+                        {item.title === '初级节点'
+                          ? ''
+                          : `数量：${item.total}位`}
+                      </div>
                       {/* <div>{item.remain}</div> */}
                     </div>
                     <div
                       className='proTotal'
                       style={{
-                        width: `${Math.round(
-                          ((item.total - item.remain) / item.total) * 100
-                        )}%`,
+                        width: `${Math.round(100)}%`,
                       }}
                     />
-                    <div
+                    {/* <div
                       className='proRemain'
                       style={{
                         width: `${Math.round(
                           (item.remain / item.total) * 100
                         )}%`,
                       }}
-                    />
+                    /> */}
                     {/* <div
                       className='divide'
                       style={{

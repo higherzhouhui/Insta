@@ -114,9 +114,9 @@ export const SwipperItem = styled.div`
       align-items: center;
       justify-content: space-between;
       .total {
-        font-size: 16px;
+        font-size: 18px;
         color: #fff;
-        opacity: 0.9;
+        margin: 0 auto;
       }
     }
     .proWrapper {
@@ -134,6 +134,8 @@ export const SwipperItem = styled.div`
         > div {
           font-size: 22px;
           color: #fff;
+          margin: 0 auto;
+          height: 32px;
         }
       }
 

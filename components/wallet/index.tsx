@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {useRouter} from 'next/router';
-import {FC, useState, memo, useContext} from 'react';
+import {FC, useState, memo, useContext, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 
@@ -148,7 +148,8 @@ export const WalletList = memo(() => {
   const {connectedAccount} = useContext(Web3ProviderContext);
   const {t} = useTranslation();
   const [userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
-
+  const {inviterId} = router.query;
+  const [theId, setTheId] = useState(inviterId);
   const onloginRequest = async (publicAddress: string) => {
     if (!publicAddress) {
       return;
@@ -183,7 +184,7 @@ export const WalletList = memo(() => {
       return;
     }
 
-    if (!location.href.includes('?inviterId=')) {
+    if (!theId) {
       showTip({
         type: IMessageType.ERROR,
         content: '本系统为邀约制，请联系推荐人',
@@ -192,8 +193,6 @@ export const WalletList = memo(() => {
       setLoading(false);
       return;
     }
-
-    const inviterId = location.href.split('?inviterId=')[1];
 
     setLoading(true);
     const signature = await getSignMessage('Register');
@@ -205,7 +204,7 @@ export const WalletList = memo(() => {
     setLoading(true);
     try {
       registerAccount({
-        invite_code: inviterId,
+        invite_code: theId,
         wallet: publicAddress,
         sign: signature.sign,
       }).then((res: any) => {
@@ -265,6 +264,10 @@ export const WalletList = memo(() => {
     }
     onloginRequest(connectedAccount || '');
   };
+
+  useEffect(() => {
+    setTheId(inviterId);
+  }, [inviterId]);
 
   return (
     <WalletListContainer>

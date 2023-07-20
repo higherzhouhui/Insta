@@ -345,6 +345,8 @@ const Home: NextPage = () => {
     const listEvent = () => {
       if (inviterId) {
         setVisible(true);
+      } else {
+        showTip({content: '本系统为邀约制，请联系推荐人'});
       }
     };
     Event.addListener(EventTypes.notRegister, listEvent);

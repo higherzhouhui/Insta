@@ -282,11 +282,10 @@ export const WalletList = memo(() => {
         ) : null}
       </WalletItemContainer>
       <WalletItemContainer>
-        <div className='name-box'>
-          <SvgIcon height={24} name='wallet-connect-icon' width={24} />
-          <span>Wallet Connect</span>
+        <div className='name-box' onClick={handleMetaMaskClick}>
+          <SvgIcon height={24} name='token' width={24} />
+          <span>TokenPocket</span>
         </div>
-        <div className='tip-box'>{t('come.soon')}</div>
       </WalletItemContainer>
     </WalletListContainer>
   );

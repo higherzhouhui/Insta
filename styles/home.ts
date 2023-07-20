@@ -136,6 +136,7 @@ export const SwipperItem = styled.div`
           color: #fff;
           margin: 0 auto;
           height: 32px;
+          line-height: 32px;
         }
       }
 

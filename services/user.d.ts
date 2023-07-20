@@ -11,6 +11,7 @@ export type UpdateUserProps = {
 
 export interface LoginProps extends LoginNonceProps {
   sign: string;
+  address?: string;
 }
 
 export interface LoginNonceProps {

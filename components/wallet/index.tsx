@@ -22,7 +22,7 @@ import {onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
 import {SvgIcon} from '@/uikit';
-import {showTip, IMessageType} from '@/utils';
+import {showTip, IMessageType, setHeaderToken} from '@/utils';
 const Drawer = dynamic(import('@/uikit/components/Drawer/Drawer'), {
   ssr: false,
 });
@@ -44,7 +44,7 @@ const Wallet: FC<IProps> = memo(({children}) => {
           setUserDrawer({open: false});
         }}
       >
-        {user.accountAddress && localStorage.getItem('Authorization') ? (
+        {user.accountAddress ? (
           <WalletContainer>
             <WalletHeadContainer>
               <DropDown OptionsNode={<DownList />} placement='left'>
@@ -168,7 +168,7 @@ export const WalletList = memo(() => {
     if (loginRes?.CODE === 0) {
       showTip({content: '登录成功'});
       const {user, token} = loginRes.DATA;
-      localStorage.setItem('Authorization', token);
+      setHeaderToken(publicAddress, token);
       // localStorage.setItem('sign', loginsignature.sign);
       setUser({
         ...originUser,
@@ -217,8 +217,10 @@ export const WalletList = memo(() => {
             setLoading(false);
             if (loginRes?.CODE === 0) {
               const {token, user} = loginRes.DATA;
-              localStorage.setItem('Authorization', token);
+              // localStorage.setItem('Authorization', token);
               // localStorage.setItem('sign', signature.sign);
+              setHeaderToken(publicAddress, token);
+
               setUser({
                 ...originUser,
                 accountAddress: publicAddress,

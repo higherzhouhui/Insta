@@ -2,13 +2,13 @@ import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 
 import {addPending, removePending} from './pending';
 
-import {showTip, IMessageType} from '@/utils';
+import {showTip, IMessageType, getHeaderToken, clearToken} from '@/utils';
 
 // 处理响应
 const handleResponse = (data: GlobalRequest.Response<any>) => {
   const {CODE} = data;
   if (CODE === 401) {
-    localStorage.clear();
+    clearToken(getHeaderToken());
   }
 };
 // 处理错误
@@ -35,7 +35,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     if (typeof window !== 'undefined') {
-      const xToken = localStorage.getItem('Authorization');
+      const xToken = getHeaderToken(getHeaderToken('address'));
       if (xToken) {
         config.headers = {
           ...config.headers,

@@ -21,7 +21,10 @@ const Info: NextPage = () => {
   const [list, setList] = useState<any>([]);
   const {t} = useTranslation();
   const initRequestData = () => {
-    Promise.all([getPower(), getInviters()])
+    Promise.all([
+      getPower(user.accountAddress),
+      getInviters(user.accountAddress),
+    ])
       .then((res: any) => {
         const [power, inviters] = res;
         setTotalPower(power.DATA || {});

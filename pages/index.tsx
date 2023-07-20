@@ -22,7 +22,13 @@ import {mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
 import {Modal} from '@/uikit';
-import {IMessageType, showTip, Event, EventTypes} from '@/utils';
+import {
+  IMessageType,
+  showTip,
+  Event,
+  EventTypes,
+  setHeaderToken,
+} from '@/utils';
 
 import 'swiper/css';
 
@@ -33,7 +39,7 @@ const Home: NextPage = () => {
   const approveRef = useRef<any>();
   const nftRef = useRef<any>();
   const {getContract} = useContract();
-  const {getNormalPrice, getNetwork} = useEthersUtils();
+  const {getNetwork} = useEthersUtils();
   const {t} = useTranslation();
   const [originUser, setUser] = useRecoilState(userState);
   const router = useRouter();
@@ -82,7 +88,8 @@ const Home: NextPage = () => {
         account,
         nftContractAddress
       );
-      if (edu && getNormalPrice(edu._hex) !== '0.0') {
+      const eduPrice = edu.toString() / 1000000000000000000;
+      if (eduPrice && eduPrice > 1000) {
         setHasApprove(true);
       } else {
         setHasApprove(false);
@@ -120,7 +127,10 @@ const Home: NextPage = () => {
       } else if (currentTab === 2) {
         tlevel = 1;
       }
-      const mintRes: any = await mintNft({level: tlevel});
+      const mintRes: any = await mintNft({
+        level: tlevel,
+        address: connectedAccount,
+      });
       if (mintRes?.CODE !== 0) {
         setLoading(false);
         showTip({content: mintRes?.MESSAGE});
@@ -185,7 +195,7 @@ const Home: NextPage = () => {
         }).then((loginRes: any) => {
           if (loginRes?.CODE === 0) {
             const {token, user} = loginRes.DATA;
-            localStorage.setItem('Authorization', token);
+            setHeaderToken(accountAddress || '', token);
             setUser({
               ...originUser,
               accountAddress,
@@ -328,10 +338,8 @@ const Home: NextPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       getRemain();
-      if (connectedAccount && localStorage.getItem('Authorization')) {
-        checkHasAllowance();
-        isMint();
-      }
+      checkHasAllowance();
+      isMint();
     }, 500);
     return () => {
       clearTimeout(timer);

@@ -11,19 +11,24 @@ import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
 import {useEthersUtils, useMetaMask} from '@/ethers-react';
-import {useSigner} from '@/ethers-react/useSigner';
 import {getMyInfo, onLogin} from '@/services/user';
 import {userState} from '@/store/user';
-import {IMessageType, progressInit, showTip, Event, EventTypes} from '@/utils';
+import {
+  IMessageType,
+  progressInit,
+  showTip,
+  Event,
+  EventTypes,
+  setHeaderToken,
+} from '@/utils';
 const Wallet = dynamic(import('@/components/wallet'), {ssr: false});
 const Header = dynamic(import('./header'), {ssr: false});
 
 export const Layout = memo(({children}) => {
   const router = useRouter();
   const [originUser, setUser] = useRecoilState(userState);
-  const {getSignMessage} = useSigner();
-  const {disconnectWallect, setAccount} = useMetaMask();
-  const {getNormalPrice, getNetwork} = useEthersUtils();
+  const {connectedAccount, setAccount} = useMetaMask();
+  const {getNetwork} = useEthersUtils();
 
   const listRouterPathName = [
     '/nft/list',
@@ -72,9 +77,11 @@ export const Layout = memo(({children}) => {
 
   useEffect(() => {
     progressInit(router);
+    judgeIsLogin();
   }, []);
   const judgeIsLogin = async () => {
     const currentAccount = await getAccount();
+    setAccount(currentAccount);
     if (!currentAccount) {
       localStorage.clear();
       setUser({
@@ -93,10 +100,11 @@ export const Layout = memo(({children}) => {
         uuid: null,
         sign: null,
       });
-      return;
     }
-    setAccount(currentAccount);
-    const myInfo: any = await getMyInfo();
+  };
+
+  const getInfo = async (currentAccount: string) => {
+    const myInfo: any = await getMyInfo(currentAccount);
     if (myInfo.CODE === 0) {
       const {DATA} = myInfo;
       setUser({
@@ -107,20 +115,10 @@ export const Layout = memo(({children}) => {
         invite_code: DATA.invite_code,
       });
     } else {
-      // let sign = localStorage.getItem('sign');
-      // if (!sign) {
-      //   const signature = await getSignMessage('Login');
-      //   if (!signature.status) {
-      //     showTip({type: IMessageType.ERROR, content: signature.sign || ''});
-      //     return;
-      //   }
-      //   sign = signature.sign;
-      //   localStorage.setItem('sign', sign);
-      // }
       onLogin({wallet: currentAccount, sign: 'Login'}).then((loginRes: any) => {
         if (loginRes.CODE === 0) {
           const {user, token} = loginRes.DATA;
-          localStorage.setItem('Authorization', token);
+          setHeaderToken(currentAccount, token);
           setUser({
             ...originUser,
             accountAddress: currentAccount,
@@ -128,22 +126,19 @@ export const Layout = memo(({children}) => {
             level: user.level,
             invite_code: user.invite_code,
           });
+          showTip({content: '登录成功'});
         } else {
           Event.emit(EventTypes.notRegister);
         }
       });
     }
   };
+
   useEffect(() => {
-    if (
-      router.pathname === '/' ||
-      router.pathname === '/deposits' ||
-      router.pathname === '/info' ||
-      router.pathname === '/swap'
-    ) {
-      judgeIsLogin();
+    if (connectedAccount) {
+      getInfo(connectedAccount);
     }
-  }, [router.pathname]);
+  }, [connectedAccount]);
 
   return (
     <>

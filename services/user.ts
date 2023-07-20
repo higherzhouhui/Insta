@@ -6,6 +6,7 @@ import {
   GetUserWorks,
 } from './user.d';
 
+import {setHeaderToken} from '@/utils';
 import service from '@/utils/request';
 
 // 获取登录随机数
@@ -71,7 +72,8 @@ export const getUserInfo = (params: userInfoParams) => {
 };
 
 // 查询自己的信息
-export const getMyInfo = () => {
+export const getMyInfo = (address: string) => {
+  setHeaderToken('address', address);
   return service<GlobalUser.User>({
     url: '/api/user/info',
     method: 'GET',
@@ -102,7 +104,8 @@ export const getRecapRes = (resp: string) => {
   });
 };
 // MINT
-export const mintNft = (data: {level: number}) => {
+export const mintNft = (data: {level: number; address?: string}) => {
+  setHeaderToken('address', data.address || '');
   return service({
     url: '/api/nft/mint',
     method: 'POST',
@@ -111,7 +114,8 @@ export const mintNft = (data: {level: number}) => {
 };
 
 // 算力
-export const getPower = () => {
+export const getPower = (address: string) => {
+  setHeaderToken('address', address);
   return service({
     url: '/api/user/hash_rate',
     method: 'GET',
@@ -119,7 +123,8 @@ export const getPower = () => {
 };
 
 // 我的团队
-export const getInviters = () => {
+export const getInviters = (address: string) => {
+  setHeaderToken('address', address);
   return service({
     url: '/api/user/invite_user',
     method: 'GET',

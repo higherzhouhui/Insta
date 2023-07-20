@@ -24,7 +24,7 @@ import i18n from '@/locales/config';
 import {onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {userDrawerState} from '@/store/userDrawer';
-import {showTip, IMessageType} from '@/utils';
+import {showTip, IMessageType, setHeaderToken} from '@/utils';
 
 export const Header: FC = memo(() => {
   const [_userDrawer, setUserDrawer] = useRecoilState(userDrawerState);
@@ -104,9 +104,7 @@ export const Header: FC = memo(() => {
             });
           }}
         >
-          {connectedAccount &&
-          user.accountAddress &&
-          localStorage.getItem('Authorization') ? (
+          {connectedAccount && user.accountAddress ? (
             <div className='account-address-box'>
               {`${connectedAccount.slice(0, 4)}...${connectedAccount.slice(
                 37
@@ -175,7 +173,8 @@ const Wallet = memo(() => {
         }).then((loginRes: any) => {
           if (loginRes?.CODE === 0) {
             const {token, user} = loginRes.DATA;
-            localStorage.setItem('Authorization', token);
+            // localStorage.setItem('Authorization', token);
+            setHeaderToken(publicAddress as any, token);
             setUser({
               ...user,
               sign: signature.sign,

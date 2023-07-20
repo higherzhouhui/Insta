@@ -57,3 +57,36 @@ export const progressInit = (router: NextRouter) => {
     router.events.off('routeChangeComplete', handleRouteComplete);
   };
 };
+
+export const setHeaderToken = (address: string, token: string) => {
+  const tokenInfo = localStorage.getItem('TokenInfo');
+  let tokenObj: any = {};
+  if (tokenInfo) {
+    tokenObj = JSON.parse(tokenInfo);
+    tokenObj[address] = token;
+    localStorage.setItem('TokenInfo', JSON.stringify(tokenObj));
+  } else {
+    tokenObj[address] = token;
+  }
+  localStorage.setItem('TokenInfo', JSON.stringify(tokenObj));
+};
+
+export const getHeaderToken = (ad?: string) => {
+  const address = ad || 'address';
+  const tokenInfo = localStorage.getItem('TokenInfo');
+  if (tokenInfo) {
+    const tokenObj = JSON.parse(tokenInfo);
+    return tokenObj[address];
+  }
+  return '';
+};
+
+export const clearToken = (address: string) => {
+  const tokenInfo = localStorage.getItem('TokenInfo');
+  if (tokenInfo) {
+    const tokenObj = JSON.parse(tokenInfo);
+    tokenObj[address] = '';
+    tokenObj.address = '';
+    localStorage.setItem('TokenInfo', JSON.stringify(tokenObj));
+  }
+};

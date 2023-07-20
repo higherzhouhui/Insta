@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 
-import {showTip} from '@/utils';
+import {setHeaderToken, showTip} from '@/utils';
 
 export const useMetaMask = () => {
   // is installed wallet
@@ -57,9 +57,10 @@ export const useMetaMask = () => {
       window.ethereum.on('accountsChanged', function (accounts: string[]) {
         if (accounts && accounts.length) {
           setConnectedAccount(accounts[0]);
+          setHeaderToken('address', accounts[0]);
         } else {
           setConnectedAccount(null);
-          localStorage.clear();
+          setHeaderToken('address', '');
         }
       });
     } catch (error) {

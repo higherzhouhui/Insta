@@ -204,7 +204,7 @@ export const WalletList = memo(() => {
     setLoading(true);
     try {
       registerAccount({
-        invite_code: theId,
+        invite_code: theId as any,
         wallet: publicAddress,
         sign: 'Register',
       }).then((res: any) => {

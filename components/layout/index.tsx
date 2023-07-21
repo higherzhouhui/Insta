@@ -28,6 +28,7 @@ export const Layout = memo(({children}) => {
   const router = useRouter();
   const [originUser, setUser] = useRecoilState(userState);
   const {connectedAccount, setAccount} = useMetaMask();
+  const count = useRef<any>();
   const timer = useRef<any>();
   const listRouterPathName = [
     '/nft/list',
@@ -42,6 +43,7 @@ export const Layout = memo(({children}) => {
   ];
 
   const getAccount = async () => {
+    count.current += 1;
     if (timer.current) {
       clearInterval(timer.current);
     }
@@ -63,10 +65,14 @@ export const Layout = memo(({children}) => {
         }
       } else {
         // MetaMask 未安装或不可用，无法请求授权
-        showTip({content: '请使用DApp浏览器打开！', showTime: 3000});
-        timer.current = setTimeout(() => {
-          getAccount();
-        }, 10000);
+        if (count.current > 5) {
+          showTip({content: '请使用DApp浏览器打开！', showTime: 5000});
+          clearTimeout(timer.current);
+        } else {
+          timer.current = setTimeout(() => {
+            getAccount();
+          }, 3000);
+        }
         return '';
       }
     } catch (error: any) {
@@ -81,6 +87,7 @@ export const Layout = memo(({children}) => {
   useEffect(() => {
     progressInit(router);
     judgeIsLogin();
+    count.current = 0;
   }, []);
   const judgeIsLogin = async () => {
     const currentAccount = await getAccount();

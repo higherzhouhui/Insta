@@ -17,7 +17,6 @@ import {
   useMetaMask,
   Web3ProviderContext,
 } from '@/ethers-react';
-import {useSigner} from '@/ethers-react/useSigner';
 import {mintNft, onLogin, registerAccount} from '@/services/user';
 import {userState} from '@/store/user';
 import {HomeContainer, InviterComp, SwipperItem} from '@/styles/home';
@@ -46,7 +45,6 @@ const Home: NextPage = () => {
   const {inviterId} = router.query;
   const [loading, setLoading] = useState(false);
   const [swiper, setSwiper] = useState<any>('');
-  const {getSignMessage} = useSigner();
   const [hasApprove, setHasApprove] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
   const [disMint, setDisMint] = useState(false);
@@ -72,7 +70,7 @@ const Home: NextPage = () => {
     } catch (error: any) {
       showTip({
         type: IMessageType.ERROR,
-        content: error?.data?.message || error?.message,
+        content: error?.data?.message || error?.message || '拒绝授权',
       });
       setLoading(false);
       setHasApprove(false);
@@ -164,7 +162,7 @@ const Home: NextPage = () => {
     } catch (error: any) {
       showTip({
         type: IMessageType.ERROR,
-        content: error?.data?.message || error?.message,
+        content: error?.data?.message || error?.message || error?.error,
       });
       console.log(error);
       setLoading(false);
@@ -211,6 +209,7 @@ const Home: NextPage = () => {
               type: IMessageType.SUCCESS,
               content: '註冊成功！',
             });
+            setVisible(false);
           } else {
             showTip({
               type: IMessageType.ERROR,
@@ -223,7 +222,6 @@ const Home: NextPage = () => {
         setRegisterLoading(false);
       }
     });
-    setVisible(false);
   };
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -535,7 +533,7 @@ const getAccount = async () => {
     }
     return currentAccount;
   } catch {
-    showTip({content: 'Please Install MetaMask'});
+    showTip({content: '请使用DApp浏览器打开！'});
     return '';
   }
 };

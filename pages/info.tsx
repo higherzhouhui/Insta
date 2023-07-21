@@ -1,15 +1,11 @@
-import axios from 'axios';
-import * as echarts from 'echarts';
 import moment from 'moment';
 import Image from 'next/image';
 import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 
 import type {NextPage} from 'next';
 
-import {apiUrl} from '@/config';
-import {getInviters, getPower} from '@/services/user';
+import {getInviters, getMyInfo, getPower} from '@/services/user';
 import {userState} from '@/store/user';
 import {InfoContainer} from '@/styles/info';
 import {IMessageType, copyUrlToClip, showTip} from '@/utils';
@@ -19,71 +15,39 @@ const Info: NextPage = () => {
   const [totalPower, setTotalPower] = useState<any>({});
   const [inviteLink, setInviteLink] = useState('');
   const [list, setList] = useState<any>([]);
-  const {t} = useTranslation();
+  const [loading, setLoading] = useState(true);
   const initRequestData = () => {
+    setLoading(true);
     Promise.all([
       getPower(user.accountAddress),
       getInviters(user.accountAddress),
+      getMyInfo(user.accountAddress),
     ])
       .then((res: any) => {
-        const [power, inviters] = res;
+        setLoading(false);
+        const [power, inviters, info] = res;
         setTotalPower(power.DATA || {});
         const mlist = inviters.DATA || [];
         mlist.forEach((item: any) => {
           item.wallet = `${item.wallet.slice(0, 8)}...${item.wallet.slice(37)}`;
           item.created_at = moment(item.created_at).format('YYYY-MM-DD HH:mm');
         });
+        const {DATA} = info;
+        setUser({
+          ...user,
+          hash_rate: DATA.hash_rate,
+          invite_code: DATA.invite_code,
+          level: DATA.level,
+        });
         setList(inviters.DATA);
       })
       .catch((err) => {
         console.log(err);
         showTip({content: err || 'error'});
+        setLoading(false);
       });
   };
 
-  const initIncrease = () => {
-    axios({
-      url: `${apiUrl}/api/public/v1/users/increase`,
-      method: 'get',
-      params: {},
-    }).then((res) => {
-      if (res?.data?.meta?.status !== 200) {
-        showTip({content: res?.data?.meta?.msg});
-      }
-      const data = res?.data?.data || [];
-      // setIncrease({
-      //   'today': parseFloat(data.today)
-      // });
-    });
-  };
-
-  const initLineChart = (xdata: string[], ydata: string[]) => {
-    const chartDom = document.getElementById('main');
-    const myChart = echarts.init(chartDom as any);
-    const option = {
-      grid: {
-        top: '20px',
-        left: '50px',
-        right: '0',
-        bottom: '30px',
-      },
-      xAxis: {
-        type: 'category',
-        data: xdata,
-      },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          data: ydata,
-          type: 'line',
-          smooth: true,
-        },
-      ],
-    };
-    option && myChart.setOption(option);
-  };
   const copyToClip = (url: string) => {
     copyUrlToClip(url);
     showTip({type: IMessageType.SUCCESS, content: '複製成功'});
@@ -95,6 +59,7 @@ const Info: NextPage = () => {
 
   return (
     <InfoContainer>
+      <div className={loading ? 'loading' : ''} />
       <div className='title'>
         <Image layout='fill' src='/static/image/title.png' />
       </div>
@@ -109,7 +74,14 @@ const Info: NextPage = () => {
             {Number(user?.hash_rate || 0).toLocaleString()}
           </div>
         </div>
-        <div className='right'>確定</div>
+        <div
+          className='right'
+          onClick={() => {
+            initRequestData();
+          }}
+        >
+          確定
+        </div>
       </div>
       <div className='totalPower'>
         <div className='left'>

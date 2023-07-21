@@ -30,7 +30,7 @@ export const HeaderOptionContainer = styled.div`
   align-items: center;
   justify-content: flex-end;
   .account-address-box {
-    font-size: 12px;
+    font-size: 15px;
     color: #fff;
   }
   .dropDown {

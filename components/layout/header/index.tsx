@@ -1,4 +1,4 @@
-import {Dropdown, Menu} from 'antd';
+import {Menu} from 'antd';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -83,7 +83,7 @@ export const Header: FC = memo(() => {
         </Link>
       </HeaderLogoContainer>
       <HeaderOptionContainer>
-        <Dropdown
+        {/* <Dropdown
           overlay={LanguagesMenu}
           placement='bottom'
           trigger={['hover']}
@@ -96,7 +96,7 @@ export const Header: FC = memo(() => {
           >
             {currentLang === 'en' ? 'English' : '繁體'}
           </div>
-        </Dropdown>
+        </Dropdown> */}
         <WalletContainer
           onClick={() => {
             setUserDrawer({

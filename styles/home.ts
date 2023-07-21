@@ -142,11 +142,20 @@ export const SwipperItem = styled.div`
 
       .proTotal {
         position: absolute;
-        background: linear-gradient(to right, #fb963e, #fe5dce);
         left: 0;
         top: 0;
         height: 100%;
         z-index: 1;
+      }
+
+      .level0 {
+        background: linear-gradient(to right, #0e57a0, #0d9bdb);
+      }
+      .level1 {
+        background: linear-gradient(to right, #0b131c, #4795a7);
+      }
+      .level2 {
+        background: linear-gradient(to right, #a8a299, #d3f6f6);
       }
       .proRemain {
         position: absolute;
@@ -168,6 +177,12 @@ export const SwipperItem = styled.div`
     .priceWrapper {
       color: #fff;
       font-size: 14px;
+      .priceNumber {
+        span {
+          margin-right: 10px;
+          font-weight: bold;
+        }
+      }
       .price {
         letter-spacing: 18px;
       }
@@ -183,9 +198,26 @@ export const SwipperItem = styled.div`
       font-size: 20px;
       background: #d158e9;
       font-weight: bold;
+      letter-spacing: 6px;
+    }
+    .donghua {
+      animation: shandong 2s infinite alternate;
+    }
+
+    @keyframes shandong {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.03);
+      }
+      100% {
+        transform: scale(1);
+      }
     }
     .disMint {
       background: #555;
+      color: #eee;
     }
   }
   .hint {

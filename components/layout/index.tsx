@@ -2,7 +2,7 @@ import {ethers} from 'ethers';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
-import {memo, useEffect} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import {useRecoilState} from 'recoil';
 
 import {CommonLayout} from './CommonLayout';
@@ -10,7 +10,7 @@ import {ListLayout} from './ListLayout';
 import {LayoutContainer, LayoutMainContentContainer} from './styles';
 
 import {Footer} from '@/components';
-import {useEthersUtils, useMetaMask} from '@/ethers-react';
+import {useMetaMask} from '@/ethers-react';
 import {getMyInfo, onLogin} from '@/services/user';
 import {userState} from '@/store/user';
 import {
@@ -28,8 +28,7 @@ export const Layout = memo(({children}) => {
   const router = useRouter();
   const [originUser, setUser] = useRecoilState(userState);
   const {connectedAccount, setAccount} = useMetaMask();
-  const {getNetwork} = useEthersUtils();
-
+  const timer = useRef<any>();
   const listRouterPathName = [
     '/nft/list',
     '/tag/[id]',
@@ -43,18 +42,31 @@ export const Layout = memo(({children}) => {
   ];
 
   const getAccount = async () => {
+    if (timer.current) {
+      clearInterval(timer.current);
+    }
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      let currentAccount = '';
-      try {
-        const accounts = await provider.send('eth_requestAccounts', []);
-        currentAccount = accounts[0];
-        return currentAccount;
-      } catch (error: any) {
-        showTip({
-          type: IMessageType.ERROR,
-          content: error?.data?.message || error?.message,
-        });
+      if (typeof window.ethereum !== 'undefined') {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        let currentAccount = '';
+        try {
+          const accounts = await provider.send('eth_requestAccounts', []);
+          currentAccount = accounts[0];
+          return currentAccount;
+        } catch (error: any) {
+          showTip({
+            type: IMessageType.ERROR,
+            content: error?.data?.message || error?.message,
+          });
+          return '';
+        }
+      } else {
+        // MetaMask 未安装或不可用，无法请求授权
+        showTip({content: '请使用DApp浏览器打开！', showTime: 3000});
+        timer.current = setTimeout(() => {
+          getAccount();
+        }, 10000);
         return '';
       }
     } catch (error: any) {
@@ -68,9 +80,7 @@ export const Layout = memo(({children}) => {
 
   useEffect(() => {
     progressInit(router);
-    setTimeout(() => {
-      judgeIsLogin();
-    }, 500);
+    judgeIsLogin();
   }, []);
   const judgeIsLogin = async () => {
     const currentAccount = await getAccount();

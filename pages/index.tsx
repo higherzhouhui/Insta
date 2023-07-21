@@ -330,6 +330,8 @@ const Home: NextPage = () => {
         console.log(flag, 'flag');
         if (flag) {
           setDisMint(true);
+        } else {
+          setDisMint(false);
         }
       } else {
         setDisMint(false);
@@ -428,14 +430,12 @@ const Home: NextPage = () => {
                   <div className='proWrapper'>
                     <div className='showNumber'>
                       <div>
-                        {item.title === '初级节点'
-                          ? ''
-                          : `数量：${item.total}位`}
+                        {item.title === '初级节点' ? '' : `數量${item.total}位`}
                       </div>
                       {/* <div>{item.remain}</div> */}
                     </div>
                     <div
-                      className='proTotal'
+                      className={`proTotal level${index}`}
                       style={{
                         width: `${Math.round(100)}%`,
                       }}
@@ -460,18 +460,20 @@ const Home: NextPage = () => {
                     </div> */}
                   </div>
                   <div className='priceWrapper'>
-                    <span className='price'>价格：</span>
-                    <span className='priceNumber'>{item.price}U</span>
+                    <span className='price'>價格：</span>
+                    <span className='priceNumber'>
+                      <span>{item.price}</span>U
+                    </span>
                   </div>
                   <div
-                    className={`btn ${disMint ? 'disMint' : ''}`}
+                    className={`btn ${disMint ? 'disMint' : 'donghua'}`}
                     onClick={() => mint(item.price)}
                   >
                     {hasApprove ? t('MINT') : t('授權')}
                   </div>
                 </div>
                 <div className='hint'>
-                  <div className='title'>权益说明：</div>
+                  <div className='title'>權益說明：</div>
                   {item.hint.map((item: string, index: number) => {
                     return (
                       <div className='list' key={index}>

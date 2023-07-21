@@ -35,12 +35,12 @@ export const Footer: FC = memo(() => {
   const [navList, setNavList] = useState(staticNavList);
   const handleRoute = (item: any) => {
     if (item.link === '/shouye' || item.link === '/stq') {
-      showTip({content: '暂未开放'});
+      showTip({content: '暫未開放'});
       return;
     }
     if (item.link === '/info') {
       if (!user?.invite_code) {
-        showTip({content: '请先登录'});
+        showTip({content: '請登錄後查看'});
         return;
       }
     }

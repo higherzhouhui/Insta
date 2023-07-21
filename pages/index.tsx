@@ -428,7 +428,9 @@ const Home: NextPage = () => {
                   <div className='proWrapper'>
                     <div className='showNumber'>
                       <div>
-                        {item.title === '初级节点' ? '' : `數量${item.total}位`}
+                        {item.title === '初级节点'
+                          ? '無限制'
+                          : `數量${item.total}位`}
                       </div>
                       {/* <div>{item.remain}</div> */}
                     </div>

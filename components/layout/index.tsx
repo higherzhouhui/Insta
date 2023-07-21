@@ -68,7 +68,9 @@ export const Layout = memo(({children}) => {
 
   useEffect(() => {
     progressInit(router);
-    judgeIsLogin();
+    setTimeout(() => {
+      judgeIsLogin();
+    }, 500);
   }, []);
   const judgeIsLogin = async () => {
     const currentAccount = await getAccount();

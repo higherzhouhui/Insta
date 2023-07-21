@@ -1,5 +1,6 @@
 import {Menu} from 'antd';
 import axios from 'axios';
+import {ethers} from 'ethers';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
@@ -32,6 +33,29 @@ export const Header: FC = memo(() => {
   const [currentLang, setCurrentLang] = useState(
     localStorage.getItem('lang') || 'zh'
   );
+  const getAccount = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      let currentAccount = '';
+      try {
+        const accounts = await provider.send('eth_requestAccounts', []);
+        currentAccount = accounts[0];
+      } catch {
+        currentAccount = '';
+      }
+      return currentAccount;
+    } catch {
+      showTip({content: '请使用DApp浏览器打开！'});
+      return '';
+    }
+  };
+
+  const handleConnect = () => {
+    // setUserDrawer({
+    //   open: !_userDrawer.open,
+    // });
+    getAccount();
+  };
   const shiftLanguage = (lang: string) => {
     localStorage.setItem('lang', lang);
     setCurrentLang(lang);
@@ -99,9 +123,7 @@ export const Header: FC = memo(() => {
         </Dropdown> */}
         <WalletContainer
           onClick={() => {
-            setUserDrawer({
-              open: !_userDrawer.open,
-            });
+            handleConnect();
           }}
         >
           {connectedAccount && user.accountAddress ? (

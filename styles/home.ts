@@ -117,6 +117,12 @@ export const SwipperItem = styled.div`
         font-size: 18px;
         color: #fff;
         margin: 0 auto;
+        text-align: center;
+        div {
+          font-size: 15px;
+          opacity: 0.8;
+          text-align: center;
+        }
       }
     }
     .proWrapper {

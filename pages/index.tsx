@@ -422,32 +422,30 @@ const Home: NextPage = () => {
                 </div>
                 <div className='describe'>
                   <div className='number'>
-                    <div className='total'>{item.title}</div>
+                    <div className='total'>{item.title}<div>(总共{item.total}位)</div></div>
                     {/* <div className='total'>剩余总量</div> */}
                   </div>
                   <div className='proWrapper'>
                     <div className='showNumber'>
-                      <div>
-                        {item.title === '初级节点'
-                          ? '無限制'
-                          : `數量${item.total}位`}
-                      </div>
-                      {/* <div>{item.remain}</div> */}
+                      {/* <div>总量{item.total}位</div> */}
+                      <div>剩余{item.remain}位</div>
                     </div>
                     <div
                       className={`proTotal level${index}`}
                       style={{
-                        width: `${Math.round(100)}%`,
+                        width: `${Math.round(
+                          (1 - item.remain / item.total) * 100
+                        )}%`,
                       }}
                     />
-                    {/* <div
+                    <div
                       className='proRemain'
                       style={{
                         width: `${Math.round(
                           (item.remain / item.total) * 100
                         )}%`,
                       }}
-                    /> */}
+                    />
                     {/* <div
                       className='divide'
                       style={{

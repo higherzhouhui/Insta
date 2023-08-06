@@ -1,10 +1,9 @@
-import {Menu} from 'antd';
 import axios from 'axios';
 import {ethers} from 'ethers';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import {FC, useState, memo, useContext, useMemo} from 'react';
+import {FC, useState, memo, useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useRecoilState} from 'recoil';
 
@@ -62,40 +61,40 @@ export const Header: FC = memo(() => {
     i18n.changeLanguage(lang);
   };
   const [user, setUser] = useRecoilState(userState);
-  const LanguagesMenu = useMemo(() => {
-    return (
-      <Menu
-        items={[
-          {
-            key: 'en',
-            label: (
-              <div
-                onClick={(e) => {
-                  shiftLanguage('en');
-                }}
-              >
-                Engilsh
-              </div>
-            ),
-            disabled: currentLang === 'en',
-          },
-          {
-            key: 'zh',
-            label: (
-              <div
-                onClick={(e) => {
-                  shiftLanguage('zh');
-                }}
-              >
-                繁體
-              </div>
-            ),
-            disabled: currentLang === 'zh',
-          },
-        ]}
-      />
-    );
-  }, [currentLang]);
+  // const LanguagesMenu = useMemo(() => {
+  //   return (
+  //     <Menu
+  //       items={[
+  //         {
+  //           key: 'en',
+  //           label: (
+  //             <div
+  //               onClick={(e) => {
+  //                 shiftLanguage('en');
+  //               }}
+  //             >
+  //               Engilsh
+  //             </div>
+  //           ),
+  //           disabled: currentLang === 'en',
+  //         },
+  //         {
+  //           key: 'zh',
+  //           label: (
+  //             <div
+  //               onClick={(e) => {
+  //                 shiftLanguage('zh');
+  //               }}
+  //             >
+  //               繁體
+  //             </div>
+  //           ),
+  //           disabled: currentLang === 'zh',
+  //         },
+  //       ]}
+  //     />
+  //   );
+  // }, [currentLang]);
 
   return (
     <HeaderContainer>

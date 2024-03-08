@@ -52,6 +52,7 @@ class MyDocument extends Document {
             name='viewport'
           />
           <link href='/favicon.ico' rel='icon' />
+          <link href='/manifest.json' rel='manifest' />
           <Script id='awsc' strategy='afterInteractive'>
             {`
               var _hmt = _hmt || [];

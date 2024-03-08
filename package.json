@@ -29,14 +29,17 @@
 		"ethers": "^5.6.1",
 		"express": "^4.17.3",
 		"http-proxy-middleware": "^2.0.4",
+		"i18next": "^21.8.14",
 		"ipfs-http-client": "^56.0.1",
 		"moment": "^2.29.4",
 		"next": "12.1.0",
+		"next-pwa": "^5.6.0",
 		"nprogress": "^0.2.0",
 		"qs": "^6.10.3",
 		"react": "17.0.2",
 		"react-countup": "^6.4.1",
 		"react-dom": "17.0.2",
+		"react-i18next": "^11.18.1",
 		"react-loading": "^2.0.3",
 		"react-loading-skeleton": "^3.0.3",
 		"react-select": "^5.2.2",
@@ -45,9 +48,7 @@
 		"recoil-persist": "^4.0.0",
 		"styled-components": "^5.3.3",
 		"styled-system": "^5.1.5",
-		"swiper": "^8.0.7",
-		"i18next": "^21.8.14",
-    "react-i18next": "^11.18.1"
+		"swiper": "^8.0.7"
 	},
 	"devDependencies": {
 		"@qhlab/eslint-plugin": "^1.10.0",
